@@ -1,0 +1,49 @@
+package com.pettoyou.server.member.entity;
+
+import com.pettoyou.server.member.MemberStatus;
+import com.pettoyou.server.member.OAuthProvider;
+import com.pettoyou.server.pet.entity.Pet;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "member")
+public class Member {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Size(min=2, message = "최소 2글자 이상이어야 합니다.")
+    private String nickName;
+
+    private String phone;
+
+    private OAuthProvider provider;
+    //가입 정보 - apple, kakao, naver
+
+    @Enumerated
+    private MemberStatus memberStatus;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Pet> pets = new ArrayList<>();
+
+}
+
+//Member
+//-
+//MemberId PK long IDENTITY
+//Name string
+//Nickname string
+//Phone string
+//Provider string # APPLE, KAKAO, NAVER
+//MemberStatus string # ACTIVATE, DEACTIVATE, DORMANT
