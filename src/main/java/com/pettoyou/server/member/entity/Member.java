@@ -31,7 +31,7 @@ public class Member {
     private OAuthProvider provider;
     //가입 정보 - apple, kakao, naver
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)

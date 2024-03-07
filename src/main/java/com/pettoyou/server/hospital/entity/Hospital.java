@@ -1,6 +1,7 @@
 package com.pettoyou.server.hospital.entity;
 
 
+import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.review.entity.Review;
 import com.pettoyou.server.store.entity.Address;
 import com.pettoyou.server.store.entity.Store;
@@ -37,7 +38,8 @@ public class Hospital extends Store
 
     private String hospitalInfoPhoto;
 
-    private String hospitalStatus;
+    @Enumerated(EnumType.STRING)
+    private BaseStatus hospitalStatus;
 
 
 

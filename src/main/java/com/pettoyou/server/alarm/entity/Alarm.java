@@ -29,6 +29,7 @@ public class Alarm {
 
     private AlarmType alarmType;
 
+    @Enumerated(EnumType.STRING)
     private BaseStatus alarmStatus;
 
 }

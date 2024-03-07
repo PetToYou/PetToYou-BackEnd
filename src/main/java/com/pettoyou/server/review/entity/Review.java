@@ -39,6 +39,7 @@ public class Review extends BaseEntity {
     private float rating;
     private String content;
 
+    @Enumerated(EnumType.STRING)
     private BaseStatus reviewStatus;
 }
 //ReviewId PK long

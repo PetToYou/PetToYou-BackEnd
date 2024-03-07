@@ -23,7 +23,7 @@ public class Banner extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BannerType bannerType;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private BaseStatus bannerStatus;
     //activated,
 
