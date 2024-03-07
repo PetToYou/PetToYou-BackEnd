@@ -1,4 +1,4 @@
-package com.pettoyou.server.constant.entity;
+package com.pettoyou.server.scrap.entity;
 
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.store.entity.Store;
@@ -10,10 +10,10 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "like")
-public class Like {
+public class Scrap {
     @Id
     @GeneratedValue
-    private Long LikeId;
+    private Long ScrapId;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

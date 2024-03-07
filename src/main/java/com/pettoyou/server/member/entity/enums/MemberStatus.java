@@ -1,4 +1,4 @@
-package com.pettoyou.server.member;
+package com.pettoyou.server.member.entity.enums;
 
 public enum MemberStatus {
     ACTIVATE,

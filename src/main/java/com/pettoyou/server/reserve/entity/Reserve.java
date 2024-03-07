@@ -1,8 +1,9 @@
-package com.pettoyou.server.store.entity;
+package com.pettoyou.server.reserve.entity;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.entity.Pet;
+import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

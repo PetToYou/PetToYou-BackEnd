@@ -1,7 +1,7 @@
 package com.pettoyou.server.store.entity;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
-import com.pettoyou.server.store.StoreType;
+import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

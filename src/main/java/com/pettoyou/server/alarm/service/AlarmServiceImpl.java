@@ -1,4 +1,7 @@
 package com.pettoyou.server.alarm.service;
 
-public class AlarmServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class AlarmServiceImpl implements AlarmService{
 }

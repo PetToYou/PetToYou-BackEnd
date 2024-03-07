@@ -2,6 +2,7 @@ package com.pettoyou.server.store.entity;
 
 
 import com.pettoyou.server.constant.entity.BaseEntity;
+import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.Getter;

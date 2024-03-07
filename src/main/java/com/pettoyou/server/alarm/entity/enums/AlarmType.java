@@ -1,4 +1,4 @@
-package com.pettoyou.server.alarm;
+package com.pettoyou.server.alarm.entity.enums;
 
 public enum AlarmType {
 

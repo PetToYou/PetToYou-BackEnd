@@ -1,15 +1,12 @@
 package com.pettoyou.server.alarm.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pettoyou.server.alarm.AlarmType;
+import com.pettoyou.server.alarm.entity.enums.AlarmType;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "alarm")
 public class Alarm {

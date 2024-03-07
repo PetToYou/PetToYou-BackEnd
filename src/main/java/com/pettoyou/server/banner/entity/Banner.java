@@ -1,14 +1,12 @@
 package com.pettoyou.server.banner.entity;
 
-import com.pettoyou.server.banner.BannerType;
+import com.pettoyou.server.banner.entity.enums.BannerType;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "banner")
 public class Banner extends BaseEntity {

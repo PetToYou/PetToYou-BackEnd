@@ -2,10 +2,9 @@ package com.pettoyou.server.review.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
-import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.entity.Pet;
-import com.pettoyou.server.store.StoreType;
+import com.pettoyou.server.store.entity.enums.StoreType;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;

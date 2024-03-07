@@ -1,4 +1,4 @@
-package com.pettoyou.server.banner;
+package com.pettoyou.server.banner.entity.enums;
 
 public enum BannerType {
     HOSPITAL,

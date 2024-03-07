@@ -1,7 +1,7 @@
 package com.pettoyou.server.member.entity;
 
-import com.pettoyou.server.member.MemberStatus;
-import com.pettoyou.server.member.OAuthProvider;
+import com.pettoyou.server.member.entity.enums.MemberStatus;
+import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "member")
 public class Member {
@@ -36,6 +35,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Pet> pets = new ArrayList<>();
+
 
 }
 
