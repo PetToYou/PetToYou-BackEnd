@@ -20,13 +20,16 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String name; // 실명이 이어야함. -> 수정 가능하게
 
     @Size(min=2, message = "최소 2글자 이상이어야 합니다.")
-    private String nickName;
+    private String nickName; // 따로 받아야됨
 
-    private String phone;
+    private String phone; // 따로 받아야됨
 
+    private String email; // 따로 받아야됨
+
+    @Enumerated(EnumType.STRING)
     private OAuthProvider provider;
     //가입 정보 - apple, kakao, naver
 
