@@ -1,6 +1,7 @@
 package com.pettoyou.server.alarm.repository;
 
+import com.pettoyou.server.alarm.entity.Alarm;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AlarmRepository extends JpaRepository<AlarmRepository, Long> {
+public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 }
