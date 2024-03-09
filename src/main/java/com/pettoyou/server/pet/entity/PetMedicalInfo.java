@@ -1,19 +1,21 @@
 package com.pettoyou.server.pet.entity;
 
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
 @Embeddable
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class PetMedicalInfo {
-    private float weight;
+    private double weight;
+
     private Long registerNumber;
+
     private String neuteringStatus;
+
     private String basicVaccinationStatus;
-
-
 }
 
 //Weight float

@@ -7,35 +7,35 @@ import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "review")
 public class Review extends BaseEntity {
-
     @Id
     @GeneratedValue
     private Long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "storeId")
     private Store store;
 
-
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "memberId")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "pet_id")
+    @JoinColumn(name = "petId")
     private Pet pet;
 
     private StoreType storeType;
 
-    private float rating;
+    private double rating;
+
     private String content;
 
     @Enumerated(EnumType.STRING)

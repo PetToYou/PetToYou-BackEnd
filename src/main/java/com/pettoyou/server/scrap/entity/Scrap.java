@@ -1,26 +1,28 @@
 package com.pettoyou.server.scrap.entity;
 
+import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
 @Entity
-@Table(name = "like")
-public class Scrap {
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Table(name = "scrap")
+public class Scrap extends BaseEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ScrapId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "memberId")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "storeId")
     private Store store;
 
 }

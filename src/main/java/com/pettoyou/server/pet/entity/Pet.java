@@ -4,32 +4,38 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "pet")
 public class Pet extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String petId;
+    private Long petId;
 
     private String petName;
+
     private String species;
+
     private Integer age;
+
     private LocalDate birth;
+
     private LocalDate adoptionDate;
+
     private boolean isSharing;
+
     private BaseStatus petStatus;
 
-    @OneToMany(mappedBy = "pet",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
     private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
 
     @Embedded
@@ -39,12 +45,8 @@ public class Pet extends BaseEntity {
     private PetSharingInfo petSharingInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "memberId")
     private Member member;
-
-
-
-
 }
 
 //Pet
