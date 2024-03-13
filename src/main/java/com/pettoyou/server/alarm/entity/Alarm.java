@@ -4,10 +4,13 @@ import com.pettoyou.server.alarm.entity.enums.AlarmType;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "alarm")
 public class Alarm {
 

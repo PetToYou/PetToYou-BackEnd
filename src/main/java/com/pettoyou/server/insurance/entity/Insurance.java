@@ -1,23 +1,19 @@
 package com.pettoyou.server.insurance.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
-@Setter
 @Entity
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "insurance")
 public class Insurance extends BaseEntity {
-
-
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long insuraceId;
 
     private String insuranceName;
     private String insuranceCompany;

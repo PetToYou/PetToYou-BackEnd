@@ -8,16 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "registration_info")
 public class RegistrationInfo  {
 
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long registrationInfoId;
 
     @OneToOne(fetch=FetchType.LAZY)

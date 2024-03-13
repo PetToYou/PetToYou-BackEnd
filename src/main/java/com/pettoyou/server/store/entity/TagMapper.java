@@ -3,11 +3,12 @@ package com.pettoyou.server.store.entity;
 import com.pettoyou.server.hospital.entity.HospitalTag;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Table(name = "tag_mapper")
 public class TagMapper {

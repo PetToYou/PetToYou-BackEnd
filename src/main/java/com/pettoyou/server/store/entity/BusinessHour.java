@@ -2,13 +2,14 @@ package com.pettoyou.server.store.entity;
 
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Time;
 
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Table(name = "business_hour")
 public class BusinessHour {
