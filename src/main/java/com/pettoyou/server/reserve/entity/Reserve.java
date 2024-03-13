@@ -4,6 +4,7 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.entity.Pet;
+import com.pettoyou.server.reserve.entity.enums.ReserveStatus;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,15 @@ public class Reserve extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reserveId;
 
+
+    private LocalDateTime reserveTime;
+    //Date와 Time 분리????
+
+    @Enumerated(EnumType.STRING)
+    private ReserveStatus reserveStatus;
+
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storeId")
     private Store store;
@@ -34,10 +44,5 @@ public class Reserve extends BaseEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 
-    private LocalDateTime reserveTime;
-    //Date와 Time 분리????
-
-    @Enumerated(EnumType.STRING)
-    private BaseStatus reserveStatus;
 
 }

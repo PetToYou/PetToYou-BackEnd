@@ -3,6 +3,8 @@ package com.pettoyou.server.pet.entity;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
+import com.pettoyou.server.reserve.entity.Reserve;
+import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,16 +35,24 @@ public class Pet extends BaseEntity {
 
     private boolean isSharing;
 
+    @Enumerated(EnumType.STRING)
     private BaseStatus petStatus;
-
-    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
-    private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
 
     @Embedded
     private PetMedicalInfo petMedicalInfo;
 
     @Embedded
     private PetSharingInfo petSharingInfo;
+
+
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    private List<Reserve> reserves = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")

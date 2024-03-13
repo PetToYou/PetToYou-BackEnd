@@ -1,6 +1,7 @@
 package com.pettoyou.server.store.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,10 @@ public class Address {
     private String addressDetail;
     private String sido;
     private String sigungu;
+
+    @Column(nullable = true)
     private String eupmyun;
+
     private String doro;
     private Point point;
 

@@ -16,12 +16,14 @@ public class StorePhoto {
     @GeneratedValue
     private String storePhotoId;
 
+    @Enumerated(EnumType.STRING)
     private StoreType storeType;
 
     private String storePhotoUrl;
 
     private Integer photoOrder;
 
+    @Enumerated(EnumType.STRING)
     private BaseStatus photoStatus;
 
     @ManyToOne

@@ -1,5 +1,7 @@
-package com.pettoyou.server.hospital.entity;
+package com.pettoyou.server.store.entity;
 
+import com.pettoyou.server.hospital.entity.HospitalTag;
+import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,11 +16,11 @@ public class TagMapper {
     private Long tagMapperId;
 
     @ManyToOne
-    @JoinColumn(name = "hospitalTag_id")
+    @JoinColumn(name = "hospital_tag_id")
     private HospitalTag hospitalTag;
 
     @ManyToOne
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
+    @JoinColumn(name = "store_id")
+    private Store store;
 
 }

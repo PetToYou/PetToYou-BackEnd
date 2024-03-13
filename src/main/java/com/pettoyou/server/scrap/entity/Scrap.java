@@ -3,6 +3,7 @@ package com.pettoyou.server.scrap.entity;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.store.entity.Store;
+import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,11 @@ public class Scrap extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ScrapId;
+
+
+    @Enumerated(EnumType.STRING)
+    private StoreType storeType;
+
 
     @ManyToOne
     @JoinColumn(name = "memberId")

@@ -15,16 +15,23 @@ import java.util.List;
 @Getter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn // 하위 테이블의 구분 컬럼 생성
 public abstract class Store extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeId;
 
+    @Embedded
+    private Address address;
+
+    @OneToMany(mappedBy = "store")
+    private List<BusinessHour> businessHours = new ArrayList<>();
+
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<StorePhoto> storePhotos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Reserve> reserves = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
@@ -34,7 +41,8 @@ public abstract class Store extends BaseEntity {
     private RegistrationInfo registrationInfo;
 
 
-    @Embedded
-    private Address address;
+    @OneToMany(mappedBy = "store")
+    private List<TagMapper> tags = new ArrayList<>();
+
 
 }

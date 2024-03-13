@@ -1,5 +1,6 @@
 package com.pettoyou.server.store.entity;
 
+import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +24,12 @@ public class RegistrationInfo  {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @Enumerated(EnumType.STRING)
+    private StoreType storeType;
+
     private String ceoName;
+
+    private String ceoPhone;
 
     private String ceoEmail;
 

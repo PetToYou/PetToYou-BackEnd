@@ -14,7 +14,7 @@ import java.sql.Time;
 public class BusinessHour {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long businessHourId;
 
     @Enumerated(EnumType.STRING)
@@ -24,8 +24,13 @@ public class BusinessHour {
 
     private Time startTime;
     private Time endTime;
+
     private Time breakStartTime;
     private Time breakEndTime;
-//    private boolean isOpen;
 
+    private boolean isOpen;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 }

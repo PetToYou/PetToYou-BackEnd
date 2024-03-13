@@ -20,6 +20,20 @@ public class Review extends BaseEntity {
     @GeneratedValue
     private Long reviewId;
 
+    @Enumerated(EnumType.STRING)
+    private StoreType storeType;
+
+    @Enumerated(EnumType.STRING)
+    private BaseStatus reviewStatus;
+
+
+
+    private double rating;
+
+    private String content;
+
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storeId")
     private Store store;
@@ -32,14 +46,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "petId")
     private Pet pet;
 
-    private StoreType storeType;
 
-    private double rating;
-
-    private String content;
-
-    @Enumerated(EnumType.STRING)
-    private BaseStatus reviewStatus;
 }
 //ReviewId PK long
 //StoreId long FK >- Hospital.HospitalId

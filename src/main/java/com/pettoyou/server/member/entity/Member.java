@@ -1,8 +1,12 @@
 package com.pettoyou.server.member.entity;
 
+import com.pettoyou.server.alarm.entity.Alarm;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
+import com.pettoyou.server.reserve.entity.Reserve;
+import com.pettoyou.server.review.entity.Review;
+import com.pettoyou.server.scrap.entity.Scrap;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -38,6 +42,18 @@ public class Member {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Pet> pets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Reserve> reserves = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Alarm> alarms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Scrap> scraps = new ArrayList<>();
 }
 
 //Member

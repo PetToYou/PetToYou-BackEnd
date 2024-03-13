@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@DiscriminatorValue("H")
 @Table(name = "hospital", indexes = {
         @Index(name = "idx_hospital_name", columnList = "hospitalName")
 })
@@ -24,6 +25,7 @@ public class Hospital extends Store
 //    @GeneratedValue
 //    private Long hospitalId;
 
+    @Column(nullable = false)
     private String hospitalName;
 
     private String hospitalPhone;
@@ -40,7 +42,5 @@ public class Hospital extends Store
 
     @Enumerated(EnumType.STRING)
     private BaseStatus hospitalStatus;
-
-
 
 }
