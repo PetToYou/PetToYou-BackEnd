@@ -8,7 +8,6 @@ import com.pettoyou.server.config.redis.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,8 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/user/**").hasRole("USER")
                         .anyRequest().permitAll()
                 )
-                //
-                .httpBasic(Customizer.withDefaults())
+                // 커스텀 JWT 핸들러 및 엔트리 포인트를 사용하기 위해 httpBasic disable
+                .httpBasic(AbstractHttpConfigurer::disable)
                 // 인증 및 인가에 대한 예외 처리를 다룸
                 .exceptionHandling((httpSecurityExceptionHandlingConfigurer) -> httpSecurityExceptionHandlingConfigurer
                         // 인증 실패
