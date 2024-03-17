@@ -1,4 +1,4 @@
-package com.pettoyou.server.security.service;
+package com.pettoyou.server.config.security.service;
 
 import com.pettoyou.server.member.entity.Member;
 import lombok.RequiredArgsConstructor;
