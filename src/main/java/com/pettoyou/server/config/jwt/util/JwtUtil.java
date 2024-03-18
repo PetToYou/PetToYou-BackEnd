@@ -25,9 +25,9 @@ public class JwtUtil {
     private final UserDetailsService userDetailsService;
 
     public JwtUtil(
-            @Value("jwt.secret") String secretKey,
-            @Value("jwt.expiration_time.access_token") long accessTokenExprTime,
-            @Value("jwt.expiration_time.refresh_token") long refreshTokenExprTime,
+            @Value("${jwt.secret}") String secretKey,
+            @Value("${jwt.expiration_time.access_token}") long accessTokenExprTime,
+            @Value("${jwt.expiration_time.refresh_token}") long refreshTokenExprTime,
             UserDetailsService userDetailsService
     ) {
         this.SECRET_KEY = secretKey;
