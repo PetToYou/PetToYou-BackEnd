@@ -8,5 +8,9 @@ public interface OAuthInfoResponse {
 
     String getNickname();
 
+    String getPhone();
+
+    String getName();
+
     OAuthProvider getOAuthProvider();
 }

@@ -18,6 +18,8 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     static class KakaoAccount {
         private KakaoProfile profile;
         private String email;
+        private String name;
+        private String phone_number;
     }
 
     @Getter
@@ -34,6 +36,16 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     @Override
     public String getNickname() {
         return kakaoAccount.profile.getNickname();
+    }
+
+    @Override
+    public String getPhone() {
+        return kakaoAccount.getPhone_number();
+    }
+
+    @Override
+    public String getName() {
+        return kakaoAccount.getName();
     }
 
     @Override

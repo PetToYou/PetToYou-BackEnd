@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Service
+@Getter
 @Slf4j
 public class JwtUtil {
     private final String SECRET_KEY;
@@ -123,5 +125,9 @@ public class JwtUtil {
                 .parseClaimsJws(token).getBody().getExpiration();
         long now = System.currentTimeMillis();
         return expiration.getTime() - now;
+    }
+
+    public Long getExpiration(TokenType tokenType) {
+        return tokenType.equals(TokenType.ACCESS_TOKEN) ? ACCESS_TOKEN_EXPIRATION_TIME : REFRESH_TOKEN_EXPIRATION_TIME;
     }
 }

@@ -9,14 +9,6 @@ import lombok.NoArgsConstructor;
 public class MemberDto {
     public static class Request {
 
-        @Data
-        @Builder
-        @AllArgsConstructor
-        @NoArgsConstructor
-        public static class Login {
-
-        }
-
 
     }
 
@@ -29,6 +21,14 @@ public class MemberDto {
         public static class SignIn {
             private AuthTokens authTokens;
             private String nickname;
+        }
+
+        @Data
+        @Builder
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Reissue {
+            private AuthTokens authTokens;
         }
     }
 }

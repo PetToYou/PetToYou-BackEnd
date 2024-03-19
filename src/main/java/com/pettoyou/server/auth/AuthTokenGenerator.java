@@ -15,6 +15,12 @@ public class AuthTokenGenerator {
         String accessToken = jwtUtil.createToken(email, TokenType.ACCESS_TOKEN);
         String refreshToken = jwtUtil.createToken(email, TokenType.REFRESH_TOKEN);
 
-        return AuthTokens.of(accessToken, refreshToken, jwtUtil.getExpiration(accessToken));
+        return AuthTokens.of(accessToken, refreshToken, jwtUtil.getExpiration(TokenType.ACCESS_TOKEN));
+    }
+
+    public AuthTokens generate(String email, String refreshToken) {
+        String accessToken = jwtUtil.createToken(email, TokenType.ACCESS_TOKEN);
+
+        return AuthTokens.of(accessToken, refreshToken, jwtUtil.getExpiration(TokenType.ACCESS_TOKEN));
     }
 }
