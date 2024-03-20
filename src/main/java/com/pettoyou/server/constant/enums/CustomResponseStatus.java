@@ -29,6 +29,8 @@ public enum CustomResponseStatus {
     NULL_JWT(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()), "4000", "토큰이 공백입니다."),
     MEMBER_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4001", "해당 유저를 찾을 수 없습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4002", "리프레시 토큰을 찾을 수 없습니다."),
+    ROLE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4003", "해당 권하을 찾을 수 없습니다."),
+
 
     /***
      * 5000: NOT_MATCH

@@ -5,6 +5,7 @@ import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.auth.OAuthLoginParams;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoApiClient implements OAuthApiClient {
     private static final String GRANT_TYPE = "authorization_code";
 
@@ -30,6 +32,7 @@ public class KakaoApiClient implements OAuthApiClient {
     private String clientId;
 
     private final RestTemplate restTemplate;
+
     @Override
     public OAuthProvider oauthProvider() {
         return OAuthProvider.KAKAO;

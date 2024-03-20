@@ -11,10 +11,16 @@ import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.dto.MemberDto;
 import com.pettoyou.server.member.entity.Member;
+import com.pettoyou.server.member.entity.MemberRole;
+import com.pettoyou.server.member.entity.Role;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
+import com.pettoyou.server.member.entity.enums.RoleType;
 import com.pettoyou.server.member.repository.MemberRepository;
+import com.pettoyou.server.member.repository.MemberRoleRepository;
+import com.pettoyou.server.member.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -22,9 +28,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class AuthServiceImpl implements AuthService {
     private final MemberRepository memberRepository;
+    private final MemberRoleRepository memberRoleRepository;
+    private final RoleRepository roleRepository;
     private final RequestOAuthInfoService requestOAuthInfoService;
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
@@ -36,11 +45,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MemberDto.Response.SignIn signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
-
+        log.info(oAuthInfoResponse.getName());
+        log.info(oAuthInfoResponse.getEmail());
+        log.info(oAuthInfoResponse.getNickname());
+        log.info(oAuthInfoResponse.getPhone());
         Member findMember = findByEmail(oAuthInfoResponse.getEmail()).orElse(forceJoin(oAuthInfoResponse));
 
         String refreshToken = redisUtil.getData(RT + findMember.getEmail());
-        if (refreshToken.isEmpty()) {
+        if (refreshToken == null) {
             String newRefreshToken = jwtUtil.createToken(findMember.getEmail(), TokenType.REFRESH_TOKEN);
             redisUtil.setData(RT + findMember.getEmail(), newRefreshToken, jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
         }
@@ -87,6 +99,16 @@ public class AuthServiceImpl implements AuthService {
                 .provider(joinParam.getOAuthProvider())
                 .memberStatus(MemberStatus.ACTIVATE)
                 .build();
+
+        Role role = roleRepository.findByRoleType(RoleType.ROLE_MEMBER)
+                .orElseThrow(() -> new CustomException(CustomResponseStatus.ROLE_NOT_FOUND));
+
+        MemberRole memberRole = MemberRole.builder()
+                .member(joinMember)
+                .role(role)
+                .build();
+
+        memberRoleRepository.save(memberRole);
 
         return memberRepository.save(joinMember);
     }
