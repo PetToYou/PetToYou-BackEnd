@@ -23,8 +23,8 @@ values (1, 1, 'Buddy', 'Dog', 3, '2021-03-10', '2021-03-20', false, 'ACTIVATE'),
        (2, 2, 'Whiskers', 'Cat', 5, '2019-05-05', '2019-05-15', true, 'ACTIVATE');
 
 insert into role (role_id, role_type)
-values (1, 'MEMBER'),
-       (2, 'ADMIN');
+values (1, 'ROLE_MEMBER'),
+       (2, 'ROLE_ADMIN');
 
 insert into member_role (member_role_id, member_id, role_id)
 values (1, 1, 1),
