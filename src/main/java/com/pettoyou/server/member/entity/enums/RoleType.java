@@ -1,5 +1,5 @@
 package com.pettoyou.server.member.entity.enums;
 
 public enum RoleType {
-    MEMBER, ADMIN, HOSPITAL, SALON
+    ROLE_MEMBER, ROLE_ADMIN, ROLE_HOSPITAL, ROLE_SALON
 }
