@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "member")
 public class Member {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
     private String name; // 실명이 이어야함. -> 수정 가능하게
@@ -39,6 +39,9 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<MemberRole> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Pet> pets = new ArrayList<>();

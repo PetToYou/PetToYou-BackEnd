@@ -26,13 +26,9 @@ public class Review extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BaseStatus reviewStatus;
 
-
-
     private double rating;
 
     private String content;
-
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storeId")
