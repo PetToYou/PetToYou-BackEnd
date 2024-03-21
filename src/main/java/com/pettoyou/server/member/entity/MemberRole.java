@@ -21,4 +21,11 @@ public class MemberRole {
     @ManyToOne
     @JoinColumn(name = "roleId")
     private Role role;
+
+    public static MemberRole of (Member member, Role role) {
+        return MemberRole.builder()
+                .member(member)
+                .role(role)
+                .build();
+    }
 }

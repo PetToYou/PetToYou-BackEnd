@@ -1,6 +1,7 @@
 package com.pettoyou.server.member.entity;
 
 import com.pettoyou.server.alarm.entity.Alarm;
+import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
@@ -57,6 +58,17 @@ public class Member {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Scrap> scraps = new ArrayList<>();
+
+    public static Member from(OAuthInfoResponse joinParam) {
+        return Member.builder()
+                .name(joinParam.getName())
+                .nickName(joinParam.getNickname())
+                .phone(joinParam.getPhone())
+                .email(joinParam.getEmail())
+                .provider(joinParam.getOAuthProvider())
+                .memberStatus(MemberStatus.ACTIVATE)
+                .build();
+    }
 }
 
 //Member

@@ -7,13 +7,13 @@ import com.pettoyou.server.auth.RequestOAuthInfoService;
 import com.pettoyou.server.config.jwt.util.JwtUtil;
 import com.pettoyou.server.config.jwt.util.TokenType;
 import com.pettoyou.server.config.redis.util.RedisUtil;
+import com.pettoyou.server.constant.entity.AuthTokens;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.dto.MemberDto;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.MemberRole;
 import com.pettoyou.server.member.entity.Role;
-import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.RoleType;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.member.repository.MemberRoleRepository;
@@ -45,10 +45,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MemberDto.Response.SignIn signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
-        log.info(oAuthInfoResponse.getName());
-        log.info(oAuthInfoResponse.getEmail());
-        log.info(oAuthInfoResponse.getNickname());
-        log.info(oAuthInfoResponse.getPhone());
         Member findMember = findByEmail(oAuthInfoResponse.getEmail()).orElse(forceJoin(oAuthInfoResponse));
 
         String refreshToken = redisUtil.getData(RT + findMember.getEmail());
@@ -57,25 +53,24 @@ public class AuthServiceImpl implements AuthService {
             redisUtil.setData(RT + findMember.getEmail(), newRefreshToken, jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
         }
 
-        return MemberDto.Response.SignIn.builder()
-                .authTokens(authTokenGenerator.generate(findMember.getEmail(), refreshToken))
-                .nickname(findMember.getNickName())
-                .build();
+        return MemberDto.Response.SignIn.of(authTokenGenerator.generate(findMember.getEmail(), refreshToken), findMember.getNickName());
     }
 
     @Override
     public MemberDto.Response.Reissue reissue(String refreshToken) {
-        String emailInToken = jwtUtil.getEmailInToken(jwtUtil.resolveToken(refreshToken));
+        String resolveToken = jwtUtil.resolveToken(refreshToken);
+        String emailInToken = jwtUtil.getEmailInToken(resolveToken);
 
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
 
-        if (!Objects.equals(refreshToken, refreshTokenInRedis)) {
+        if (!Objects.equals(resolveToken, refreshTokenInRedis)) {
             throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_MATCH);
         }
 
-        return MemberDto.Response.Reissue.builder()
-                .authTokens(authTokenGenerator.generate(emailInToken))
-                .build();
+        AuthTokens generate = authTokenGenerator.generate(emailInToken);
+        redisUtil.setData(RT + emailInToken, generate.getRefreshToken(), jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
+
+        return MemberDto.Response.Reissue.from(generate);
     }
 
     @Override
@@ -91,22 +86,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private Member forceJoin(OAuthInfoResponse joinParam) {
-        Member joinMember = Member.builder()
-                .name(joinParam.getName())
-                .nickName(joinParam.getNickname())
-                .phone(joinParam.getPhone())
-                .email(joinParam.getEmail())
-                .provider(joinParam.getOAuthProvider())
-                .memberStatus(MemberStatus.ACTIVATE)
-                .build();
+        Member joinMember = Member.from(joinParam);
 
         Role role = roleRepository.findByRoleType(RoleType.ROLE_MEMBER)
                 .orElseThrow(() -> new CustomException(CustomResponseStatus.ROLE_NOT_FOUND));
 
-        MemberRole memberRole = MemberRole.builder()
-                .member(joinMember)
-                .role(role)
-                .build();
+        MemberRole memberRole = MemberRole.of(joinMember, role);
 
         memberRoleRepository.save(memberRole);
 
