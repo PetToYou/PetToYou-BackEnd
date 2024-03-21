@@ -22,6 +22,7 @@ public enum CustomResponseStatus {
      * 3000: ACCESS DENIED
      */
     ACCESS_DENIED(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()), "3000", "인증되지 않은 사용자입니다."),
+    LOGOUT_MEMBER(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()), "3001", "로그아웃된 사용자입니다."),
 
     /***
      * 4000: NOT_FOUND
