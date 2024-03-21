@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
         String emailInToken = jwtUtil.getEmailInToken(resolveToken);
 
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
-        if (refreshTokenInRedis.isEmpty()) throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_FOUND);
+        if (refreshTokenInRedis == null) throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_FOUND);
 
         redisUtil.deleteDate(RT+emailInToken);
         redisUtil.setData(LOGOUT, resolveToken, jwtUtil.getExpiration(resolveToken));
