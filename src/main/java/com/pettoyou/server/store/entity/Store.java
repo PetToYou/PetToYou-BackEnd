@@ -2,37 +2,67 @@ package com.pettoyou.server.store.entity;
 
 
 import com.pettoyou.server.constant.entity.BaseEntity;
-import com.pettoyou.server.reserve.entity.Reserve;
+import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter
-@Getter
 @Entity
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn // 하위 테이블의 구분 컬럼 생성
+@Table(name = "store", indexes = {
+        @Index(name = "idx_store_name", columnList = "storeName")
+})
 public abstract class Store extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "store_id")
     private Long storeId;
+
+    @Column(nullable = false)
+    private String storeName;
+
+    private String storePhone;
+
+    private String thumbnailUrl;
+
+    private String notice;
+
+
+
+    private String websiteLink;
+
+    private String storeInfo;
+
+    private String storeInfoPhoto;
+
+
+
+
+
+    @Enumerated(EnumType.STRING)
+    private BaseStatus storeStatus;
 
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "store")
+
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<BusinessHour> businessHours = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<StorePhoto> storePhotos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
-    private List<Reserve> reserves = new ArrayList<>();
+//    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+//    private List<Reserve> reserves = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
@@ -41,8 +71,8 @@ public abstract class Store extends BaseEntity {
     private RegistrationInfo registrationInfo;
 
 
-    @OneToMany(mappedBy = "store")
-    private List<TagMapper> tags = new ArrayList<>();
+
+
 
 
 }

@@ -1,23 +1,16 @@
 package com.pettoyou.server.store.entity;
 
-import com.pettoyou.server.constant.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.geo.Point;
+import lombok.*;
+import org.locationtech.jts.geom.Point;
 
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Address {
-//    ZipCode string
-//    AddressDetail string
-//    Sido string
-//    Sigungu string
-//    Eupmyun string
-//    Doro string
-//    Point point
 
     private String zipCode;
     private String addressDetail;
@@ -28,6 +21,9 @@ public class Address {
     private String eupmyun;
 
     private String doro;
+
+    @Column(nullable = true, columnDefinition = "POINT SRID 4326")
     private Point point;
+    //SRID 4326은 위도 경도 순으로  y, x
 
 }

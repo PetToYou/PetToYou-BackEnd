@@ -21,8 +21,10 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "member")
 public class Member {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long memberId;
 
     private String name; // 실명이 이어야함. -> 수정 가능하게

@@ -18,6 +18,7 @@ import lombok.*;
 public class Review extends BaseEntity {
     @Id
     @GeneratedValue
+    @Column(name = "review_id")
     private Long reviewId;
 
     @Enumerated(EnumType.STRING)
@@ -35,15 +36,15 @@ public class Review extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId")
+    @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne
-    @JoinColumn(name = "memberId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "petId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_id")
     private Pet pet;
 
 
