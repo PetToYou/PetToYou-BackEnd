@@ -35,6 +35,7 @@ public class HospitalController {
 
         List<HospitalDto.Test> hospitalList = hospitalService.getHospitalsContain(location);
 
+
         return hospitalList;
 
 

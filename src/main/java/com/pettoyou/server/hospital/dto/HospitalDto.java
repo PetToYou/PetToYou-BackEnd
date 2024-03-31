@@ -1,7 +1,12 @@
 package com.pettoyou.server.hospital.dto;
 
+import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.store.entity.BusinessHour;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.Optional;
 
 
 public class HospitalDto {
@@ -16,7 +21,7 @@ public class HospitalDto {
         private double longitude; // 경도 x
 
         @Builder.Default
-        private Integer radius = 5;
+        private Integer radius = 5000;
 
         public String toPointString(){
             return  String.format("POINT (%f %f)", this.latitude, this.longitude);
@@ -64,8 +69,18 @@ public class HospitalDto {
 
         @NotNull
         private String hospitalName;
+
         private String thumbnailUrl;
-//        private double distance;
+        private String distance;
+        private String businessHourStatus;
+
+        @Nullable
+        private String openHour;
+        @Nullable
+        private String closeHour;
+
+        @Nullable
+        private String breakTime;
     }
 
 }
