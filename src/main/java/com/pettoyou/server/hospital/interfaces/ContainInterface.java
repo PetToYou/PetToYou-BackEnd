@@ -13,4 +13,7 @@ public interface ContainInterface {
     Double getDistance() ;
     BusinessHour getBusinessHours();
 
+    Long getReviewCount();
+
+    Double getRateAvg();
 }

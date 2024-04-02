@@ -6,6 +6,8 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -70,17 +72,27 @@ public class HospitalDto {
         @NotNull
         private String hospitalName;
 
-        private String thumbnailUrl;
-        private String distance;
-        private String businessHourStatus;
+        @Builder.Default
+        private String thumbnailUrl="PetToYou-Logo.png";
 
-        @Nullable
-        private String openHour;
-        @Nullable
-        private String closeHour;
+        private String distance;
+
+        @Builder.Default
+        private String businessHourStatus="몰라";
+
+        @Builder.Default
+        private String openHour= LocalDateTime.now().toString();
+        @Builder.Default
+        private String closeHour = LocalDateTime.now().toString();
 
         @Nullable
         private String breakTime;
+
+
+        private Long reviewCount;
+
+        @Builder.Default
+        private Double rateAvg =0.0;
     }
 
 }

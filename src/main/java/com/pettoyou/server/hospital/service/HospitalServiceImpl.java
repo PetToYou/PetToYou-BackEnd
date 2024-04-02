@@ -70,6 +70,8 @@ public class HospitalServiceImpl implements HospitalService {
                                 .breakTime(Optional.ofNullable(h.getBusinessHours()).map(bh->bh.getBreakEndTime())
                                         .map(Object::toString)
                                         .orElse("No Break Time"))
+                                .reviewCount(h.getReviewCount())
+                                .rateAvg(h.getRateAvg())
                                 .build())
                 .collect(Collectors.toList());
 //        List<HospitalDto.Test> result = hospitals.stream().map(h -> new HospitalDto.Test(h.getStoreId(), h.getHospitalName(), h.getThumbnailUrl(), h.getDistance(),h.getBusinessHour())).collect(Collectors.toList());

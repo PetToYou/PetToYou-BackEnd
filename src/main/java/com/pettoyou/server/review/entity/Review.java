@@ -28,8 +28,8 @@ public class Review extends BaseEntity {
     private BaseStatus reviewStatus;
 
 
-
-    private double rating;
+    @Builder.Default
+    private Double rating = 0.0;
 
     private String content;
 
