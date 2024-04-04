@@ -2,8 +2,6 @@ package com.pettoyou.server.config.security.service;
 
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.MemberRole;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class PrincipalDetails implements UserDetails {
-    private Member member;
+    private final Member member;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();

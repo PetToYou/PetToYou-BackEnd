@@ -42,6 +42,7 @@ public class AuthServiceImpl implements AuthService {
     private static final String RT = "RT:";
     private static final String LOGOUT = "LOGOUT:";
 
+    @Transactional
     @Override
     public MemberDto.Response.SignIn signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
@@ -75,7 +76,6 @@ public class AuthServiceImpl implements AuthService {
     public void logout(String accessToken) {
         String resolveToken = jwtUtil.resolveToken(accessToken);
         String emailInToken = jwtUtil.getEmailInToken(resolveToken);
-
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
         if (refreshTokenInRedis == null) throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_FOUND);
 
