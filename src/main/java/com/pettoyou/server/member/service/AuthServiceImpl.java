@@ -46,13 +46,11 @@ public class AuthServiceImpl implements AuthService {
     public MemberDto.Response.SignIn signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
         Member findMember = findByEmail(oAuthInfoResponse.getEmail()).orElse(forceJoin(oAuthInfoResponse));
-
         String refreshToken = redisUtil.getData(RT + findMember.getEmail());
         if (refreshToken == null) {
-            String newRefreshToken = jwtUtil.createToken(findMember.getEmail(), TokenType.REFRESH_TOKEN);
-            redisUtil.setData(RT + findMember.getEmail(), newRefreshToken, jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
+            refreshToken = jwtUtil.createToken(findMember.getEmail(), TokenType.REFRESH_TOKEN);
+            redisUtil.setData(RT + findMember.getEmail(), refreshToken, jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
         }
-
         return MemberDto.Response.SignIn.of(authTokenGenerator.generate(findMember.getEmail(), refreshToken), findMember.getNickName());
     }
 

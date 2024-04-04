@@ -6,6 +6,7 @@ import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,40 +24,45 @@ import java.util.Arrays;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final String EXCEPTION = "exception";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtUtil.resolveToken(request.getHeader("Authorization"));
 
-        if (!token.isEmpty()) {
-            try {
-                jwtUtil.parseToken(token);
-                if (!request.getRequestURI().equals("/api/v1/reissue")) {
-                    /***
-                     * 로그아웃 기능 만들때 참고할 코드
-                     */
-//                    String isLogout = redisUtil.getData(token);
-//                    // getData 해서 값이 가져와지면 AT가 블랙리스트에 등록된 상태이므로 로그아웃된 상태임.
-//                    if (isLogout == null) {
-//                        Authentication authentication = jwtUtil.getAuthentication(token);
-//                        SecurityContextHolder.getContext().setAuthentication(authentication);
-//                    }
-                    Authentication authentication = jwtUtil.getAuthentication(token);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            } catch (ExpiredJwtException e) {
-                log.error("Enter [EXPIRED TOKEN]");
-                request.setAttribute("exception", CustomResponseStatus.EXPIRED_JWT.getMessage());
-            } catch (JwtException | UnsupportedJwtException |
-                     MalformedJwtException | IllegalArgumentException e) {
-                log.error("Enter [INVALID TOKEN]");
-                request.setAttribute("exception", CustomResponseStatus.BAD_JWT.getMessage());
-            }
-        } else {
+        if (token.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        try {
+            if (request.getRequestURI().equals("/api/v1/auth/reissue")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String isLogout = redisUtil.getData("LOGOUT:"+token);
+            // getData 해서 값이 가져와지면 AT가 블랙리스트에 등록된 상태이므로 로그아웃된 상태임.
+            if (isLogout != null) {
+                request.setAttribute(EXCEPTION, CustomResponseStatus.LOGOUT_MEMBER.getMessage());
+                return;
+            }
+
+            /***
+             * 권한 확인 로직에서 현재 Lazy 전략의 에러가 발생함. 이를 오늘 고치도록!
+             */
+            Authentication authentication = jwtUtil.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (ExpiredJwtException e) {
+            log.error("Enter [EXPIRED TOKEN]");
+            request.setAttribute(EXCEPTION, CustomResponseStatus.EXPIRED_JWT.getMessage());
+        } catch (JwtException | IllegalArgumentException | SignatureException
+                 | UnsupportedJwtException | MalformedJwtException e) {
+            log.error("Enter [INVALID TOKEN]");
+            request.setAttribute(EXCEPTION, CustomResponseStatus.BAD_JWT.getMessage());
+        }
+
         filterChain.doFilter(request, response);
     }
 
