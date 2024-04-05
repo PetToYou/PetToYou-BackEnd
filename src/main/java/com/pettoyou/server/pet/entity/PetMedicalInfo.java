@@ -16,6 +16,10 @@ public class PetMedicalInfo {
     private String neuteringStatus;
 
     private String basicVaccinationStatus;
+
+    private String allergy;
+
+    private String caution;
 }
 
 //Weight float
