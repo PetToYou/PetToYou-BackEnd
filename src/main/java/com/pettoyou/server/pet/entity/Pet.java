@@ -33,17 +33,11 @@ public class Pet extends BaseEntity {
 
     private LocalDate adoptionDate;
 
-    private boolean isSharing;
-
     @Enumerated(EnumType.STRING)
     private BaseStatus petStatus;
 
     @Embedded
     private PetMedicalInfo petMedicalInfo;
-
-    @Embedded
-    private PetSharingInfo petSharingInfo;
-
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
     private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
