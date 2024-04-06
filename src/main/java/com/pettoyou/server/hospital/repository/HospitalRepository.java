@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
 
+    Object[] findHospitalByStoreId(@Param("storeId") String storeId);
 
+
+    
 
 
 @Query("""

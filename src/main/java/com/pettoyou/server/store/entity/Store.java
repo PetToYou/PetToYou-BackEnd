@@ -5,6 +5,9 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ public abstract class Store extends BaseEntity {
     @Column(name = "store_id")
     private Long storeId;
 
+    @NotNull
+    @Size(min = 2)
     @Column(nullable = false)
     private String storeName;
 

@@ -38,6 +38,7 @@ public class HospitalServiceImpl implements HospitalService {
         HospitalDto hospital = HospitalDto.builder().hospitalId(hosp.getStoreId()).hospitalName(hosp.getStoreName()).storePhone(hosp.getStorePhone()).additionalServiceTag(hosp.getAdditionalServiceTag()).address(hosp.getAddress()).websiteLink(hosp.getWebsiteLink()).notice(hosp.getNotice()
         ).storeInfo(hosp.getStoreInfo()).storeInfoPhoto(hosp.getStoreInfoPhoto()).storeStatus(hosp.getStoreStatus()).address(hosp.getAddress()).build();
 
+        //null check
 
         return hospital;
 
