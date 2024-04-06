@@ -23,12 +23,16 @@ public class Pet extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petId;
 
+    @Column(nullable = false)
     private String petName;
 
+    @Column(nullable = false)
     private String species;
 
+    @Column(nullable = false)
     private Integer age;
 
+    @Column(nullable = false)
     private LocalDate birth;
 
     private LocalDate adoptionDate;
