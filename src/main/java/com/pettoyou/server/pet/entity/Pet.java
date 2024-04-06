@@ -21,6 +21,7 @@ import java.util.List;
 public class Pet extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pet_id")
     private Long petId;
 
     @Column(nullable = false)
@@ -53,7 +54,7 @@ public class Pet extends BaseEntity {
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 }
 

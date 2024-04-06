@@ -1,21 +1,21 @@
 package com.pettoyou.server.store.entity;
 
+import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "registration_info")
-public class RegistrationInfo  {
+public class RegistrationInfo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "registration_info_id")
     private Long registrationInfoId;
 
     @OneToOne(fetch=FetchType.LAZY)

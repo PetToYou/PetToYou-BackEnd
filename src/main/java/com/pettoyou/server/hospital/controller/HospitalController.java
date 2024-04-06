@@ -1,7 +1,44 @@
 package com.pettoyou.server.hospital.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.pettoyou.server.hospital.dto.HospitalListDto;
+import com.pettoyou.server.hospital.service.HospitalService;
+import com.pettoyou.server.hospital.dto.HospitalDto;
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/hospital")
 public class HospitalController {
+
+    private final HospitalService hospitalService;
+
+    public HospitalController(HospitalService hospitalService){
+        this.hospitalService =  hospitalService;
+    }
+
+
+
+    @GetMapping("/contain")
+    public List<HospitalListDto.Response> getHospitalList(@RequestBody HospitalListDto.Request location){
+
+        List<HospitalListDto.Response> hospitalList = hospitalService.getHospitalsContain(location);
+
+
+        return hospitalList;
+
+
+
+    }
+    @GetMapping("/{hospitalId}")
+    public HospitalDto getHospital(@PathVariable Long hospitalId){
+
+        HospitalDto hospital = hospitalService.getHospitalById(hospitalId);
+        return hospital;
+    }
+
+
+
+
 }

@@ -14,9 +14,11 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "scrap")
 public class Scrap extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ScrapId;
+    @Column(name = "scrap_id")
+    private Long scrapId;
 
 
     @Enumerated(EnumType.STRING)
@@ -24,11 +26,11 @@ public class Scrap extends BaseEntity {
 
 
     @ManyToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "storeId")
+    @JoinColumn(name = "store_id")
     private Store store;
 
 }

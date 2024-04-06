@@ -18,6 +18,6 @@ public class PetProfilePhoto {
     private String petProfilePhotoUrl;
 
     @ManyToOne
-    @JoinColumn(name = "petId")
+    @JoinColumn(name = "pet_id")
     private Pet pet;
 }
