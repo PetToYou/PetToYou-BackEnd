@@ -5645,9 +5645,17 @@ values (1, 1, 'Appointment Reminder', 'Your appointment is scheduled for tomorro
        (2, 2, 'Welcome to PetCare', 'Thank you for joining PetCare.', 'NEW_MEMBER', 'ACTIVATE');
 
 -- Inserting data into pet (Assuming Member data exists)
-insert into pet (pet_id, member_id, pet_name, species, age, birth, adoption_date, sharing_st, pet_status)
+insert into pet (pet_id, member_id, pet_name, species, age, birth, adoption_date, is_sharing, pet_status)
 values (1, 1, 'Buddy', 'Dog', 3, '2021-03-10', '2021-03-20', false, 'ACTIVATE'),
        (2, 2, 'Whiskers', 'Cat', 5, '2019-05-05', '2019-05-15', true, 'ACTIVATE');
+
+insert into role (role_id, role_type)
+values (1, 'ROLE_MEMBER'),
+       (2, 'ROLE_ADMIN');
+
+insert into member_role (member_role_id, member_id, role_id)
+values (1, 1, 1),
+       (2, 2, 2);
 
 
 
@@ -5664,6 +5672,15 @@ values (1, 1, 'Buddy', 'Dog', 3, '2021-03-10', '2021-03-20', false, 'ACTIVATE'),
 --         ST_PointFromText("POINT (37.54814807058306 127.0471094733872)", 4326)),
 --
 
+-- Inserting data into hospital_tag
+insert into hospital_tag (hospital_tag_id, tag_content, tag_type)
+values (1, '24/7 Emergency', 'SERVICE'),
+       (2, 'Orthopedics Specialist', 'SPECIALITIES');
+
+-- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
+insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id)
+values (1, 1, 1),
+       (2, 2, 1);
 
 -- Inserting data into store_photo (Assuming Store data exists)
 insert into store_photo (store_photo_id, store_id, store_photo_url, photo_order, photo_status, store_type)
@@ -5708,11 +5725,3 @@ insert into review (review_id, store_id, member_id, pet_id, store_type, rating, 
 values (1, 1, 1, 1, 'HOSPITAL', 4.5, 'Great service and friendly staff.', 'ACTIVATE');
 
 -- For salon and insurance, you would follow a similar pattern, ensuring Store data exists where necessary
--- insert into hospital_tag (hospital_tag_id, tag_content, tag_type) values
---                                                                       (1, '24/7 Emergency', 'SERVICE'),
---                                                                       (2, 'Orthopedics Specialist', 'SPECIALITIES');
---
--- -- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
--- insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id) values
---                                                                          (1, 1, 1),
---                                                                          (2, 2, 1);

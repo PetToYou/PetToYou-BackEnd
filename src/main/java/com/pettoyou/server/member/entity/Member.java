@@ -1,6 +1,7 @@
 package com.pettoyou.server.member.entity;
 
 import com.pettoyou.server.alarm.entity.Alarm;
+import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
@@ -42,20 +43,34 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
+    private List<MemberRole> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
     private List<Pet> pets = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<Reserve> reserves = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<Alarm> alarms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<Scrap> scraps = new ArrayList<>();
+
+    public static Member from(OAuthInfoResponse joinParam) {
+        return Member.builder()
+                .name(joinParam.getName())
+                .nickName(joinParam.getNickname())
+                .phone(joinParam.getPhone())
+                .email(joinParam.getEmail())
+                .provider(joinParam.getOAuthProvider())
+                .memberStatus(MemberStatus.ACTIVATE)
+                .build();
+    }
 }
 
 //Member
