@@ -21,6 +21,7 @@ import java.util.List;
 public class Pet extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pet_id")
     private Long petId;
 
     private String petName;
@@ -33,7 +34,7 @@ public class Pet extends BaseEntity {
 
     private LocalDate adoptionDate;
 
-    private boolean isSharing;
+    private boolean sharingSt;
 
     @Enumerated(EnumType.STRING)
     private BaseStatus petStatus;
@@ -55,7 +56,7 @@ public class Pet extends BaseEntity {
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 }
 

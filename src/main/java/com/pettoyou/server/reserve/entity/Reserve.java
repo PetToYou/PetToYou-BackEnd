@@ -1,7 +1,6 @@
 package com.pettoyou.server.reserve.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
-import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.reserve.entity.enums.ReserveStatus;
@@ -9,7 +8,6 @@ import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +19,7 @@ import java.time.LocalDateTime;
 public class Reserve extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reserve_id")
     private Long reserveId;
 
 
@@ -33,15 +32,15 @@ public class Reserve extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId")
+    @JoinColumn(name = "store_id")
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "petId")
+    @JoinColumn(name = "pet_id")
     private Pet pet;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
 

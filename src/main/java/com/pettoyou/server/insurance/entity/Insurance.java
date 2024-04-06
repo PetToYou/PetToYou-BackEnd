@@ -13,7 +13,7 @@ import lombok.*;
 public class Insurance extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long insuraceId;
+    private Long insuranceId;
 
     private String insuranceName;
     private String insuranceCompany;
