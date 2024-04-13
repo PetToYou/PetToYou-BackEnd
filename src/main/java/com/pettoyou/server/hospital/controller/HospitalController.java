@@ -1,6 +1,7 @@
 package com.pettoyou.server.hospital.controller;
 
 import com.pettoyou.server.hospital.dto.HospitalListDto;
+import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.service.HospitalService;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 

@@ -3,6 +3,7 @@ package com.pettoyou.server.hospital.service;
 
 import com.pettoyou.server.hospital.dto.HospitalListDto;
 import com.pettoyou.server.hospital.dto.HospitalDto;
+import com.pettoyou.server.hospital.entity.Hospital;
 
 import java.util.List;
 

@@ -56,8 +56,8 @@ public class HospitalListDto {
         @Nullable
         private String breakTime;
 
-
-        private Long reviewCount;
+        @Builder.Default
+        private Long reviewCount = 0L;
 
         @Builder.Default
         private Double rateAvg =0.0;

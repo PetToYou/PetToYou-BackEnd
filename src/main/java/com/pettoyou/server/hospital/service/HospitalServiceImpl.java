@@ -5,6 +5,8 @@ import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.interfaces.ContainInterface;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
+import com.pettoyou.server.store.dto.BusinessHourDto;
+import com.pettoyou.server.store.dto.StorePhotoDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -31,17 +33,39 @@ public class HospitalServiceImpl implements HospitalService {
     public HospitalDto getHospitalById(Long hospitalId) {
 
 
-        Hospital hosp = hospitalRepository.findById(hospitalId).orElseThrow(
+        Hospital hospital = hospitalRepository.findDistinctHospitalFetchJoinByStoreId(hospitalId).orElseThrow(
                 () -> new EntityNotFoundException("No Hospital Found"));
+        //Repository에서 Optional로 반환 -> orElsThrow로 exception 처리 가능. 값을 꺼냈으므로 Optional이 아닌 hospital 객체에 담아준다.
+
+        HospitalDto hospitalDto = toHospitalDto(hospital);
 
 
-        HospitalDto hospital = HospitalDto.builder().hospitalId(hosp.getStoreId()).hospitalName(hosp.getStoreName()).storePhone(hosp.getStorePhone()).additionalServiceTag(hosp.getAdditionalServiceTag()).address(hosp.getAddress()).websiteLink(hosp.getWebsiteLink()).notice(hosp.getNotice()
-        ).storeInfo(hosp.getStoreInfo()).storeInfoPhoto(hosp.getStoreInfoPhoto()).storeStatus(hosp.getStoreStatus()).address(hosp.getAddress()).build();
 
-        //null check
+        return hospitalDto;
 
-        return hospital;
 
+    }
+
+    private HospitalDto toHospitalDto(Hospital hospital) {
+
+        return HospitalDto.builder()
+                .hospitalId(hospital.getStoreId())
+                .hospitalName(hospital.getStoreName())
+                .storePhone(hospital.getStorePhone())
+                .notice(hospital.getNotice())
+                .websiteLink(hospital.getWebsiteLink())
+                .additionalServiceTag(hospital.getAdditionalServiceTag())
+                .storeInfo(hospital.getStoreInfo())
+                .storeInfoPhoto(hospital.getStoreInfoPhoto())
+                .address(hospital.getAddress())
+                .businessHours(hospital.getBusinessHours().stream()
+                        .map(BusinessHourDto::toDto)
+                        .collect(Collectors.toList()))
+                .storePhotos(hospital.getStorePhotos().stream()
+                        .map(StorePhotoDto::toDto)
+                        .collect(Collectors.toList()))
+                .registrationInfo(hospital.getRegistrationInfo())
+                .build();
 
     }
 

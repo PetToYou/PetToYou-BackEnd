@@ -1,17 +1,15 @@
 package com.pettoyou.server.hospital.dto;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
-import com.pettoyou.server.review.entity.Review;
+import com.pettoyou.server.store.dto.BusinessHourDto;
+import com.pettoyou.server.store.dto.StorePhotoDto;
 import com.pettoyou.server.store.entity.Address;
-import com.pettoyou.server.store.entity.BusinessHour;
 import com.pettoyou.server.store.entity.RegistrationInfo;
-import com.pettoyou.server.store.entity.StorePhoto;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +19,11 @@ import java.util.List;
 @AllArgsConstructor
 public class HospitalDto {
 
+    @NotNull
     private Long hospitalId;
 
+
+    @NotNull
     private String hospitalName;
 
     private String storePhone;
@@ -36,12 +37,17 @@ public class HospitalDto {
     private Address address;
 
 //
-//    private List<BusinessHour> businessHours = new ArrayList<>();
-//    private List<StorePhoto> storePhotos = new ArrayList<>();
+    @Builder.Default
+   private List<BusinessHourDto> businessHours = new ArrayList<>();
+
+    @Builder.Default
+   private List<StorePhotoDto> storePhotos = new ArrayList<>();
 //    //페이징
+
+
 //    private List<Review> reviews = new ArrayList<>();
 //    //페이징
-//    private RegistrationInfo registrationInfo;
+    private RegistrationInfo registrationInfo;
 
 
 }

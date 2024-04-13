@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE store SET store_status = 'DEACTIVATE' WHERE store_id=?")
+@SQLRestriction("store_status = 'ACTIVATE'")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn // 하위 테이블의 구분 컬럼 생성
 @Table(name = "store", indexes = {
@@ -72,8 +76,9 @@ public abstract class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToOne(mappedBy = "store")
+    @OneToOne(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private RegistrationInfo registrationInfo;
+
 
 
 
