@@ -36,6 +36,9 @@ public class Pet extends BaseEntity {
     @Column(nullable = false)
     private LocalDate birth;
 
+    @Enumerated(EnumType.STRING)
+    private PetType petType;
+
     private LocalDate adoptionDate;
 
     @Enumerated(EnumType.STRING)
