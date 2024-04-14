@@ -1,5 +1,6 @@
 package com.pettoyou.server.pet.entity;
 
+import com.pettoyou.server.pet.entity.enums.Bmi;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
@@ -10,6 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 public class PetMedicalInfo {
     private double weight;
+
+    private Bmi bmi;
 
     private Long registerNumber;
 
