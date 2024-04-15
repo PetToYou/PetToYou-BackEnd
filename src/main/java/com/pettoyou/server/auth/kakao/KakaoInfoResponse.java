@@ -9,6 +9,8 @@ import lombok.Getter;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoInfoResponse implements OAuthInfoResponse {
+    @JsonProperty("id")
+    private String id;
 
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
