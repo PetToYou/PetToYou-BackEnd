@@ -40,7 +40,8 @@ public enum CustomResponseStatus {
     /***
      * 6000: Internal_Server_Error
      */
-    INTERNAL_SERVER_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6000", "내부 서버 오류입니다.");
+    INTERNAL_SERVER_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6000", "내부 서버 오류입니다."),
+    S3_UPLOAD_FAIL(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6001", "S3에 파일을 업로드하지 못했습니다.");
 
 
     private final HttpStatusCode httpStatusCode;

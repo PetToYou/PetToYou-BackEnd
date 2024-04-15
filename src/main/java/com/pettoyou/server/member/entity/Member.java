@@ -35,10 +35,13 @@ public class Member {
 
     private String phone; // 따로 받아야됨
 
+    @Column(unique = true)
     private String email; // 따로 받아야됨
 
     @Enumerated(EnumType.STRING)
     private OAuthProvider provider;
+
+    private String providerId;
 
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
@@ -64,10 +67,11 @@ public class Member {
     public static Member from(OAuthInfoResponse joinParam) {
         return Member.builder()
                 .name(joinParam.getName())
-                .nickName(joinParam.getNickname())
+                .nickName(joinParam.getNickname() == null ? joinParam.getName() : joinParam.getNickname())
                 .phone(joinParam.getPhone())
                 .email(joinParam.getEmail())
                 .provider(joinParam.getOAuthProvider())
+                .providerId(joinParam.getId())
                 .memberStatus(MemberStatus.ACTIVATE)
                 .build();
     }
