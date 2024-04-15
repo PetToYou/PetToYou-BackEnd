@@ -2,6 +2,7 @@ package com.pettoyou.server.constant.exception;
 
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class CustomExceptionHandler {
     /***
      * @Valid 애너테이션의 유효성 검사를 통과하지 못한 경우 해당 컨트롤러에서 처리
@@ -32,10 +34,12 @@ public class CustomExceptionHandler {
     @ExceptionHandler({CustomException.class, Exception.class})
     public ResponseEntity<ApiResponse<String>> handleException(Exception e) {
         if (!(e instanceof CustomException custom)) {
+            log.error("[ERROR] : {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.createError(CustomResponseStatus.INTERNAL_SERVER_ERROR));
         }
 
+        log.error("[ERROR] : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.createError(custom.getCustomResponseStatus()));
     }
