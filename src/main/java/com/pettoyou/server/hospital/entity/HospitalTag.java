@@ -1,6 +1,6 @@
 package com.pettoyou.server.hospital.entity;
 
-import com.pettoyou.server.store.entity.TagMapper;
+//import com.pettoyou.server.store.entity.TagMapper;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,8 +22,8 @@ public class HospitalTag {
 
     private String tagContent; // Service, BusinessHour, Specialities
 
-    @OneToMany(mappedBy = "hospitalTag")
-    private List<TagMapper> hospitalList = new ArrayList<>();
+//    @OneToMany(mappedBy = "hospitalTag")
+//    private List<TagMapper> hospitalList = new ArrayList<>();
 
 
 }

@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 이 필터에 토큰 없어도 되는 애들 넣으면 될거같은데
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/v1/sign-in"};
+        String[] excludePath = {"/api/v1/auth/kakao"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }
