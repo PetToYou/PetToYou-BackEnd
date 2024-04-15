@@ -67,7 +67,7 @@ public class Member {
     public static Member from(OAuthInfoResponse joinParam) {
         return Member.builder()
                 .name(joinParam.getName())
-                .nickName(joinParam.getNickname())
+                .nickName(joinParam.getNickname() == null ? joinParam.getName() : joinParam.getNickname())
                 .phone(joinParam.getPhone())
                 .email(joinParam.getEmail())
                 .provider(joinParam.getOAuthProvider())
