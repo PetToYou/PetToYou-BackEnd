@@ -20,4 +20,11 @@ public class PetProfilePhoto {
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
+    public static PetProfilePhoto toPetProfilePhoto(String photoUrl, Pet pet) {
+        return builder()
+                .petProfilePhotoUrl(photoUrl)
+                .pet(pet)
+                .build();
+    }
 }
