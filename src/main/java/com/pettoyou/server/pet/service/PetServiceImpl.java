@@ -6,11 +6,11 @@ import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.pet.dto.PetDto;
 import com.pettoyou.server.pet.entity.Pet;
-import com.pettoyou.server.pet.entity.PetMedicalInfo;
 import com.pettoyou.server.pet.entity.PetProfilePhoto;
 import com.pettoyou.server.pet.repository.PetPhotoRepository;
 import com.pettoyou.server.pet.repository.PetRepository;
 import com.pettoyou.server.util.S3Util;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
     private final S3Util s3Util;
@@ -26,10 +27,8 @@ public class PetServiceImpl implements PetService {
     private final MemberRepository memberRepository;
 
     @Override
-    public PetDto.Response.Register petRegister(List<MultipartFile> petProfileImgs, PetDto.Request.Register petRegisterDto, String loginUsername) {
-        Member member = memberRepository.findByName(loginUsername).orElseThrow(() -> {
-            throw new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND);
-        });
+    public PetDto.Response.Register petRegister(List<MultipartFile> petProfileImgs, PetDto.Request.Register petRegisterDto, Long loginMemberId) {
+        Member member = memberRepository.findByMemberId(loginMemberId).orElseThrow(() -> new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND));
 
         Pet registerPet = Pet.toEntity(petRegisterDto, member);
 

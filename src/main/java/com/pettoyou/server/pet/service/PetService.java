@@ -9,5 +9,5 @@ public interface PetService {
     PetDto.Response.Register petRegister (
             List<MultipartFile> petProfileImgs,
             PetDto.Request.Register petRegisterDto,
-            String loginUsername);
+            Long loginMemberId);
 }
