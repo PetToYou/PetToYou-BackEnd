@@ -6,6 +6,7 @@ import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class PrincipalDetailsServiceImpl implements UserDetailsService {
     private final MemberRepository memberRepository;
