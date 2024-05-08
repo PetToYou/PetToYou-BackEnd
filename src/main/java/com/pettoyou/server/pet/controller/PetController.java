@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -33,4 +30,21 @@ public class PetController {
         PetDto.Response.Register register = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess(register, CustomResponseStatus.SUCCESS));
     }
+
+    /**
+     * TODO : 펫 수정 API 개발
+     */
+    @PutMapping("/pet/{id}")
+    public ResponseEntity<ApiResponse<String>> petModify(
+            @PathVariable Long id,
+            @RequestPart(value = "petProfileImg") List<MultipartFile> petProfileImg,
+            @RequestPart(required = false, value = "petModifyDto") PetDto.Request.Register petRegisterDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        petService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(null, CustomResponseStatus.SUCCESS));
+    }
+    /** TODO : 펫 삭제 API 개발 */
+
+    /** TODO : 펫 조회 API 개발 */
 }

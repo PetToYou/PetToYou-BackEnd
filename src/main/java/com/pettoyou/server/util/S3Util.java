@@ -3,6 +3,7 @@ package com.pettoyou.server.util;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
+import com.pettoyou.server.photo.entity.PhotoData;
 import io.awspring.cloud.s3.ObjectMetadata;
 import io.awspring.cloud.s3.S3Resource;
 import io.awspring.cloud.s3.S3Template;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class  S3Util{
+public class S3Util {
     private final S3Template s3Template;
     @Value("${aws.s3.bucket}")
     private String bucket;
@@ -45,6 +46,7 @@ public class  S3Util{
         }
     }
 
-        return imageUrls;
+    public void deleteFile(String bucket, String key) {
+        s3Template.deleteObject(bucket, key);
     }
 }

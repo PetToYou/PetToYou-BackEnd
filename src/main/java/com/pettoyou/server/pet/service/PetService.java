@@ -10,4 +10,11 @@ public interface PetService {
             List<MultipartFile> petProfileImgs,
             PetDto.Request.Register petRegisterDto,
             Long loginMemberId);
+
+    void petModify(
+            Long petId,
+            List<MultipartFile> petProfileImgs,
+            PetDto.Request.Register petRegisterDto,
+            Long loginMemberId
+    );
 }

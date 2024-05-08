@@ -72,6 +72,15 @@ public class Pet extends BaseEntity {
                 .petStatus(BaseStatus.ACTIVATE)
                 .build();
     }
+
+    public void modify(PetDto.Request.Register modifyDto) {
+        this.petName = modifyDto.getName();
+        this.species = modifyDto.getSpecies();
+        this.birth = modifyDto.getBirth();
+        this.petType = modifyDto.getPetType().equals("DOG") ? PetType.DOG : PetType.CAT;
+        this.adoptionDate = modifyDto.getAdoptionDate();
+        this.petMedicalInfo = PetMedicalInfo.toPetMedicalInfo(modifyDto.getPetMedicalInfo());
+    }
 }
 
 //Pet

@@ -9,6 +9,7 @@ import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.PetProfilePhoto;
 import com.pettoyou.server.pet.repository.PetPhotoRepository;
 import com.pettoyou.server.pet.repository.PetRepository;
+import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.util.S3Util;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,24 @@ public class PetServiceImpl implements PetService {
         }
 
         return PetDto.Response.Register.toDto(registerPet.getPetName());
+    }
+
+    @Override
+    public void petModify(Long petId, List<MultipartFile> petProfileImgs, PetDto.Request.Register petRegisterDto, Long loginMemberId) {
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
+        pet.modify(petRegisterDto);
+
+        for (PetProfilePhoto petProfilePhoto : pet.getPetProfilePhotos()) {
+            s3Util.deleteFile(petProfilePhoto.getPhotoData().getBucket(), petProfilePhoto.getPhotoData().getObject());
+            petPhotoRepository.delete(petProfilePhoto);
+        }
+
+        if (!petProfileImgs.isEmpty()) {
+            for (MultipartFile petProfileImg : petProfileImgs) {
+                PhotoData photoData = s3Util.uploadFile(petProfileImg);
+                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(photoData, pet);
+                petPhotoRepository.save(petProfilePhoto);
+            }
+        }
     }
 }
