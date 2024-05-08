@@ -1,6 +1,7 @@
 package com.pettoyou.server.pet.entity;
 
 
+import com.pettoyou.server.photo.entity.PhotoData;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,15 +16,16 @@ public class PetProfilePhoto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petProfilePhotoId;
 
-    private String petProfilePhotoUrl;
-
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    public static PetProfilePhoto toPetProfilePhoto(String photoUrl, Pet pet) {
+    @Embedded
+    private PhotoData photoData;
+
+    public static PetProfilePhoto toPetProfilePhoto(PhotoData photoData, Pet pet) {
         return builder()
-                .petProfilePhotoUrl(photoUrl)
+                .photoData(photoData)
                 .pet(pet)
                 .build();
     }
