@@ -35,10 +35,11 @@ public class PetServiceImpl implements PetService {
         petRepository.save(registerPet);
 
         if (!petProfileImgs.isEmpty()) {
-            List<String> photoUrls = s3Util.uploadFile(petProfileImgs);
-            photoUrls.forEach(photoUrl ->
-                    petPhotoRepository.save(PetProfilePhoto.toPetProfilePhoto(photoUrl, registerPet))
-            );
+            for (MultipartFile petProfileImg : petProfileImgs) {
+                PhotoData photoData = s3Util.uploadFile(petProfileImg);
+                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(photoData, registerPet);
+                petPhotoRepository.save(petProfilePhoto);
+            }
         }
 
         return PetDto.Response.Register.toDto(registerPet.getPetName());

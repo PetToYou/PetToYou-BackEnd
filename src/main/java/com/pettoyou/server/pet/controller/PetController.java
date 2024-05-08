@@ -23,15 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetController {
     private final PetService petService;
+
     @PostMapping("/pet")
     public ResponseEntity<ApiResponse<PetDto.Response.Register>> petRegister(
             @RequestPart(value = "petProfileImg") List<MultipartFile> petProfileImg,
             @RequestPart(required = false, value = "petRegisterDto") PetDto.Request.Register petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("petImg : {}", petProfileImg);
-        log.info("petRegisterDto : {}", petRegisterDto);
-        Long memberId = principalDetails.getUserId();
-        PetDto.Response.Register register = petService.petRegister(petProfileImg, petRegisterDto, memberId);
+
+        PetDto.Response.Register register = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess(register, CustomResponseStatus.SUCCESS));
     }
 }

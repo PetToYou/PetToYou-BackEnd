@@ -26,25 +26,24 @@ public class  S3Util{
     @Value("${aws.s3.bucket}")
     private String bucket;
 
-    public List<String> uploadFile(List<MultipartFile> multipartFile) {
-        List<String> imageUrls = new ArrayList<>();
+    public PhotoData uploadFile(MultipartFile file) {
+        String fileName =
+                UUID.randomUUID() + "." + file.getOriginalFilename();
+        ObjectMetadata metadata = new ObjectMetadata.Builder()
+                .contentLength(file.getSize())
+                .contentType(file.getContentType())
+                .build();
 
-        multipartFile.forEach(file -> {
-            String fileName =
-                    UUID.randomUUID() + "." +file.getOriginalFilename();
-            ObjectMetadata metadata = new ObjectMetadata.Builder()
-                    .contentLength(file.getSize())
-                    .contentType(file.getContentType())
-                    .build();
-
-            try (InputStream is = file.getInputStream();){
-                S3Resource upload = s3Template.upload(bucket, fileName, is, metadata);
-                imageUrls.add(upload.getURL().toString());
-            } catch (IOException exception) {
-                log.error("[S3 Upload Fail] : {}", exception.getMessage());
-                throw new CustomException(CustomResponseStatus.S3_UPLOAD_FAIL);
-            }
-        });
+        try (InputStream is = file.getInputStream();) {
+            S3Resource upload = s3Template.upload(bucket, fileName, is, metadata);
+            return PhotoData.of(upload.getLocation().getBucket(),
+                    upload.getLocation().getObject(),
+                    upload.getURL().toString());
+        } catch (IOException exception) {
+            log.error("[S3 Upload Fail] : {}", exception.getMessage());
+            throw new CustomException(CustomResponseStatus.S3_UPLOAD_FAIL);
+        }
+    }
 
         return imageUrls;
     }
