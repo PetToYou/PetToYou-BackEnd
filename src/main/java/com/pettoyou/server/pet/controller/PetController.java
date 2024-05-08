@@ -26,14 +26,10 @@ public class PetController {
             @RequestPart(value = "petProfileImg") List<MultipartFile> petProfileImg,
             @RequestPart(required = false, value = "petRegisterDto") PetDto.Request.Register petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         PetDto.Response.Register register = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess(register, CustomResponseStatus.SUCCESS));
     }
 
-    /**
-     * TODO : 펫 수정 API 개발
-     */
     @PutMapping("/pet/{id}")
     public ResponseEntity<ApiResponse<String>> petModify(
             @PathVariable Long id,
@@ -42,9 +38,15 @@ public class PetController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         petService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(null, CustomResponseStatus.SUCCESS));
+        return ResponseEntity.ok().body(ApiResponse.createSuccess("수정완료!", CustomResponseStatus.SUCCESS));
     }
-    /** TODO : 펫 삭제 API 개발 */
+
+    @DeleteMapping("/pet/{id}")
+    public ResponseEntity<ApiResponse<String>> petDelete(
+            @PathVariable Long id) {
+        petService.petDelete(id);
+        return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제완료!", CustomResponseStatus.SUCCESS));
+    }
 
     /** TODO : 펫 조회 API 개발 */
 }

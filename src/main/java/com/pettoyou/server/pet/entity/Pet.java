@@ -9,6 +9,8 @@ import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE pet SET pet_status = 'DEACTIVATE' WHERE pet_id = ?")
+@SQLRestriction("pet_status = 'ACTIVATE'")
 @Table(name = "pet")
 public class Pet extends BaseEntity {
     @Id
@@ -47,7 +51,7 @@ public class Pet extends BaseEntity {
     @Embedded
     private PetMedicalInfo petMedicalInfo;
 
-    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
@@ -82,15 +86,3 @@ public class Pet extends BaseEntity {
         this.petMedicalInfo = PetMedicalInfo.toPetMedicalInfo(modifyDto.getPetMedicalInfo());
     }
 }
-
-//Pet
-//-
-//PetId PK IDENTITY
-//MemberId long FK >- Member.MemberId
-//Name string
-//Species string
-//Age int
-//Birth LocalDateTime
-//AdpotionDate LocalDateTime
-//IsSharing boolean
-//PetStatus string # ACTIVATE, DEACTIVATE,

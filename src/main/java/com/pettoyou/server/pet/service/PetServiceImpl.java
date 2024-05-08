@@ -64,4 +64,9 @@ public class PetServiceImpl implements PetService {
             }
         }
     }
+
+    @Override
+    public void petDelete(Long petId) {
+        petRepository.deleteById(petId);
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface PetService {
-    PetDto.Response.Register petRegister (
+    PetDto.Response.Register petRegister(
             List<MultipartFile> petProfileImgs,
             PetDto.Request.Register petRegisterDto,
             Long loginMemberId);
@@ -17,4 +17,6 @@ public interface PetService {
             PetDto.Request.Register petRegisterDto,
             Long loginMemberId
     );
+
+    void petDelete(Long petId);
 }
