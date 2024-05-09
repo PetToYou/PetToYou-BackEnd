@@ -8,7 +8,8 @@ import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.sql.Time;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -22,14 +23,12 @@ public class Reserve extends BaseEntity {
     @Column(name = "reserve_id")
     private Long reserveId;
 
+    private LocalDate reserveDay;
 
-    private LocalDateTime reserveTime;
-    //Date와 Time 분리????
+    private Time reserveTime;
 
     @Enumerated(EnumType.STRING)
     private ReserveStatus reserveStatus;
-
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")

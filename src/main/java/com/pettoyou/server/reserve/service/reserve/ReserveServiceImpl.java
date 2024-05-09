@@ -1,4 +1,4 @@
-package com.pettoyou.server.reserve.service;
+package com.pettoyou.server.reserve.service.reserve;
 
 import org.springframework.stereotype.Service;
 
