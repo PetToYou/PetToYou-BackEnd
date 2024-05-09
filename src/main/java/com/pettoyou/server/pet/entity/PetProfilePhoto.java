@@ -1,7 +1,7 @@
 package com.pettoyou.server.pet.entity;
 
 
-import com.pettoyou.server.photo.entity.PhotoData;
+import com.pettoyou.server.photo.entity.FileData;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,11 +21,11 @@ public class PetProfilePhoto {
     private Pet pet;
 
     @Embedded
-    private PhotoData photoData;
+    private FileData fileData;
 
-    public static PetProfilePhoto toPetProfilePhoto(PhotoData photoData, Pet pet) {
+    public static PetProfilePhoto toPetProfilePhoto(FileData fileData, Pet pet) {
         return builder()
-                .photoData(photoData)
+                .fileData(fileData)
                 .pet(pet)
                 .build();
     }

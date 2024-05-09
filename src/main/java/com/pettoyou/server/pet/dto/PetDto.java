@@ -2,14 +2,12 @@ package com.pettoyou.server.pet.dto;
 
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.PetMedicalInfo;
-import com.pettoyou.server.pet.entity.PetProfilePhoto;
 import com.pettoyou.server.pet.entity.enums.PetType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class PetDto {
 
@@ -64,7 +62,7 @@ public class PetDto {
         ) {
             public PetDetailInfo(Pet pet) {
                 this(pet.getPetId(), pet.getPetName(), pet.getSpecies(), pet.getBirth(), pet.getPetType(),
-                        pet.getAdoptionDate(), pet.getPetMedicalInfo(), pet.getPetProfilePhotos().get(0).getPhotoData().getPhotoUrl());
+                        pet.getAdoptionDate(), pet.getPetMedicalInfo(), pet.getPetProfilePhotos().get(0).getFileData().getPhotoUrl());
             }
         }
     }

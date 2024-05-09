@@ -9,7 +9,7 @@ import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.PetProfilePhoto;
 import com.pettoyou.server.pet.repository.PetPhotoRepository;
 import com.pettoyou.server.pet.repository.PetRepository;
-import com.pettoyou.server.photo.entity.PhotoData;
+import com.pettoyou.server.photo.entity.FileData;
 import com.pettoyou.server.util.S3Util;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,8 @@ public class PetServiceImpl implements PetService {
 
         if (!petProfileImgs.isEmpty()) {
             for (MultipartFile petProfileImg : petProfileImgs) {
-                PhotoData photoData = s3Util.uploadFile(petProfileImg);
-                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(photoData, registerPet);
+                FileData fileData = s3Util.uploadFile(petProfileImg);
+                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(fileData, registerPet);
                 petPhotoRepository.save(petProfilePhoto);
             }
         }
@@ -52,14 +52,14 @@ public class PetServiceImpl implements PetService {
         pet.modify(petRegisterDto);
 
         for (PetProfilePhoto petProfilePhoto : pet.getPetProfilePhotos()) {
-            s3Util.deleteFile(petProfilePhoto.getPhotoData().getBucket(), petProfilePhoto.getPhotoData().getObject());
+            s3Util.deleteFile(petProfilePhoto.getFileData().getBucket(), petProfilePhoto.getFileData().getObject());
             petPhotoRepository.delete(petProfilePhoto);
         }
 
         if (!petProfileImgs.isEmpty()) {
             for (MultipartFile petProfileImg : petProfileImgs) {
-                PhotoData photoData = s3Util.uploadFile(petProfileImg);
-                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(photoData, pet);
+                FileData fileData = s3Util.uploadFile(petProfileImg);
+                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(fileData, pet);
                 petPhotoRepository.save(petProfilePhoto);
             }
         }
