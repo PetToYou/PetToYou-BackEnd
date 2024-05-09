@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PhotoData {
+public class FileData {
 
     private String bucket;
     private String object;
     private String photoUrl;
 
 
-    public static PhotoData of(String bucket, String object, String photoUrl) {
-        return new PhotoData(bucket, object, photoUrl);
+    public static FileData of(String bucket, String object, String photoUrl) {
+        return new FileData(bucket, object, photoUrl);
     }
 }
