@@ -49,4 +49,11 @@ public class PetController {
     }
 
     /** TODO : 펫 조회 API 개발 */
+    @GetMapping("/pet/{id}")
+    public ResponseEntity<ApiResponse<PetDto.Response.PetDetailInfo>> fetchPetDetailInfo(
+            @PathVariable Long id) {
+
+        PetDto.Response.PetDetailInfo response = petService.fetchPetDetailInfo(id);
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+    }
 }

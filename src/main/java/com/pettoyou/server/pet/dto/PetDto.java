@@ -1,11 +1,15 @@
 package com.pettoyou.server.pet.dto;
 
+import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.PetMedicalInfo;
+import com.pettoyou.server.pet.entity.PetProfilePhoto;
+import com.pettoyou.server.pet.entity.enums.PetType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class PetDto {
 
@@ -44,6 +48,23 @@ public class PetDto {
 
             public static Register toDto(String petName) {
                 return Register.builder().petName(petName).build();
+            }
+        }
+
+
+        public record PetDetailInfo(
+                Long petId,
+                String petName,
+                String species,
+                LocalDate birth,
+                PetType petType,
+                LocalDate adoptionDate,
+                PetMedicalInfo petMedicalInfo,
+                String profileUrl
+        ) {
+            public PetDetailInfo(Pet pet) {
+                this(pet.getPetId(), pet.getPetName(), pet.getSpecies(), pet.getBirth(), pet.getPetType(),
+                        pet.getAdoptionDate(), pet.getPetMedicalInfo(), pet.getPetProfilePhotos().get(0).getPhotoData().getPhotoUrl());
             }
         }
     }

@@ -69,4 +69,11 @@ public class PetServiceImpl implements PetService {
     public void petDelete(Long petId) {
         petRepository.deleteById(petId);
     }
+
+    @Override
+    public PetDto.Response.PetDetailInfo fetchPetDetailInfo(Long petId) {
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
+
+        return new PetDto.Response.PetDetailInfo(pet);
+    }
 }

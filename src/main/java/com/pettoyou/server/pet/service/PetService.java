@@ -19,4 +19,6 @@ public interface PetService {
     );
 
     void petDelete(Long petId);
+
+    PetDto.Response.PetDetailInfo fetchPetDetailInfo(Long petId);
 }
