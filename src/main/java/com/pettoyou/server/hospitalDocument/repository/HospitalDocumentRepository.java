@@ -1,6 +1,6 @@
-package com.pettoyou.server.reserve.repository;
+package com.pettoyou.server.hospitalDocument.repository;
 
-import com.pettoyou.server.reserve.entity.HospitalDocument;
+import com.pettoyou.server.hospitalDocument.entity.HospitalDocument;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HospitalDocumentRepository extends JpaRepository<HospitalDocument, Long> {

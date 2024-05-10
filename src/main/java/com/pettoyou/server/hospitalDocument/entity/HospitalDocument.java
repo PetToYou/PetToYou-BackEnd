@@ -1,6 +1,7 @@
-package com.pettoyou.server.reserve.entity;
+package com.pettoyou.server.hospitalDocument.entity;
 
 import com.pettoyou.server.photo.entity.FileData;
+import com.pettoyou.server.reserve.entity.HealthNote;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,5 @@ public class HospitalDocument {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medical_record_id")
-    private MedicalRecord medicalRecord;
+    private HealthNote healthNote;
 }

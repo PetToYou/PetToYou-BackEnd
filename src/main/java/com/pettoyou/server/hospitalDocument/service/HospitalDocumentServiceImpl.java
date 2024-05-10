@@ -1,4 +1,4 @@
-package com.pettoyou.server.reserve.service.hospitalDocument;
+package com.pettoyou.server.hospitalDocument.service;
 
 import org.springframework.stereotype.Service;
 

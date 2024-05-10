@@ -5,6 +5,7 @@ import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.dto.PetDto;
 import com.pettoyou.server.pet.entity.enums.PetType;
+import com.pettoyou.server.reserve.entity.HealthNote;
 import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
@@ -59,6 +60,9 @@ public class Pet extends BaseEntity {
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    private List<HealthNote> healthNotes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
