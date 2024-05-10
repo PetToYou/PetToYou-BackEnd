@@ -5,19 +5,17 @@ import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.service.HospitalService;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/hospital")
 public class HospitalController {
 
     private final HospitalService hospitalService;
-
-    public HospitalController(HospitalService hospitalService){
-        this.hospitalService =  hospitalService;
-    }
 
 
 

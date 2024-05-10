@@ -9,41 +9,37 @@ import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.StorePhotoDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 @Transactional
 public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;
 
-    public HospitalServiceImpl(HospitalRepository hospitalRepository) {
-        this.hospitalRepository = hospitalRepository;
-    }
+//    public HospitalServiceImpl(HospitalRepository hospitalRepository) {
+//        this.hospitalRepository = hospitalRepository;
+//    } - > RequiredArgsConstructor로 대체
 
     @Override
     public HospitalDto getHospitalById(Long hospitalId) {
 
-
-        Hospital hospital = hospitalRepository.findDistinctHospitalFetchJoinByStoreId(hospitalId).orElseThrow(
+        Hospital hospital = hospitalRepository.findDistinctHospitalByStoreId(hospitalId).orElseThrow(
                 () -> new EntityNotFoundException("No Hospital Found"));
-        //Repository에서 Optional로 반환 -> orElsThrow로 exception 처리 가능. 값을 꺼냈으므로 Optional이 아닌 hospital 객체에 담아준다.
-
+        //Repository에서 Optional로 반환 -> orElseThrow로 exception 처리 가능. 값을 꺼냈으므로 Optional이 아닌 hospital 객체에 담아준다.
         HospitalDto hospitalDto = toHospitalDto(hospital);
-
-
-
         return hospitalDto;
-
-
     }
 
     private HospitalDto toHospitalDto(Hospital hospital) {
@@ -56,6 +52,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .websiteLink(hospital.getWebsiteLink())
                 .additionalServiceTag(hospital.getAdditionalServiceTag())
                 .storeInfo(hospital.getStoreInfo())
+                .storeStatus(hospital.getStoreStatus())
                 .storeInfoPhoto(hospital.getStoreInfoPhoto())
                 .address(hospital.getAddress())
                 .businessHours(hospital.getBusinessHours().stream()
@@ -79,7 +76,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         List<ContainInterface> hospitals = hospitalRepository.findHospitalsContain(point, radius, dayOfWeek);
 //        List<ContainInterface> hospitals = hospitalRepository.findHospitalsContain(point, radius, dayOfWeek);
-        log.info(hospitals.toString());
+        HospitalServiceImpl.log.info(hospitals.toString());
 
 
         List<HospitalListDto.Response> result = hospitals.stream()
@@ -103,6 +100,42 @@ public class HospitalServiceImpl implements HospitalService {
         return result;
 
     }
+
+
+    public List<HospitalListDto.Response> getHospitalsContainOpen(HospitalListDto.Request location) {
+
+        String point = location.toPointString();
+        Integer radius = location.getRadius();
+        Integer dayOfWeek = getDayOfWeekNum();
+        LocalTime now = LocalTime.now();
+
+        List<ContainInterface> hospitals = hospitalRepository.findHospitalsContainOpen(point, radius, dayOfWeek, now);
+//        List<ContainInterface> hospitals = hospitalRepository.findHospitalsContain(point, radius, dayOfWeek);
+        HospitalServiceImpl.log.info(hospitals.toString());
+
+
+        List<HospitalListDto.Response> result = hospitals.stream()
+                .filter(h -> h.getHospitalName() != null || h.getBusinessHours() != null)
+                .map(h ->
+
+                        HospitalListDto.Response.builder()
+                                .storeId(h.getStoreId())
+                                .hospitalName(h.getHospitalName())
+                                .thumbnailUrl(h.getThumbnailUrl())
+                                .distance(String.format("%.1f", h.getDistance() / 1000.0))
+                                .openHour(Optional.ofNullable(h.getBusinessHours()).map(bh -> bh.getStartTime()).map(Object::toString).orElse("영업 시간 정보 없음"))
+                                .closeHour(Optional.ofNullable(h.getBusinessHours()).map(bh -> bh.getEndTime()).map(Object::toString).orElse("영업 시간 정보 없음"))
+                                .breakTime(Optional.ofNullable(h.getBusinessHours()).map(bh -> bh.getBreakEndTime())
+                                        .map(Object::toString)
+                                        .orElse("No Break Time"))
+                                .reviewCount(h.getReviewCount())
+                                .rateAvg(h.getRateAvg())
+                                .build())
+                .collect(Collectors.toList());
+        return result;
+
+    }
+
 
 
     // Get 요일 숫자 데이터 1~7
