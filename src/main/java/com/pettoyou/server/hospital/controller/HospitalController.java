@@ -24,12 +24,17 @@ public class HospitalController {
 
         List<HospitalListDto.Response> hospitalList = hospitalService.getHospitalsContain(location);
 
-
         return hospitalList;
 
-
-
     }
+
+    @GetMapping("/main")
+    public List<HospitalListDto.Response> getHospitalOpenList(@RequestBody HospitalListDto.Request location){
+
+        List<HospitalListDto.Response> hospitalOpenList =hospitalService.getHospitalsContainOpen(location);
+        return hospitalOpenList;
+    }
+
     @GetMapping("/{hospitalId}")
     public HospitalDto getHospital(@PathVariable Long hospitalId){
 

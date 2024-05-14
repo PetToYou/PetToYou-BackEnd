@@ -19,9 +19,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@NamedEntityGraph(
-        name = "Store.fetchAll",
-        attributeNodes = {@NamedAttributeNode(value = "businessHours"), @NamedAttributeNode(value = "storePhotos")})
 @SQLDelete(sql = "UPDATE store SET store_status = 'DEACTIVATE' WHERE store_id=?")
 @SQLRestriction("store_status = 'ACTIVATE'")
 @Inheritance(strategy = InheritanceType.JOINED)

@@ -11,5 +11,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
 
     @Query("SELECT StorePhoto FROM StorePhoto WHERE storePhotoId = :storeId ")
-    List<StorePhotoDto> getStorePhotoListByStoreId(Long StoreId storeId);
+    List<StorePhotoDto> getStorePhotoListByStoreId(Long storeId);
 }
