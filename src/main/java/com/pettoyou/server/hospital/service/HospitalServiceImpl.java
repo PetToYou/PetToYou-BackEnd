@@ -17,6 +17,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -74,14 +77,16 @@ public class HospitalServiceImpl implements HospitalService {
 
   //위치기반 근처 병원 조회 (일반)
   @Override
-  public List<HospitalListDto.Response> getHospitalsContain(
-    HospitalListDto.Request location
+  public Page<HospitalListDto.Response> getHospitalsContain(
+      Pageable pageable,
+          HospitalListDto.Request location
   ) {
     String point = location.toPointString();
     Integer radius = location.getRadius();
     Integer dayOfWeek = getDayOfWeekNum();
 
-    List<ContainInterface> hospitals = hospitalRepository.findHospitalsContain(
+    Page<ContainInterface> hospitals = hospitalRepository.findHospitalsContain(
+            pageable,
       point,
       radius,
       dayOfWeek
@@ -89,43 +94,11 @@ public class HospitalServiceImpl implements HospitalService {
     //        List<ContainInterface> hospitals = hospitalRepository.findHospitalsContain(point, radius, dayOfWeek);
     HospitalServiceImpl.log.info(hospitals.toString());
 
-    List<HospitalListDto.Response> result = hospitals
-      .stream()
-      .filter(h -> h.getHospitalName() != null || h.getBusinessHours() != null)
-      .map(h ->
-        HospitalListDto.Response
-          .builder()
-          .storeId(h.getStoreId())
-          .hospitalName(h.getHospitalName())
-          .thumbnailUrl(h.getThumbnailUrl())
-          .distance(String.format("%.1f", h.getDistance() / 1000.0))
-          .openHour(
-            Optional
-              .ofNullable(h.getBusinessHours())
-              .map(bh -> bh.getStartTime())
-              .map(Object::toString)
-              .orElse("영업 시간 정보 없음")
-          )
-          .closeHour(
-            Optional
-              .ofNullable(h.getBusinessHours())
-              .map(bh -> bh.getEndTime())
-              .map(Object::toString)
-              .orElse("영업 시간 정보 없음")
-          )
-          .breakTime(
-            Optional
-              .ofNullable(h.getBusinessHours())
-              .map(bh -> bh.getBreakEndTime())
-              .map(Object::toString)
-              .orElse("No Break Time")
-          )
-          .reviewCount(h.getReviewCount())
-          .rateAvg(h.getRateAvg())
-          .build()
-      )
-      .collect(Collectors.toList());
-    return result;
+    List<HospitalListDto.Response> hospitalList = HospitalListDto.Response.toListDto(hospitals.getContent());
+
+
+    return new PageImpl<>(hospitalList, pageable, hospitals.getTotalElements());
+
   }
 
   public List<HospitalListDto.Response> getHospitalsContainOpen(
@@ -145,43 +118,9 @@ public class HospitalServiceImpl implements HospitalService {
     //        List<ContainInterface> hospitals = hospitalRepository.findHospitalsContain(point, radius, dayOfWeek);
     HospitalServiceImpl.log.info(hospitals.toString());
 
-    List<HospitalListDto.Response> open = hospitals
-      .stream()
-      .filter(h -> h.getHospitalName() != null || h.getBusinessHours() != null)
-      .map(h ->
-        HospitalListDto.Response
-          .builder()
-          .storeId(h.getStoreId())
-          .hospitalName(h.getHospitalName())
-          .thumbnailUrl(h.getThumbnailUrl())
-          .distance(String.format("%.1f", h.getDistance() / 1000.0))
-          .openHour(
-            Optional
-              .ofNullable(h.getBusinessHours())
-              .map(bh -> bh.getStartTime())
-              .map(Object::toString)
-              .orElse("영업 시간 정보 없음")
-          )
-          .closeHour(
-            Optional
-              .ofNullable(h.getBusinessHours())
-              .map(bh -> bh.getEndTime())
-              .map(Object::toString)
-              .orElse("영업 시간 정보 없음")
-          )
-          .breakTime(
-            Optional
-              .ofNullable(h.getBusinessHours())
-              .map(bh -> bh.getBreakEndTime())
-              .map(Object::toString)
-              .orElse("No Break Time")
-          )
-          .reviewCount(h.getReviewCount())
-          .rateAvg(h.getRateAvg())
-          .build()
-      )
-      .collect(Collectors.toList());
-    return open;
+    List<HospitalListDto.Response> result = HospitalListDto.Response.toListDto(hospitals);
+
+    return result;
   }
 
   // Get 요일 숫자 데이터 1~7
