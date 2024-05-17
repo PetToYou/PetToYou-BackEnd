@@ -1,10 +1,9 @@
 package com.pettoyou.server.hospital.dto;
 
-import com.pettoyou.server.hospital.interfaces.ContainInterface;
+import com.pettoyou.server.store.interfaces.StoreInterface;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,7 +58,10 @@ public class HospitalListDto {
         private String closeHour = LocalDateTime.now().toString();
 
         @Nullable
-        private String breakTime;
+        private String breakStartTime;
+
+        @Nullable
+        private String breakEndTime;
 
         @Builder.Default
         private Long reviewCount = 0L;
@@ -71,12 +73,12 @@ public class HospitalListDto {
 
 
 
-        public static List<HospitalListDto.Response> toListDto(final List<ContainInterface> hospitals){
+        public static List<HospitalListDto.Response> toListDto(final List<StoreInterface> hospitals){
 
                     List<HospitalListDto.Response> result = hospitals.stream()
-                            .filter(h -> h.getHospitalName() != null || h.getBusinessHours() != null)
+                            .filter(h -> h.getHospitalName() != null)
                             .map(h ->
-                    HospitalListDto.Response
+                    Response
                     .builder()
                     .storeId(h.getStoreId())
                     .hospitalName(h.getHospitalName())
@@ -96,12 +98,19 @@ public class HospitalListDto {
                                     .map(Object::toString)
                                     .orElse("영업 시간 정보 없음")
                     )
-                    .breakTime(
+                            .breakStartTime(
+                                    Optional
+                                            .ofNullable(h.getBusinessHours())
+                                            .map(bh -> bh.getBreakStartTime())
+                                            .map(Object::toString)
+                                            .orElse("No Break Start Time")
+                            )
+                    .breakEndTime(
                             Optional
                                     .ofNullable(h.getBusinessHours())
                                     .map(bh -> bh.getBreakEndTime())
                                     .map(Object::toString)
-                                    .orElse("No Break Time")
+                                    .orElse("No Break End Time")
                     )
                     .reviewCount(h.getReviewCount())
                     .rateAvg(h.getRateAvg())

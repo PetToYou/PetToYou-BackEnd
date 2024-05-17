@@ -24,10 +24,10 @@ public class HospitalController {
 
 
     //특정 반경 내에
-    @GetMapping("/contain")
+    @GetMapping()
     public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalList(Pageable pageable, @RequestBody HospitalListDto.Request location){
 
-        Page<HospitalListDto.Response> hospitalList = hospitalService.getHospitalsContain(pageable, location);
+        Page<HospitalListDto.Response> hospitalList = hospitalService.getHospitals(pageable, location);
 
         return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalList, CustomResponseStatus.SUCCESS));
 
@@ -35,9 +35,9 @@ public class HospitalController {
 
     //특정 반경 + 영업 중
     @GetMapping("/main")
-    public ResponseEntity<ApiResponse<List<HospitalListDto.Response>>> getHospitalOpenList(@RequestBody HospitalListDto.Request location){
+    public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalOpenList(Pageable pageable, @RequestBody HospitalListDto.Request location){
 
-        List<HospitalListDto.Response> hospitalOpenList =hospitalService.getHospitalsContainOpen(location);
+        Page<HospitalListDto.Response> hospitalOpenList =hospitalService.getHospitalsOpen(pageable, location);
         return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalOpenList, CustomResponseStatus.SUCCESS));
     }
 

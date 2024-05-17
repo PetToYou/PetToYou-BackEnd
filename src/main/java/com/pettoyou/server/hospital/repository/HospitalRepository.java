@@ -1,10 +1,8 @@
 package com.pettoyou.server.hospital.repository;
 
-import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.entity.Hospital;
-import com.pettoyou.server.hospital.interfaces.ContainInterface;
+import com.pettoyou.server.store.interfaces.StoreInterface;
 import io.lettuce.core.dynamic.annotation.Param;
-import jakarta.persistence.EntityManager;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,15 +35,16 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
 
   // 해당 반경 안에 있는 병원
   @Query(
-    """
+    value = """
     SELECT h.storeName as hospitalName, h.storeId as storeId, h.thumbnailUrl as thumbnailUrl, b as businessHours, COUNT(r.reviewId) as reviewCount, AVG(r.rating) as rateAvg, ST_Distance_Sphere(ST_PointFromText(:point, 4326), h.address.point) as distance 
     FROM Hospital as h 
     LEFT JOIN h.businessHours as b on b.dayOfWeek=:dayOfWeek 
     LEFT JOIN h.reviews as r  
-    WHERE ST_CONTAINS(ST_BUFFER(ST_PointFromText(:point, 4326), :radius), h.address.point) GROUP BY h,r,b ORDER BY distance asc
+    WHERE ST_Contains(ST_BUFFER(ST_PointFromText(:point, 4326), :radius), h.address.point) GROUP BY h,r,b ORDER BY distance asc
 """
+
   )
-  Page<ContainInterface> findHospitalsContain(
+  Page<StoreInterface> findHospitals(
           Pageable pageable,
     @Param("point") String point,
     @Param("radius") Integer radius,
@@ -59,10 +58,11 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
     FROM Hospital as h 
     LEFT JOIN h.businessHours as b on b.dayOfWeek=:dayOfWeek 
     LEFT JOIN h.reviews as r  
-    WHERE ST_CONTAINS(ST_BUFFER(ST_PointFromText(:point, 4326), :radius), h.address.point) and :now between b.startTime AND b.endTime GROUP BY h,r,b ORDER BY distance asc
+    WHERE ST_Contains(ST_BUFFER(ST_PointFromText(:point, 4326), :radius), h.address.point) and :now between b.startTime AND b.endTime GROUP BY h,r,b ORDER BY distance asc
 """
   )
-  List<ContainInterface> findHospitalsContainOpen(
+  Page<StoreInterface> findHospitalsOpen(
+          Pageable pageable,
     @Param("point") String point,
     @Param("radius") Integer radius,
     @Param("dayOfWeek") Integer dayOfWeek,

@@ -1,10 +1,8 @@
-package com.pettoyou.server.hospital.interfaces;
+package com.pettoyou.server.store.interfaces;
 
 import com.pettoyou.server.store.entity.BusinessHour;
 
-import java.util.List;
-
-public interface ContainInterface {
+public interface StoreInterface {
 
     String getStoreId();
     String getHospitalName();

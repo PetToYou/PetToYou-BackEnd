@@ -15,12 +15,13 @@ public interface HospitalService {
 
   HospitalDto getHospitalById(Long hospitalId);
 
-  Page<HospitalListDto.Response> getHospitalsContain(
+  Page<HospitalListDto.Response> getHospitals(
           Pageable pageable,
     HospitalListDto.Request location
   );
 
-  List<HospitalListDto.Response> getHospitalsContainOpen(
+  Page<HospitalListDto.Response> getHospitalsOpen(
+          Pageable pageable,
     HospitalListDto.Request location
   );
 }
