@@ -33,13 +33,22 @@ public class HospitalServiceImpl implements HospitalService {
   //        this.hospitalRepository = hospitalRepository;
   //    } - > RequiredArgsConstructor로 대체
 
+//  @Override
+//  public void registerHospital(HospitalDto.Request hospital){
+//
+//
+//
+//
+//    return;
+//  }
+
   @Override
-  public HospitalDto getHospitalById(Long hospitalId) {
+  public HospitalDto.Response getHospitalById(Long hospitalId) {
     Hospital hospital = hospitalRepository
       .findDistinctHospitalByStoreId(hospitalId)
       .orElseThrow(() -> new EntityNotFoundException("No Hospital Found"));
     //Repository에서 Optional로 반환 -> orElseThrow로 exception 처리 가능. 값을 꺼냈으므로 Optional이 아닌 hospital 객체에 담아준다.
-    HospitalDto hospitalDto = HospitalDto.toHospitalDto(hospital);
+    HospitalDto.Response hospitalDto = HospitalDto.Response.toHospitalDto(hospital);
     return hospitalDto;
   }
 

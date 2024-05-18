@@ -13,7 +13,9 @@ public interface HospitalService {
 
   //테스트 용
 
-  HospitalDto getHospitalById(Long hospitalId);
+  //void registerHospital(HospitalDto.Request hospital);
+
+  HospitalDto.Response getHospitalById(Long hospitalId);
 
   Page<HospitalListDto.Response> getHospitals(
           Pageable pageable,
