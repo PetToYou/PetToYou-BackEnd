@@ -5645,7 +5645,7 @@ values (1, 1, 'Appointment Reminder', 'Your appointment is scheduled for tomorro
        (2, 2, 'Welcome to PetCare', 'Thank you for joining PetCare.', 'NEW_MEMBER', 'ACTIVATE');
 
 -- Inserting data into pet (Assuming Member data exists)
-insert into pet (pet_id, member_id, pet_name, species, age, birth, adoption_date, is_sharing, pet_status)
+insert into pet (pet_id, member_id, pet_name, species, age, birth, adoption_date, sharing_st, pet_status)
 values (1, 1, 'Buddy', 'Dog', 3, '2021-03-10', '2021-03-20', false, 'ACTIVATE'),
        (2, 2, 'Whiskers', 'Cat', 5, '2019-05-05', '2019-05-15', true, 'ACTIVATE');
 
@@ -5659,28 +5659,15 @@ values (1, 1, 1),
 
 
 
--- insert into store (store_id, DTYPE, store_name, thumbnail_url, store_phone, notice, website_link, store_info,
---                    store_info_photo, store_status, zip_code, address_detail, sido, sigungu, eupmyun, doro, point)
--- values (1, 'H', 'Happy Pet Clinic', 'thumbnail1', '0201234567', '9AM to 6PM, Closed on Sundays',
---         'http://happypetclinic.com', 'Full veterinary services for your beloved pets.',
---         'http://happypetclinic.com/photo.jpg', 'ACTIVATE', '58176', 'Happy Street Building', 'Happy City',
---         'Joy District', 'eupmyun', 'Happy Street', ST_PointFromText("POINT (37.5665 126.9780)", 4326)),
---        (2, 'H', 'Joyful Pet Hospital', 'thumbnail 2', '0209876543', '8AM to 5PM, Closed on Saturdays',
---         'http://joyfulpethospital.com', 'Comprehensive care and wellness programs for your pets.',
---         'http://joyfulpethospital.com/photo.jpg', 'ACTIVATE', '16791', 'Joyful Road Building', 'Joyful City',
---         'Happy District', 'eupmyun', 'Anam Street',
---         ST_PointFromText("POINT (37.54814807058306 127.0471094733872)", 4326)),
---
-
--- Inserting data into hospital_tag
-insert into hospital_tag (hospital_tag_id, tag_content, tag_type)
-values (1, '24/7 Emergency', 'SERVICE'),
-       (2, 'Orthopedics Specialist', 'SPECIALITIES');
-
--- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
-insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id)
-values (1, 1, 1),
-       (2, 2, 1);
+# -- Inserting data into hospital_tag
+# insert into hospital_tag (hospital_tag_id, tag_content, tag_type)
+# values (1, '24/7 Emergency', 'SERVICE'),
+#        (2, 'Orthopedics Specialist', 'SPECIALITIES');
+#
+# -- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
+# insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id)
+# values (1, 1, 1),
+#        (2, 2, 1);
 
 -- Inserting data into store_photo (Assuming Store data exists)
 insert into store_photo (store_photo_id, store_id, store_photo_url, photo_order, photo_status, store_type)
@@ -5695,7 +5682,7 @@ values (1, 1, 1, 'HOSPITAL'),
 -- Inserting data into registration_info (Assuming Store data exists)
 insert into registration_info (registration_info_id, store_id, store_type, ceo_name, ceo_phone, ceo_email,
                                business_number)
-values (1, 1, 'HOSPITAL', 'CEO Name', '01000000000', 'ceo@example.com', '123-45-67890');
+values (1,1, 'HOSPITAL', 'CEO Name', '01000000000', 'ceo@example.com', '123-45-67890');
 
 -- Inserting data into reserve (Assuming Store, Pet, and Member data exists)
 insert into reserve (reserve_id, store_id, pet_id, member_id, reserve_time, reserve_status)
@@ -5715,9 +5702,16 @@ values (1, 1, 'HOSPITAL', 1, '09:00', '18:00', '12:00', '13:00', true),  -- 월�
        (9, 2, 'HOSPITAL', 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
        (10, 2, 'HOSPITAL', 3, '10:00', '17:00', NULL, NULL, true),       -- 수요일, 점심시간 없음
        (11, 2, 'HOSPITAL', 4, '09:00', '18:00', '12:00', '13:00', true), -- 목요일
-       (12, 2, 'HOSPITAL', 5, '09:00', '19:00', '12:00', '14:00', true), -- 금요일, 점심시간 길게
+       (12, 2, 'HOSPITAL', 5, '09:00', '20:00', '12:00', '14:00', true), -- 금요일, 점심시간 길게
        (13, 2, 'HOSPITAL', 6, '00:00', '00:00', NULL, NULL, false),      -- 토요일, 휴무
-       (14, 2, 'HOSPITAL', 7, '09:00', '15:00', NULL, NULL, true);
+       (14, 2, 'HOSPITAL', 7, '09:00', '15:00', NULL, NULL, true),
+       (15, 476, 'HOSPITAL', 1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
+       (16, 476, 'HOSPITAL', 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
+       (17, 476, 'HOSPITAL', 3, '10:00', '17:00', NULL, NULL, true),        -- 수요일, 점심시간 없음
+       (18, 476, 'HOSPITAL', 4, '09:00', '18:00', '12:00', '13:00', true),  -- 목요일
+       (19, 476, 'HOSPITAL', 5, '09:00', '20:00', NULL, NULL, true),        -- 금요일, 점심시간 길게
+       (20, 476, 'HOSPITAL', 6, '00:00', '00:00', NULL, NULL, false);
+
 -- 일요일, 점심시간 없음
 
 -- Inserting data into review (Assuming Store, Member, and Pet data exists)

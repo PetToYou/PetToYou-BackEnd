@@ -1,47 +1,147 @@
 package com.pettoyou.server.hospital.dto;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
-import com.pettoyou.server.review.entity.Review;
+import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.store.dto.BusinessHourDto;
+import com.pettoyou.server.store.dto.RegistrationInfoDto;
+import com.pettoyou.server.store.dto.StorePhotoDto;
 import com.pettoyou.server.store.entity.Address;
-import com.pettoyou.server.store.entity.BusinessHour;
 import com.pettoyou.server.store.entity.RegistrationInfo;
-import com.pettoyou.server.store.entity.StorePhoto;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class HospitalDto {
 
-    private Long hospitalId;
 
-    private String hospitalName;
 
-    private String storePhone;
-    private String notice;
-    //@URL(protocol = "", host = "")
-    private String websiteLink;
-    private String additionalServiceTag;
-    private String storeInfo;
-    private String storeInfoPhoto;
-    private BaseStatus storeStatus;
-    private Address address;
+public class HospitalDto{
 
-//
-//    private List<BusinessHour> businessHours = new ArrayList<>();
-//    private List<StorePhoto> storePhotos = new ArrayList<>();
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Request {
+
+        @NotNull
+        private String hospitalName;
+
+        @NotNull
+        private String hospitalPhone;
+
+        private String notice;
+
+        private String additionalServiceTag;
+
+        private String websiteLink;
+        private String hospitalInfo;
+//        private String hospitalInfoPhoto; -> s3 이미지
+        @NotNull
+        private String zipCode;
+        @NotNull
+        private String sido;
+        @NotNull
+        private String sigungu;
+
+        private String eupmyun;
+        @NotNull
+        private String doro;
+
+        @NotNull
+        private double longitude;
+        @NotNull
+        private double latitude;
+
+
+        private List<BusinessHourDto> businessHours;
+
+        private RegistrationInfoDto.Request registrationInfo;
+
+//        public static HospitalDto.Request toEntity(HospitalDto.Request hospitalDto)
+    }
+
+
+
+
+
+
+
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Response {
+        // 병원 상세정보
+
+        @NotNull
+        private Long hospitalId;
+
+
+        @NotNull
+        private String hospitalName;
+
+        private String storePhone;
+        private String notice;
+        //@URL(protocol = "", host = "")
+        private String websiteLink;
+        private String additionalServiceTag;
+        private String storeInfo;
+        private String storeInfoPhoto;
+        private BaseStatus storeStatus;
+        private Address address;
+
+        //
+        @Builder.Default
+        private List<BusinessHourDto.Response> businessHours = new ArrayList<>();
+
+        @Builder.Default
+        private List<StorePhotoDto> storePhotos = new ArrayList<>();
 //    //페이징
-//    private List<Review> reviews = new ArrayList<>();
+
+
+        //    private List<Review> reviews = new ArrayList<>();
 //    //페이징
-//    private RegistrationInfo registrationInfo;
+        private RegistrationInfo registrationInfo;
+
+
+        public static HospitalDto.Response toHospitalDto(Hospital hospital){
+            return HospitalDto.Response
+                    .builder()
+                    .hospitalId(hospital.getStoreId())
+                    .hospitalName(hospital.getStoreName())
+                    .storePhone(hospital.getStorePhone())
+                    .notice(hospital.getNotice())
+                    .websiteLink(hospital.getWebsiteLink())
+                    .additionalServiceTag(hospital.getAdditionalServiceTag())
+                    .storeInfo(hospital.getStoreInfo())
+                    .storeStatus(hospital.getStoreStatus())
+                    .storeInfoPhoto(hospital.getStoreInfoPhoto())
+                    .address(hospital.getAddress())
+                    .businessHours(
+                            hospital
+                                    .getBusinessHours()
+                                    .stream()
+                                    .map(BusinessHourDto.Response::toDto)
+                                    .collect(Collectors.toList())
+                    )
+                    .storePhotos(
+                            hospital
+                                    .getStorePhotos()
+                                    .stream()
+                                    .map(StorePhotoDto::toDto)
+                                    .collect(Collectors.toList())
+                    )
+                    .registrationInfo(hospital.getRegistrationInfo())
+                    .build();
+        }
+
+
+    }
 
 
 }

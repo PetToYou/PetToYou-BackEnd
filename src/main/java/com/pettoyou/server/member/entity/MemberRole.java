@@ -12,14 +12,14 @@ public class MemberRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long MemberRoleId;
+    private Long memberRoleId;
 
     @ManyToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "roleId")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     public static MemberRole of (Member member, Role role) {
