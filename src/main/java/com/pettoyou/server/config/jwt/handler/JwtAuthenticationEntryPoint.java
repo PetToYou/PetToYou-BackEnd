@@ -27,7 +27,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
          * 토큰 없는 경우
          */
         if (exception == null) {
-            log.info("[NULL TOKEN]");
             response.sendRedirect("/exception/entrypoint/nullToken");
         }
 
@@ -42,7 +41,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
          * 만료를 제외한 정상적이지 않은 토큰이 들어온 경우
          */
         if (Objects.equals(exception, CustomResponseStatus.BAD_JWT.getMessage())) {
-            log.info("[BAD TOKEN]");
             response.sendRedirect("/exception/entrypoint/badToken");
 
         }

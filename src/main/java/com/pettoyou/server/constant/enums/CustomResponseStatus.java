@@ -31,6 +31,7 @@ public enum CustomResponseStatus {
     MEMBER_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4001", "해당 유저를 찾을 수 없습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4002", "리프레시 토큰을 찾을 수 없습니다."),
     ROLE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4003", "해당 권한을 찾을 수 없습니다."),
+    PET_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4004", "해당 반려동물을 찾을 수 없습니다."),
 
     /***
      * 5000: NOT_MATCH
@@ -40,7 +41,8 @@ public enum CustomResponseStatus {
     /***
      * 6000: Internal_Server_Error
      */
-    INTERNAL_SERVER_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6000", "내부 서버 오류입니다.");
+    INTERNAL_SERVER_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6000", "내부 서버 오류입니다."),
+    S3_UPLOAD_FAIL(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6001", "S3에 파일을 업로드하지 못했습니다.");
 
 
     private final HttpStatusCode httpStatusCode;

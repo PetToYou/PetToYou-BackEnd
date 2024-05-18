@@ -55,11 +55,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = jwtUtil.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (ExpiredJwtException e) {
-            log.error("Enter [EXPIRED TOKEN]");
             request.setAttribute(EXCEPTION, CustomResponseStatus.EXPIRED_JWT.getMessage());
         } catch (JwtException | IllegalArgumentException | SignatureException
                  | UnsupportedJwtException | MalformedJwtException e) {
-            log.error("Enter [INVALID TOKEN]");
             request.setAttribute(EXCEPTION, CustomResponseStatus.BAD_JWT.getMessage());
         }
 
@@ -70,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 이 필터에 토큰 없어도 되는 애들 넣으면 될거같은데
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/v1/sign-in"};
+        String[] excludePath = {"/api/v1/auth/kakao"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }

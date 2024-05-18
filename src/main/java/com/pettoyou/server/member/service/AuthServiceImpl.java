@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MemberDto.Response.SignIn signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
-        Member findMember = findByEmail(oAuthInfoResponse.getEmail()).orElse(forceJoin(oAuthInfoResponse));
+        Member findMember = findByEmail(oAuthInfoResponse.getEmail()).orElseGet(() -> forceJoin(oAuthInfoResponse));
         String refreshToken = redisUtil.getData(RT + findMember.getEmail());
         if (refreshToken == null) {
             refreshToken = jwtUtil.createToken(findMember.getEmail(), TokenType.REFRESH_TOKEN);
@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
         if (refreshTokenInRedis == null) throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_FOUND);
 
-        redisUtil.deleteDate(RT+emailInToken);
+        redisUtil.deleteDate(RT + emailInToken);
         redisUtil.setData(LOGOUT, resolveToken, jwtUtil.getExpiration(resolveToken));
     }
 

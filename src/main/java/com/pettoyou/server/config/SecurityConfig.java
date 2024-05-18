@@ -32,8 +32,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 권한 규칙 설정 (API 명세에 맞게 수정 필요)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/v1/user/**").hasRole("USER")
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/member/**").hasRole("MEMBER")
                         .anyRequest().permitAll()
                 )
                 // 커스텀 JWT 핸들러 및 엔트리 포인트를 사용하기 위해 httpBasic disable
