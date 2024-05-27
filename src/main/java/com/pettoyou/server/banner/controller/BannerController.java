@@ -2,7 +2,10 @@ package com.pettoyou.server.banner.controller;
 
 import com.pettoyou.server.banner.dto.request.BannerRegisterRequestDto;
 import com.pettoyou.server.banner.dto.response.BannerRegisterResponseDto;
+import com.pettoyou.server.banner.dto.response.QueryRespDto;
+import com.pettoyou.server.banner.entity.enums.BannerType;
 import com.pettoyou.server.banner.service.BannerService;
+import com.pettoyou.server.banner.service.query.BannerQueryService;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -10,18 +13,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
 public class BannerController {
     private final BannerService bannerService;
+    private final BannerQueryService bannerQueryService;
 
     // 배너 등록
     @PostMapping("/banner")
     public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerRegister(
             @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
-            @RequestPart(value = "bannerImg")MultipartFile bannerImg
-            ) {
+            @RequestPart(value = "bannerImg") MultipartFile bannerImg
+    ) {
 
         BannerRegisterResponseDto response = bannerService.bannerRegister(bannerRegisterRequestDto, bannerImg);
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
@@ -31,7 +37,7 @@ public class BannerController {
     @PutMapping("/banner/{bannerId}")
     public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerModify(
             @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
-            @RequestPart(value = "bannerImg")MultipartFile bannerImg,
+            @RequestPart(value = "bannerImg") MultipartFile bannerImg,
             @PathVariable Long bannerId
     ) {
         BannerRegisterResponseDto response = bannerService.bannerModify(bannerRegisterRequestDto, bannerImg, bannerId);
@@ -45,5 +51,14 @@ public class BannerController {
     ) {
         bannerService.bannerDelete(bannerId);
         return ResponseEntity.ok().body(ApiResponse.createSuccess(null, CustomResponseStatus.SUCCESS));
+    }
+
+    @GetMapping("/banners")
+    public ResponseEntity<ApiResponse<List<QueryRespDto>>> bannerQueryByBannerType(
+            @RequestParam BannerType bannerType
+    ) {
+        List<QueryRespDto> response = bannerQueryService.queryBannersByType(bannerType);
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+
     }
 }
