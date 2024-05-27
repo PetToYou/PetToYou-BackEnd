@@ -14,4 +14,6 @@ public interface BannerService {
             BannerRegisterRequestDto bannerRegisterRequestDto,
             MultipartFile bannerImg,
             Long bannerId);
+
+    void bannerDelete(Long bannerId);
 }

@@ -7,12 +7,16 @@ import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.photo.entity.PhotoData;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE banner SET banner_status = 'DEACTIVATE' WHERE banner_id = ?")
+@SQLRestriction("banner_status = 'ACTIVATE'")
 @Table(name = "banner")
 public class Banner extends BaseEntity {
 

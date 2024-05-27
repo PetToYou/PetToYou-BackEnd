@@ -39,4 +39,11 @@ public class BannerController {
     }
 
     // 배너 삭제
+    @DeleteMapping("/banner/{bannerId}")
+    public ResponseEntity<ApiResponse<String>> bannerModify(
+            @PathVariable Long bannerId
+    ) {
+        bannerService.bannerDelete(bannerId);
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(null, CustomResponseStatus.SUCCESS));
+    }
 }

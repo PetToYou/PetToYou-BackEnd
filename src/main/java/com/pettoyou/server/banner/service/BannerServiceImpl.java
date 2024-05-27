@@ -44,4 +44,12 @@ public class BannerServiceImpl implements BannerService{
                 .bannerId(banner.getBannerId())
                 .build();
     }
+
+    @Override
+    public void bannerDelete(Long bannerId) {
+        Banner banner = bannerRepository.findById(bannerId)
+                .orElseThrow(() -> new CustomException(CustomResponseStatus.BANNER_NOT_FOUND));
+
+        bannerRepository.delete(banner);
+    }
 }
