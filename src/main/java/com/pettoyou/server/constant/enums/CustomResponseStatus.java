@@ -32,6 +32,7 @@ public enum CustomResponseStatus {
     REFRESH_TOKEN_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4002", "리프레시 토큰을 찾을 수 없습니다."),
     ROLE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4003", "해당 권한을 찾을 수 없습니다."),
     PET_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4004", "해당 반려동물을 찾을 수 없습니다."),
+    BANNER_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4005", "해당 배너를 찾을 수 없습니다."),
 
     /***
      * 5000: NOT_MATCH

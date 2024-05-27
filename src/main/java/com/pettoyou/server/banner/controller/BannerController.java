@@ -7,10 +7,7 @@ import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -21,7 +18,7 @@ public class BannerController {
 
     // 배너 등록
     @PostMapping("/banner")
-    public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> registerBanner(
+    public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerRegister(
             @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
             @RequestPart(value = "bannerImg")MultipartFile bannerImg
             ) {
@@ -31,6 +28,15 @@ public class BannerController {
     }
 
     // 배너 수정
+    @PutMapping("/banner/{bannerId}")
+    public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerModify(
+            @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
+            @RequestPart(value = "bannerImg")MultipartFile bannerImg,
+            @PathVariable Long bannerId
+    ) {
+        BannerRegisterResponseDto response = bannerService.bannerModify(bannerRegisterRequestDto, bannerImg, bannerId);
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+    }
 
     // 배너 삭제
 }

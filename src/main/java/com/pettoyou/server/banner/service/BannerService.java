@@ -9,4 +9,9 @@ public interface BannerService {
     BannerRegisterResponseDto bannerRegister(
             BannerRegisterRequestDto bannerRegisterRequestDto,
             MultipartFile bannerImg);
+
+    BannerRegisterResponseDto bannerModify(
+            BannerRegisterRequestDto bannerRegisterRequestDto,
+            MultipartFile bannerImg,
+            Long bannerId);
 }

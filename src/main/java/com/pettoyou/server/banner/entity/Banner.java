@@ -40,4 +40,18 @@ public class Banner extends BaseEntity {
     public static Banner of(BannerRegisterRequestDto bannerDto, PhotoData bannerImg) {
         return new Banner(bannerDto.bannerName(), bannerImg, bannerDto.bannerLink(), bannerDto.bannerType());
     }
+
+    public void bannerModify(BannerRegisterRequestDto bannerDto, PhotoData bannerImg) {
+        this.bannerName = bannerDto.bannerName();
+        this.bannerImg = bannerImg;
+        this.bannerLink = bannerDto.bannerLink();
+    }
+
+    public String getImgBucket() {
+        return bannerImg.getBucket();
+    }
+
+    public String getImgKey() {
+        return bannerImg.getObject();
+    }
 }
