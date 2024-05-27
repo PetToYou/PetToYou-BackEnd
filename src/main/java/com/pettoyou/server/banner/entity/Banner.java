@@ -1,8 +1,10 @@
 package com.pettoyou.server.banner.entity;
 
+import com.pettoyou.server.banner.dto.request.BannerRegisterRequestDto;
 import com.pettoyou.server.banner.entity.enums.BannerType;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
+import com.pettoyou.server.photo.entity.PhotoData;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +20,7 @@ public class Banner extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bannerId;
     private String bannerName;
-    private String bannerImg;
+    private PhotoData bannerImg;
     private String bannerLink;
 
     @Enumerated(EnumType.STRING)
@@ -26,8 +28,16 @@ public class Banner extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private BaseStatus bannerStatus;
-    //activated,
 
+    private Banner(String bannerName, PhotoData bannerImg, String bannerLink, BannerType bannerType) {
+        this.bannerName = bannerName;
+        this.bannerImg = bannerImg;
+        this.bannerLink = bannerLink;
+        this.bannerType = bannerType;
+        this.bannerStatus = BaseStatus.ACTIVATE;
+    }
 
-
+    public static Banner of(BannerRegisterRequestDto bannerDto, PhotoData bannerImg) {
+        return new Banner(bannerDto.bannerName(), bannerImg, bannerDto.bannerLink(), bannerDto.bannerType());
+    }
 }
