@@ -5628,11 +5628,11 @@ values (1, 'Parking available, Zero - pay accepted'),
        (1853, 'Parking available, Zero - pay accepted');
 
 -- Inserting data into banner
-insert into banner (banner_id, banner_name, banner_link, banner_img, banner_status, banner_type)
-values (1, 'Summer Sale', 'https://example.com/summer-sale', 'https://example.com/summer-sale-img.jpg', 'ACTIVATE',
-        'MAIN'),
-       (2, 'Winter Wellness', 'https://example.com/winter-wellness', 'https://example.com/winter-wellness-img.jpg',
-        'ACTIVATE', 'HOSPITAL');
+# insert into banner (banner_id, banner_name, banner_link, banner_img, banner_status, banner_type)
+# values (1, 'Summer Sale', 'https://example.com/summer-sale', 'https://example.com/summer-sale-img.jpg', 'ACTIVATE',
+#         'MAIN'),
+#        (2, 'Winter Wellness', 'https://example.com/winter-wellness', 'https://example.com/winter-wellness-img.jpg',
+#         'ACTIVATE', 'HOSPITAL');
 
 -- Inserting data into member
 insert into member (member_id, name, nick_name, email, phone, provider, member_status)

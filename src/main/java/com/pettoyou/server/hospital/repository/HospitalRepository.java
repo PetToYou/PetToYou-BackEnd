@@ -1,6 +1,7 @@
 package com.pettoyou.server.hospital.repository;
 
 import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.hospital.repository.custom.HospitalCustomRepository;
 import com.pettoyou.server.store.interfaces.StoreInterface;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.time.LocalTime;
@@ -13,7 +14,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface HospitalRepository extends JpaRepository<Hospital, Long> {
+public interface HospitalRepository extends JpaRepository<Hospital, Long>, HospitalCustomRepository {
   @EntityGraph(
     attributePaths = { "storePhotos" },
     type = EntityGraph.EntityGraphType.LOAD
@@ -40,7 +41,9 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
     FROM Hospital as h 
     LEFT JOIN h.businessHours as b on b.dayOfWeek=:dayOfWeek 
     LEFT JOIN h.reviews as r  
-    WHERE ST_Contains(ST_BUFFER(ST_PointFromText(:point, 4326), :radius), h.address.point) GROUP BY h,r,b ORDER BY distance asc
+    WHERE ST_Contains(ST_BUFFER(ST_PointFromText(:point, 4326), :radius), h.address.point)
+    GROUP BY h,r,b
+    ORDER BY distance asc
 """
 
   )
