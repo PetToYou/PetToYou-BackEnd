@@ -3,6 +3,7 @@ package com.pettoyou.server.hospital.service;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.HospitalListDto;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
@@ -42,13 +43,13 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public Page<HospitalListDto.Response> getHospitals(
             Pageable pageable,
-            HospitalListDto.Request location
+            HospitalQueryInfo queryInfo
     ) {
 
         Page<StoreInterface> hospitals = hospitalRepository.findHospitals(
                 pageable,
-                location.toPointString(),
-                location.getRadius(),
+                queryInfo.toPointString(),
+                queryInfo.radius(),
                 getDayOfWeekNum()
         );
 

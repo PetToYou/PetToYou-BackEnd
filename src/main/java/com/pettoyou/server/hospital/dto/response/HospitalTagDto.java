@@ -8,6 +8,8 @@ import lombok.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.pettoyou.server.hospital.entity.enums.HospitalTagType.*;
+
 @Builder
 public record HospitalTagDto(
         List<String> services,
@@ -23,10 +25,10 @@ public record HospitalTagDto(
         for (TagMapper hospitalTagMappers : hospitalTags) {
             HospitalTagType tagType = hospitalTagMappers.getHospitalTag().getTagType();
 
-            if (tagType.equals(HospitalTagType.SERVICE)) serviceList.add(hospitalTagMappers.getHospitalTag().getTagContent());
-            else if (tagType.equals(HospitalTagType.BUSINESSHOUR)) businessHourList.add(hospitalTagMappers.getHospitalTag().getTagContent());
-            else if (tagType.equals(HospitalTagType.SPECIALITIES)) specialitiesList.add(hospitalTagMappers.getHospitalTag().getTagContent());
-            else if (tagType.equals(HospitalTagType.EMERGENCY)) emergency = hospitalTagMappers.getHospitalTag().getTagContent();
+            if (tagType.equals(SERVICE)) serviceList.add(hospitalTagMappers.getHospitalTag().getTagContent());
+            else if (tagType.equals(BUSINESSHOUR)) businessHourList.add(hospitalTagMappers.getHospitalTag().getTagContent());
+            else if (tagType.equals(SPECIALITIES)) specialitiesList.add(hospitalTagMappers.getHospitalTag().getTagContent());
+            else if (tagType.equals(EMERGENCY)) emergency = hospitalTagMappers.getHospitalTag().getTagContent();
         }
 
         return HospitalTagDto.builder()

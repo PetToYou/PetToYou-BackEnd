@@ -3,6 +3,7 @@ package com.pettoyou.server.hospital.controller;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.hospital.dto.HospitalListDto;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.service.HospitalService;
 
@@ -19,17 +20,16 @@ public class HospitalController {
 
     private final HospitalService hospitalService;
 
-    //특정 반경 내의 병원 조회 -> 모든 병원들을 조회함
+    // 특정 반경 내의 모든 병원 조회
     @GetMapping()
-    public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalList(Pageable pageable, @RequestBody HospitalListDto.Request location){
+    public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalList(Pageable pageable, @ModelAttribute HospitalQueryInfo queryInfo){
 
-        Page<HospitalListDto.Response> hospitalList = hospitalService.getHospitals(pageable, location);
+        Page<HospitalListDto.Response> hospitalList = hospitalService.getHospitals(pageable, queryInfo);
 
         return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalList, CustomResponseStatus.SUCCESS));
-
     }
 
-    //특정 반경 + 영업 중
+    //특정 반경 + 영업 중 인 병원 조회
     @GetMapping("/main")
     public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalOpenList(Pageable pageable, @RequestBody HospitalListDto.Request location){
 
@@ -37,7 +37,7 @@ public class HospitalController {
         return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalOpenList, CustomResponseStatus.SUCCESS));
     }
 
-    //병원 상세페이지
+    // 병원 상세페이지 조회
     @GetMapping("/{hospitalId}")
     public ResponseEntity<ApiResponse<HospitalDetail>> getHospitalDetail(@PathVariable Long hospitalId){
         HospitalDetail response = hospitalService.getHospitalDetail(hospitalId);
