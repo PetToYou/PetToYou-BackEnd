@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
-import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalDateTime;
 
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
  * DTO for {@link com.pettoyou.server.store.entity.BusinessHour}
  */
 
-public class BusinessHourDto {
+public class BusinessHourDtos {
 
     @Getter
     @AllArgsConstructor
@@ -37,9 +36,9 @@ public class BusinessHourDto {
         Long storeId;
 
 
-        public static BusinessHourDto.Response toDto(BusinessHour businessHour){
+        public static BusinessHourDtos.Response toDto(BusinessHour businessHour){
 
-            return BusinessHourDto.Response.builder()
+            return BusinessHourDtos.Response.builder()
                     .createdAt(businessHour.getCreatedAt())
                     .modifiedAt(businessHour.getModifiedAt())
                     .businessHourId(businessHour.getBusinessHourId())

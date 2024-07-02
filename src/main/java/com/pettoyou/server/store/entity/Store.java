@@ -46,7 +46,6 @@ public abstract class Store extends BaseEntity {
     private String notice;
 
 
-
     private String websiteLink;
 
     @Column(columnDefinition = "TEXT")
@@ -55,15 +54,11 @@ public abstract class Store extends BaseEntity {
     private String storeInfoPhoto;
 
 
-
-
-
     @Enumerated(EnumType.STRING)
     private BaseStatus storeStatus;
 
     @Embedded
     private Address address;
-
 
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
@@ -80,11 +75,6 @@ public abstract class Store extends BaseEntity {
 
     @OneToOne(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private RegistrationInfo registrationInfo;
-
-
-
-
-
 
 
 }

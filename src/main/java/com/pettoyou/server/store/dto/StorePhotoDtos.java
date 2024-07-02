@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StorePhotoDto  {
+public class StorePhotoDtos {
 
     LocalDateTime createdAt;
     LocalDateTime modifiedAt;
@@ -31,9 +31,9 @@ public class StorePhotoDto  {
     Long storeId;
 
 
-    public static StorePhotoDto toDto(StorePhoto storePhoto){
+    public static StorePhotoDtos toDto(StorePhoto storePhoto){
 
-        return StorePhotoDto.builder()
+        return StorePhotoDtos.builder()
                 .createdAt(storePhoto.getCreatedAt())
                 .modifiedAt(storePhoto.getModifiedAt())
                 .storePhotoId(storePhoto.getStorePhotoId())

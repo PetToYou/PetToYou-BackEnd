@@ -3,19 +3,14 @@ package com.pettoyou.server.hospital.controller;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.hospital.dto.HospitalListDto;
-import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.service.HospitalService;
-import com.pettoyou.server.hospital.dto.HospitalDto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,9 +19,7 @@ public class HospitalController {
 
     private final HospitalService hospitalService;
 
-
-
-    //특정 반경 내에
+    //특정 반경 내의 병원 조회 -> 모든 병원들을 조회함
     @GetMapping()
     public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalList(Pageable pageable, @RequestBody HospitalListDto.Request location){
 
@@ -46,30 +39,13 @@ public class HospitalController {
 
     //병원 상세페이지
     @GetMapping("/{hospitalId}")
-    public ResponseEntity<ApiResponse<HospitalDto.Response>> getHospital(@PathVariable Long hospitalId){
+    public ResponseEntity<ApiResponse<HospitalDetail>> getHospitalDetail(@PathVariable Long hospitalId){
+        HospitalDetail response = hospitalService.getHospitalDetail(hospitalId);
 
-        HospitalDto.Response hospital = hospitalService.getHospitalById(hospitalId);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(hospital, CustomResponseStatus.SUCCESS));
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 
-//    @PostMapping()
-//    public ResponseEntity<ApiResponse<String>> registerHospital(@RequestBody HospitalDto.Request hospital){
-//
-//
-//
-//        /*hospitalService.saved()*/
-//
-//        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-//                .path("/{id}")
-//                .buildAndExpand()
-//                //병원 아이디 값 넣기 hospitalDto.getStoreId();?
-//                .toUri();
-//
-//        return ResponseEntity.created(location).body(ApiResponse.createSuccess("등록 완료", CustomResponseStatus.SUCCESS));
-//    }
-
-
-
+    // 병원 조회 필터링
 
 
 

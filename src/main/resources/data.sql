@@ -5661,15 +5661,15 @@ values (1, 1, 1),
 
 
 
-# -- Inserting data into hospital_tag
-# insert into hospital_tag (hospital_tag_id, tag_content, tag_type)
-# values (1, '24/7 Emergency', 'SERVICE'),
-#        (2, 'Orthopedics Specialist', 'SPECIALITIES');
-#
-# -- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
-# insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id)
-# values (1, 1, 1),
-#        (2, 2, 1);
+-- Inserting data into hospital_tag
+insert into hospital_tag (hospital_tag_id, tag_content, tag_type)
+values (1, '24/7 Emergency', 'SERVICE'),
+       (2, 'Orthopedics Specialist', 'SPECIALITIES');
+
+-- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
+insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id)
+values (1, 1, 1),
+       (2, 2, 1);
 
 -- Inserting data into store_photo (Assuming Store data exists)
 insert into store_photo (store_photo_id, store_id, store_photo_url, photo_order, photo_status, store_type)

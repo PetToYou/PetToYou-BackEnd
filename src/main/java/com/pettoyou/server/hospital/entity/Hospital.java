@@ -7,6 +7,9 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -19,11 +22,10 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "hospital")
 public class Hospital extends Store {
 
+    // 병원의 기본 정보 설명 (태그에 담기지 못하는 애들)
+    // 주차가능, 제로페이 가능 등등...
     private String additionalServiceTag;
 
-//    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
-//    private List<TagMapper> tags = new ArrayList<>();
-
-    //순환참조 문제 발생.
-
+    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
+    private List<TagMapper> tags = new ArrayList<>();
 }

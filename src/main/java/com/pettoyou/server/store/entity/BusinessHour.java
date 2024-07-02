@@ -1,6 +1,5 @@
 package com.pettoyou.server.store.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.annotation.Nullable;
@@ -28,10 +27,12 @@ public class BusinessHour extends BaseEntity {
     private Integer dayOfWeek;
 
     private Time startTime;
+
     private Time endTime;
 
     @Nullable
     private Time breakStartTime;
+
     @Nullable
     private Time breakEndTime;
 

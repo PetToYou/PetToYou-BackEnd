@@ -5,7 +5,6 @@ import com.pettoyou.server.hospital.repository.custom.HospitalCustomRepository;
 import com.pettoyou.server.store.interfaces.StoreInterface;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -20,19 +19,6 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long>, Hospi
     type = EntityGraph.EntityGraphType.LOAD
   )
   Optional<Hospital> findDistinctHospitalByStoreId(Long hospitalId);
-
-  //   @Query(
-  //     """
-  //      SELECT h, bh, sp FROM Hospital as h
-  //      LEFT JOIN BusinessHour as bh
-  //      LEFT JOIN StorePhoto as sp
-  //      WHERE h.storeId = :hospitalId
-
-  //   """
-  //   )
-  //   Optional<Hospital> findDistinctHospitalByStoreId(
-  //     @Param("hospitalId") Long hospitalId
-  //   );
 
   // 해당 반경 안에 있는 병원
   @Query(
