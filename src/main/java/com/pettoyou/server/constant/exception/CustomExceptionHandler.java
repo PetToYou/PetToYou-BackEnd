@@ -10,12 +10,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.AccessDeniedException;
 import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
+
     /***
      * @Valid 애너테이션의 유효성 검사를 통과하지 못한 경우 해당 컨트롤러에서 처리
      * @param bindingResult : 유효성 검사에 실패한 값들이 Map 타입으로 들어옵니다.
@@ -34,12 +37,14 @@ public class CustomExceptionHandler {
     @ExceptionHandler({CustomException.class, Exception.class})
     public ResponseEntity<ApiResponse<String>> handleException(Exception e) {
         if (!(e instanceof CustomException custom)) {
-            log.error("[ERROR] : {}", e.getMessage());
+            String stackTrace = getStackTraceAsString(e);
+            log.error("[ERROR] : {}\n{}", e.getMessage(), stackTrace);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.createError(CustomResponseStatus.INTERNAL_SERVER_ERROR));
         }
 
-        log.error("[ERROR] : {}", e.getMessage());
+        String stackTrace = getStackTraceAsString(e);
+        log.error("[ERROR] : {}\n{}", e.getMessage(), stackTrace);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.createError(custom.getCustomResponseStatus()));
     }
@@ -51,7 +56,16 @@ public class CustomExceptionHandler {
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<String>> handleAccessDeniedException(CustomException e) {
+        String stackTrace = getStackTraceAsString(e);
+        log.error("[ERROR] : {}\n{}", e.getMessage(), stackTrace);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.createError(e.getCustomResponseStatus()));
+    }
+
+    private String getStackTraceAsString(Throwable e) {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        e.printStackTrace(printWriter);
+        return stringWriter.toString();
     }
 }

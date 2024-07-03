@@ -2,24 +2,20 @@ package com.pettoyou.server.hospital.service;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
-import com.pettoyou.server.hospital.dto.HospitalListDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
-import com.pettoyou.server.store.interfaces.StoreInterface;
-import jakarta.persistence.EntityNotFoundException;
+import com.pettoyou.server.store.dto.response.StoreQueryInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -39,42 +35,34 @@ public class HospitalServiceImpl implements HospitalService {
         return HospitalDetail.toDto(findHospital);
     }
 
-    //위치기반 근처 병원 조회 (일반)
+    // 특정 반경내의 병원 조회
     @Override
-    public Page<HospitalListDto.Response> getHospitals(
+    public Page<StoreQueryInfo> getHospitals(
+            Pageable pageable,
+            HospitalQueryInfo queryInfo
+    ) {
+        return hospitalRepository.findHospitalsWithinRadius(
+                pageable,
+                getDayOfWeekNum(),
+                queryInfo.toPointString(),
+                queryInfo.radius()
+        );
+    }
+
+    // 특정 반경 + 영업중인 병원 조회
+    public Page<StoreQueryInfo> getHospitalsOpen(
             Pageable pageable,
             HospitalQueryInfo queryInfo
     ) {
 
-        Page<StoreInterface> hospitals = hospitalRepository.findHospitals(
+        return hospitalRepository.findHospitalsWithinRadiusAndOpen(
                 pageable,
+                getDayOfWeekNum(),
                 queryInfo.toPointString(),
                 queryInfo.radius(),
-                getDayOfWeekNum()
-        );
-
-        List<HospitalListDto.Response> hospitalList = HospitalListDto.Response.toListDto(hospitals.getContent());
-
-        return new PageImpl<>(hospitalList, pageable, hospitals.getTotalElements());
-    }
-
-    // 특정 반경 + 영업중인 병원 조회
-    public Page<HospitalListDto.Response> getHospitalsOpen(
-            Pageable pageable,
-            HospitalListDto.Request location
-    ) {
-
-        Page<StoreInterface> hospitals = hospitalRepository.findHospitalsOpen(
-                pageable,
-                location.toPointString(),
-                location.getRadius(),
-                getDayOfWeekNum(),
                 LocalTime.now()
         );
 
-        List<HospitalListDto.Response> result = HospitalListDto.Response.toListDto(hospitals.getContent());
-
-        return new PageImpl<>(result, pageable, hospitals.getTotalElements());
     }
 
     // Get 요일 숫자 데이터 1~7

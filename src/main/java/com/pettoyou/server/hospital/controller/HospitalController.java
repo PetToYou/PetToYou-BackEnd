@@ -2,7 +2,7 @@ package com.pettoyou.server.hospital.controller;
 
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
-import com.pettoyou.server.hospital.dto.HospitalListDto;
+import com.pettoyou.server.store.dto.response.StoreQueryInfo;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.service.HospitalService;
@@ -22,19 +22,18 @@ public class HospitalController {
 
     // 특정 반경 내의 모든 병원 조회
     @GetMapping()
-    public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalList(Pageable pageable, @ModelAttribute HospitalQueryInfo queryInfo){
+    public ResponseEntity<ApiResponse<Page<StoreQueryInfo>>> getHospitalList(Pageable pageable, @ModelAttribute HospitalQueryInfo queryInfo){
+        Page<StoreQueryInfo> response = hospitalService.getHospitals(pageable, queryInfo);
 
-        Page<HospitalListDto.Response> hospitalList = hospitalService.getHospitals(pageable, queryInfo);
-
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalList, CustomResponseStatus.SUCCESS));
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 
     //특정 반경 + 영업 중 인 병원 조회
     @GetMapping("/main")
-    public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalOpenList(Pageable pageable, @RequestBody HospitalListDto.Request location){
+    public ResponseEntity<ApiResponse<Page<StoreQueryInfo>>> getHospitalOpenList(Pageable pageable, @ModelAttribute HospitalQueryInfo queryInfo){
+        Page<StoreQueryInfo> result =hospitalService.getHospitalsOpen(pageable, queryInfo);
 
-        Page<HospitalListDto.Response> hospitalOpenList =hospitalService.getHospitalsOpen(pageable, location);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalOpenList, CustomResponseStatus.SUCCESS));
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(result, CustomResponseStatus.SUCCESS));
     }
 
     // 병원 상세페이지 조회

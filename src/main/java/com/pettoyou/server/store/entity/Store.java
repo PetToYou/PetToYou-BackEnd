@@ -5,7 +5,6 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -40,11 +39,9 @@ public abstract class Store extends BaseEntity {
 
     private String storePhone;
 
-
     private String thumbnailUrl;
 
     private String notice;
-
 
     private String websiteLink;
 
@@ -53,13 +50,11 @@ public abstract class Store extends BaseEntity {
 
     private String storeInfoPhoto;
 
-
     @Enumerated(EnumType.STRING)
     private BaseStatus storeStatus;
 
     @Embedded
     private Address address;
-
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<BusinessHour> businessHours = new ArrayList<>();
@@ -75,6 +70,4 @@ public abstract class Store extends BaseEntity {
 
     @OneToOne(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private RegistrationInfo registrationInfo;
-
-
 }
