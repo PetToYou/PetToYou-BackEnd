@@ -7,6 +7,7 @@ import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.store.dto.response.StoreQueryInfo;
+import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,14 +31,13 @@ public class HospitalServiceImpl implements HospitalService {
     public HospitalDetail getHospitalDetail(Long hospitalId) {
         Hospital findHospital = hospitalRepository.findDistinctHospitalByStoreId(hospitalId)
                 .orElseThrow(() -> new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND));
-        //Repository에서 Optional로 반환 -> orElseThrow로 exception 처리 가능. 값을 꺼냈으므로 Optional이 아닌 hospital 객체에 담아준다.
 
         return HospitalDetail.toDto(findHospital);
     }
 
     // 특정 반경내의 병원 조회
     @Override
-    public Page<StoreQueryInfo> getHospitals(
+    public Page<StoreQueryTotalInfo> getHospitals(
             Pageable pageable,
             HospitalQueryInfo queryInfo
     ) {

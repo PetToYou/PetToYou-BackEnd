@@ -1,5 +1,6 @@
 package com.pettoyou.server.store.dto.response;
 
+
 import java.sql.Time;
 import java.time.LocalTime;
 
@@ -14,7 +15,6 @@ public record StoreQueryInfo(
         Long reviewCount,
         Double ratingAvg,
         Double distance
-
 ) {
 
     public StoreQueryInfo(Long storeId, String storeName, String thumbnailUrl, Time startTime, Time endTime, Time breakStartTime, Time breakEndTime, Long reviewCount, Double ratingAvg, Double distance) {
