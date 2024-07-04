@@ -45,6 +45,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                                 businessHour.breakEndTime.as("breakEndTime"),
                                 review.reviewId.count().as("reviewCount"),
                                 review.rating.avg().as("ratingAvg"),
+//                                hospital.tags.as(""), // TODO
                                 Expressions.stringTemplate(
                                         "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
                                         point, hospital.address.point
