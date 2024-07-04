@@ -13,7 +13,7 @@ public interface HospitalService {
 
   //테스트 용
 
-  //void registerHospital(HospitalDto.Request hospital);
+  String registerHospital(HospitalDto.Request hospital);
 
   HospitalDto.Response getHospitalById(Long hospitalId);
 

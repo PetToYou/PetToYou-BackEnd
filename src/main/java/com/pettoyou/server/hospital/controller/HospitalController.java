@@ -7,7 +7,9 @@ import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.service.HospitalService;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/hospital")
+@Slf4j
 public class HospitalController {
 
     private final HospitalService hospitalService;
@@ -52,21 +55,18 @@ public class HospitalController {
         return ResponseEntity.ok().body(ApiResponse.createSuccess(hospital, CustomResponseStatus.SUCCESS));
     }
 
-//    @PostMapping()
-//    public ResponseEntity<ApiResponse<String>> registerHospital(@RequestBody HospitalDto.Request hospital){
-//
-//
-//
-//        /*hospitalService.saved()*/
-//
-//        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-//                .path("/{id}")
-//                .buildAndExpand()
-//                //병원 아이디 값 넣기 hospitalDto.getStoreId();?
-//                .toUri();
-//
-//        return ResponseEntity.created(location).body(ApiResponse.createSuccess("등록 완료", CustomResponseStatus.SUCCESS));
-//    }
+    @PostMapping()
+    public ResponseEntity<ApiResponse<String>> registerHospital(@Valid @RequestBody HospitalDto.Request hospital){
+
+
+        String hospitalId = hospitalService.registerHospital(hospital);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(hospitalId)
+                .toUri();
+
+        return ResponseEntity.created(location).body(ApiResponse.createSuccess("등록 완료", CustomResponseStatus.SUCCESS));
+    }
 
 
 

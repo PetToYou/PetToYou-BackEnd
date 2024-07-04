@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -59,17 +61,19 @@ public abstract class Store extends BaseEntity {
 
 
     @Enumerated(EnumType.STRING)
-    private BaseStatus storeStatus;
+    private BaseStatus storeStatus=BaseStatus.ACTIVATE;
 
     @Embedded
     private Address address;
 
 
 
-    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BusinessHour> businessHours = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<StorePhoto> storePhotos = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
@@ -78,10 +82,30 @@ public abstract class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToOne(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "registration_info_id")
     private RegistrationInfo registrationInfo;
 
 
+
+    protected Store(Long storeId, String storeName, String storePhone, String thumbnailUrl, String notice, Address address,
+                 String websiteLink, BaseStatus storeStatus, String storeInfo, String storeInfoPhoto,
+                 RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos) {
+        this.storeId = storeId;
+        this.storeName = storeName;
+        this.storePhone = storePhone;
+        this.thumbnailUrl = thumbnailUrl;
+        this.notice = notice;
+        this.address = address;
+        this.websiteLink = websiteLink;
+        this.storeStatus = storeStatus;
+        this.storeInfo = storeInfo;
+        this.storeInfoPhoto = storeInfoPhoto;
+        this.registrationInfo = registrationInfo;
+        this.businessHours = businessHours;
+        this.reviews = reviews;
+        this.storePhotos = storePhotos;
+    }
 
 
 

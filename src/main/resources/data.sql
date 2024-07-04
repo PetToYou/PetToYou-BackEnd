@@ -5645,9 +5645,11 @@ values (1, 1, 'Appointment Reminder', 'Your appointment is scheduled for tomorro
        (2, 2, 'Welcome to PetCare', 'Thank you for joining PetCare.', 'NEW_MEMBER', 'ACTIVATE');
 
 -- Inserting data into pet (Assuming Member data exists)
-insert into pet (pet_id, member_id, pet_name, species, age, birth, adoption_date, sharing_st, pet_status)
-values (1, 1, 'Buddy', 'Dog', 3, '2021-03-10', '2021-03-20', false, 'ACTIVATE'),
-       (2, 2, 'Whiskers', 'Cat', 5, '2019-05-05', '2019-05-15', true, 'ACTIVATE');
+insert into pet (pet_id, member_id, pet_name, species, pet_type, birth, adoption_date, bmi, weight, register_number, neutering_status, basic_vaccination_status, allergy, caution, pet_status)
+values
+    (1, 1, 'Buddy', '포메라니안', 'DOG', '2021-03-10', '2021-03-20', 'NORMAL', 4.5, '123456789', 'NEUTERED', 'COMPLETED', 'NONE', 'NONE', 'ACTIVATE'),
+    (2, 2, 'Whiskers', '러시안블루', 'CAT', '2019-05-05', '2019-05-15', 'THIN', 3.2, '987654321', 'NOT_NEUTERED', 'PENDING', 'NONE', 'CAUTION_WITH_OTHER_PETS', 'ACTIVATE');
+
 
 insert into role (role_id, role_type)
 values (1, 'ROLE_MEMBER'),
@@ -5680,9 +5682,9 @@ values (1, 1, 1, 'HOSPITAL'),
        (2, 2, 1, 'HOSPITAL');
 
 -- Inserting data into registration_info (Assuming Store data exists)
-insert into registration_info (registration_info_id, store_id, store_type, ceo_name, ceo_phone, ceo_email,
+insert into registration_info (registration_info_id, store_type, ceo_name, ceo_phone, ceo_email,
                                business_number)
-values (1,1, 'HOSPITAL', 'CEO Name', '01000000000', 'ceo@example.com', '123-45-67890');
+values (1, 'HOSPITAL', 'CEO Name', '01000000000', 'ceo@example.com', '123-45-67890');
 
 -- Inserting data into reserve (Assuming Store, Pet, and Member data exists)
 insert into reserve (reserve_id, store_id, pet_id, member_id, reserve_time, reserve_status)
@@ -5695,8 +5697,7 @@ values (1, 1, 'HOSPITAL', 1, '09:00', '18:00', '12:00', '13:00', true),  -- 월�
        (2, 1, 'HOSPITAL', 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
        (3, 1, 'HOSPITAL', 3, '10:00', '17:00', NULL, NULL, true),        -- 수요일, 점심시간 없음
        (4, 1, 'HOSPITAL', 4, '09:00', '18:00', '12:00', '13:00', true),  -- 목요일
-       (5, 1, 'HOSPITAL', 5, '09:00', '19:00', NULL, NULL, true),        -- 금요일, 점심시간 길게
-       (6, 1, 'HOSPITAL', 6, '00:00', '00:00', NULL, NULL, false),       -- 토요일, 휴무
+       (5, 1, 'HOSPITAL', 5, '09:00', '19:00', NULL, NULL, true),        -- 금요일, 점심시간 길게       (6, 1, 'HOSPITAL', 6, '00:00', '00:00', NULL, NULL, false),       -- 토요일, 휴무
        (7, 1, 'HOSPITAL', 7, '09:00', '15:00', NULL, NULL, true),        -- 일요일, 점심시간 없음
        (8, 2, 'HOSPITAL', 1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
        (9, 2, 'HOSPITAL', 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일

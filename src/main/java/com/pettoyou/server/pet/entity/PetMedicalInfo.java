@@ -19,7 +19,7 @@ public class PetMedicalInfo {
     @Enumerated(EnumType.STRING)
     private Bmi bmi;
 
-    private Long registerNumber;
+    private String registerNumber;
 
     private String neuteringStatus;
 

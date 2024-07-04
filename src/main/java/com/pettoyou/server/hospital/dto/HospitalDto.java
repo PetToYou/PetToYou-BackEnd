@@ -2,6 +2,7 @@ package com.pettoyou.server.hospital.dto;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.store.dto.AddressDto;
 import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import com.pettoyou.server.store.dto.StorePhotoDto;
@@ -39,25 +40,18 @@ public class HospitalDto{
 
         private String websiteLink;
         private String hospitalInfo;
+
+        private String thumbnailUrl;
+        private String storeInfo;
+        private String storeInfoPhoto;
+
 //        private String hospitalInfoPhoto; -> s3 이미지
-        @NotNull
-        private String zipCode;
-        @NotNull
-        private String sido;
-        @NotNull
-        private String sigungu;
-
-        private String eupmyun;
-        @NotNull
-        private String doro;
 
         @NotNull
-        private double longitude;
-        @NotNull
-        private double latitude;
+        private AddressDto address;
 
 
-        private List<BusinessHourDto> businessHours;
+        private List<BusinessHourDto.Request> businessHours;
 
         private RegistrationInfoDto.Request registrationInfo;
 
@@ -106,7 +100,7 @@ public class HospitalDto{
 
         //    private List<Review> reviews = new ArrayList<>();
 //    //페이징
-        private RegistrationInfo registrationInfo;
+        private RegistrationInfoDto.Response registrationInfo;
 
 
         public static HospitalDto.Response toHospitalDto(Hospital hospital){
@@ -136,7 +130,7 @@ public class HospitalDto{
                                     .map(StorePhotoDto::toDto)
                                     .collect(Collectors.toList())
                     )
-                    .registrationInfo(hospital.getRegistrationInfo())
+                    .registrationInfo(RegistrationInfoDto.Response.toRegistrationInfoDto(hospital.getRegistrationInfo()))
                     .build();
         }
 
