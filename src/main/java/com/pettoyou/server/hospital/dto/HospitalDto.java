@@ -7,8 +7,9 @@ import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import com.pettoyou.server.store.dto.StorePhotoDto;
 import com.pettoyou.server.store.entity.Address;
-import com.pettoyou.server.store.entity.RegistrationInfo;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,33 +30,32 @@ public class HospitalDto{
     public static class Request {
 
         @NotNull
+        @Size(min=2, max=20)
         private String hospitalName;
 
         @NotNull
+        @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$")
+        //하이픈 포함
         private String hospitalPhone;
 
         private String notice;
 
         private String additionalServiceTag;
-
         private String websiteLink;
-        private String hospitalInfo;
-
         private String thumbnailUrl;
         private String storeInfo;
         private String storeInfoPhoto;
 
-//        private String hospitalInfoPhoto; -> s3 이미지
+
 
         @NotNull
         private AddressDto address;
-
 
         private List<BusinessHourDto.Request> businessHours;
 
         private RegistrationInfoDto.Request registrationInfo;
 
-//        public static HospitalDto.Request toEntity(HospitalDto.Request hospitalDto)
+//        public static HospitalDto.Request toEntity(HospitalDto.Request hospitalDto) -> service에서 구현
     }
 
 

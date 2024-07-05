@@ -7,6 +7,7 @@ import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.service.HospitalService;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

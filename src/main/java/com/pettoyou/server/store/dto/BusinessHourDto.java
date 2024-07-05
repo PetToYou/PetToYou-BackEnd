@@ -3,6 +3,8 @@ package com.pettoyou.server.store.dto;
 import com.pettoyou.server.store.entity.BusinessHour;
 import com.pettoyou.server.store.entity.Store;
 import com.pettoyou.server.store.entity.enums.StoreType;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -21,7 +23,9 @@ public class BusinessHourDto {
     @NoArgsConstructor
     @Builder
     public static class Request {
+        @Min(1) @Max(7)
         Integer dayOfWeek;
+        //월화수목금토일 1~7
         Time startTime;
         Time endTime;
         Time breakStartTime;

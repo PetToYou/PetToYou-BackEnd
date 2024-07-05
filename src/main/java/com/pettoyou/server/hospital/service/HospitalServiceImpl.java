@@ -148,12 +148,8 @@ public class HospitalServiceImpl implements HospitalService {
 
     // Get 요일 숫자 데이터 1~7
     private Integer getDayOfWeekNum() {
-//    LocalDate date = LocalDate.now();
-//    DayOfWeek dayOfWeek = date.getDayOfWeek();
-//    return dayOfWeek.getValue();
         return LocalDate.now().getDayOfWeek().getValue();
     }
-    //
-    //필요한 정보. 현재 status,
+
 
 }
