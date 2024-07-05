@@ -2,11 +2,11 @@ package com.pettoyou.server.hospital.service;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
-import com.pettoyou.server.store.dto.response.StoreQueryInfo;
 import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,30 +39,16 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public Page<StoreQueryTotalInfo> getHospitals(
             Pageable pageable,
-            HospitalQueryInfo queryInfo
+            HospitalQueryInfo queryInfo,
+            HospitalQueryCond queryCond
     ) {
         return hospitalRepository.findHospitalsWithinRadius(
                 pageable,
                 getDayOfWeekNum(),
                 queryInfo.toPointString(),
-                queryInfo.radius()
+                LocalTime.now(),
+                queryCond
         );
-    }
-
-    // 특정 반경 + 영업중인 병원 조회
-    public Page<StoreQueryInfo> getHospitalsOpen(
-            Pageable pageable,
-            HospitalQueryInfo queryInfo
-    ) {
-
-        return hospitalRepository.findHospitalsWithinRadiusAndOpen(
-                pageable,
-                getDayOfWeekNum(),
-                queryInfo.toPointString(),
-                queryInfo.radius(),
-                LocalTime.now()
-        );
-
     }
 
     // Get 요일 숫자 데이터 1~7
