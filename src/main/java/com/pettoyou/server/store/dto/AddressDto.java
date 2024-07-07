@@ -51,10 +51,10 @@ public class AddressDto  {
     public static Address toEntity(AddressDto addressDto)  {
 
         if(addressDto.longitude<124 || addressDto.longitude>134){
-            throw new IllegalArgumentException("경도를 정확하게 입력해주세요");
+            throw new IllegalArgumentException("경도를 정확하게 입력해주세요 : 124~134");
         }
-        if(addressDto.latitude<34 || addressDto.longitude>44){
-            throw new IllegalArgumentException("위도를 정확하게 입력해주세요");
+        if(addressDto.latitude<34 || addressDto.latitude>44){
+            throw new IllegalArgumentException("위도를 정확하게 입력해주세요 34~44");
         }
 
        String pointWKT = (String.format("POINT(%s %s)", addressDto.longitude, addressDto.latitude));

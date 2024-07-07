@@ -36,7 +36,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
   // 해당 반경 안에 있는 병원
   @Query(
     value = """
-    SELECT h.storeName as hospitalName, h.storeId as storeId, h.thumbnailUrl as thumbnailUrl, b as businessHours, COUNT(r.reviewId) as reviewCount, AVG(r.rating) as rateAvg, ST_Distance_Sphere(ST_PointFromText(:point, 4326), h.address.point) as distance 
+    SELECT h.storeName as hospitalName, h.storeId as storeId, h.thumbnail as thumbnail, b as businessHours, COUNT(r.reviewId) as reviewCount, AVG(r.rating) as rateAvg, ST_Distance_Sphere(ST_PointFromText(:point, 4326), h.address.point) as distance 
     FROM Hospital as h 
     LEFT JOIN h.businessHours as b on b.dayOfWeek=:dayOfWeek 
     LEFT JOIN h.reviews as r  
@@ -54,7 +54,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
   // 해당 반경 안에 있는 병원 + OPEN 중인 것만 단, BreakTime 인 병원 포함 ** 재사용 가능하게 변경 필요 **
   @Query(
     """
-    SELECT h.storeName as hospitalName, h.storeId as storeId, h.thumbnailUrl as thumbnailUrl, b as businessHours, COUNT(r.reviewId) as reviewCount, AVG(r.rating) as rateAvg, ST_Distance_Sphere(ST_PointFromText(:point, 4326), h.address.point) as distance 
+    SELECT h.storeName as hospitalName, h.storeId as storeId, h.thumbnail as thumbnail, b as businessHours, COUNT(r.reviewId) as reviewCount, AVG(r.rating) as rateAvg, ST_Distance_Sphere(ST_PointFromText(:point, 4326), h.address.point) as distance 
     FROM Hospital as h 
     LEFT JOIN h.businessHours as b on b.dayOfWeek=:dayOfWeek 
     LEFT JOIN h.reviews as r  

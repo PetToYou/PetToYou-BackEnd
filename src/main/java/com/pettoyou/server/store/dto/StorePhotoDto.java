@@ -1,8 +1,10 @@
 package com.pettoyou.server.store.dto;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
+import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.entity.StorePhoto;
 import com.pettoyou.server.store.entity.enums.StoreType;
+import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
@@ -21,7 +23,8 @@ public class StorePhotoDto  {
     LocalDateTime modifiedAt;
     Long storePhotoId;
     StoreType storeType;
-    String storePhotoUrl;
+    @Embedded
+    PhotoData storePhoto;
 
     @Positive
     Integer photoOrder;
@@ -38,7 +41,7 @@ public class StorePhotoDto  {
                 .modifiedAt(storePhoto.getModifiedAt())
                 .storePhotoId(storePhoto.getStorePhotoId())
                 .storeType(storePhoto.getStoreType())
-                .storePhotoUrl(storePhoto.getStorePhotoUrl())
+                .storePhoto(storePhoto.getStorePhoto())
                 .photoOrder(storePhoto.getPhotoOrder())
                 .photoStatus(storePhoto.getPhotoStatus())
                 .storeId(storePhoto.getStore().getStoreId())

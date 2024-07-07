@@ -2,18 +2,16 @@ package com.pettoyou.server.hospital.entity;
 
 
 import com.pettoyou.server.constant.enums.BaseStatus;
+import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.review.entity.Review;
-import com.pettoyou.server.store.dto.BusinessHourDto;
-import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import com.pettoyou.server.store.entity.*;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Entity
@@ -28,21 +26,21 @@ public class Hospital extends Store {
 
     private String additionalServiceTag;
 
-//    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
-//    private List<TagMapper> tags = new ArrayList<>();
-
-    //순환참조 문제 발생.
+    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TagMapper> tags;
 
 
 
-    @Builder
-    public Hospital(Long storeId, String storeName, String storePhone, String thumbnailUrl, String notice, Address address,
-                    String websiteLink, BaseStatus storeStatus, String storeInfo, String storeInfoPhoto, String additionalServiceTag, RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos
+
+    @Builder()
+    public Hospital(Long storeId,  String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
+                    String websiteLink, String storeInfo, PhotoData storeInfoPhoto, String additionalServiceTag, RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos,BaseStatus storeStatus
     ) {
-        super(storeId, storeName, storePhone, thumbnailUrl,  notice, address, websiteLink, storeStatus, storeInfo, storeInfoPhoto, registrationInfo, businessHours, reviews, storePhotos);
+        super(storeId, storeName, storePhone, thumbnail,  notice, address, websiteLink, storeInfo, storeInfoPhoto, storeStatus, registrationInfo, businessHours, reviews, storePhotos);
         this.additionalServiceTag = additionalServiceTag;
+        this.tags= new ArrayList<>();
+        //기본값 적용.
     }
-
 
 }
 
