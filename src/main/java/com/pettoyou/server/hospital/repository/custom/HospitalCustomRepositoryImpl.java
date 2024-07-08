@@ -1,14 +1,18 @@
 package com.pettoyou.server.hospital.repository.custom;
 
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
+import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.enums.HospitalTagType;
+import com.pettoyou.server.review.entity.Review;
 import com.pettoyou.server.store.dto.response.StoreQueryInfo;
 import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
 import com.pettoyou.server.store.dto.response.TagInfo;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,7 @@ import static com.pettoyou.server.hospital.entity.QHospitalTag.hospitalTag;
 import static com.pettoyou.server.hospital.entity.QTagMapper.tagMapper;
 import static com.pettoyou.server.review.entity.QReview.review;
 import static com.pettoyou.server.store.entity.QBusinessHour.businessHour;
+import static com.pettoyou.server.store.entity.QRegistrationInfo.*;
 
 @Repository
 @Slf4j
@@ -38,6 +43,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+
     @Override
     public Page<StoreQueryTotalInfo> findHospitalsWithinRadius(
             Pageable pageable,
@@ -46,45 +52,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
             LocalTime now,
             HospitalQueryCond queryCond
     ) {
-
-        BooleanBuilder distanceBuilder = new BooleanBuilder();
-        // 동적 쿼리를 위한 BooleanBuilder 객체 생성
-        distanceBuilder.and(
-                Expressions.booleanTemplate(
-                        "ST_Contains(ST_Buffer(ST_PointFromText({0}, 4326), {1}), {2})",
-                        point, queryCond.radius(), hospital.address.point
-                )
-        );
-
-        BooleanBuilder tagBuilder = new BooleanBuilder();
-        if (queryCond.businessHourCond() != null) {
-            log.info("businessHourCond : {}", queryCond.businessHourCond());
-            tagBuilder
-                    .and(hospitalTag.tagType.eq(HospitalTagType.BUSINESSHOUR)
-                            .and(hospitalTag.tagContent.eq(queryCond.businessHourCond())));
-        }
-        if (queryCond.specialitiesCond() != null) {
-            log.info("specialitiesCond : {}", queryCond.specialitiesCond());
-            tagBuilder.and(hospitalTag.tagType.eq(HospitalTagType.SPECIALITIES).and(hospitalTag.tagContent.eq(queryCond.specialitiesCond())));
-        }
-        if (queryCond.emergencyCond().equals("EMERGENCY")) {
-            log.info("emergencyCond : {}", queryCond.emergencyCond());
-
-            tagBuilder.and(hospitalTag.tagType.eq(HospitalTagType.EMERGENCY).and(hospitalTag.tagContent.eq(queryCond.emergencyCond())));
-        }
-
-        BooleanBuilder timeBuilder = new BooleanBuilder();
-        if (queryCond.openCond().equals("OPEN")) {
-            log.info("openCond : {}", queryCond.openCond());
-
-            timeBuilder
-                    .and(businessHour.startTime.isNotNull()
-                            .and(businessHour.endTime.isNotNull()));
-            timeBuilder
-                    .and(businessHour.startTime.loe(Time.valueOf(now))
-                    .and(businessHour.endTime.goe(Time.valueOf(now))));
-        }
-
         List<StoreQueryInfo> hospitalInfoList = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -109,7 +76,13 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .leftJoin(hospital.reviews, review)
                 .leftJoin(hospital.tags, tagMapper)
                 .leftJoin(tagMapper.hospitalTag, hospitalTag)
-                .where(distanceBuilder.and(tagBuilder).and(timeBuilder))
+                .where(
+                        inDistance(point, queryCond.radius()),
+                        businessHourEq(queryCond.businessHourCond()),
+                        specialitiesEq(queryCond.specialitiesCond()),
+                        emergencyEq(queryCond.emergencyCond()),
+                        isOpen(queryCond.openCond(), Time.valueOf(now.minusHours(4)))
+                )
                 .groupBy(
                         hospital.storeId,
                         hospital.storeName,
@@ -123,6 +96,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         point, hospital.address.point
                 ).asc())
                 .fetch();
+        log.info("size : {}", hospitalInfoList.size());
 
         Map<Long, TagInfo> tagsMap = new ConcurrentHashMap<>();
         for (StoreQueryInfo hospitalInfo : hospitalInfoList) {
@@ -182,6 +156,95 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         long total = result.size();
 
         return new PageImpl<>(result, pageable, total);
+    }
+
+    @Override
+    public List<StoreQueryTotalInfo> findHospitalOptimization(int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond) {
+
+        log.info("=============================================");
+        log.info("테스트 시작~!~!~!~!~!~!~!~!~~!~!~!~!~!");
+        NumberPath<Double> distanceAlias = Expressions.numberPath(Double.class, "distance");
+
+        // 일단 반경 내의 병원 정보를 모두 가져옴.
+        List<Tuple> hospitals = jpaQueryFactory
+                .select(
+                        hospital,
+                        Expressions.stringTemplate(
+                                "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
+                                point, hospital.address.point
+                        ).castToNum(Double.class).as(distanceAlias)
+                ).from(hospital)
+                .leftJoin(hospital.registrationInfo, registrationInfo).fetchJoin()
+                .where(inDistance(point, queryCond.radius()))
+                .fetch();
+//
+//        for (Hospital hospital : fetch) {
+//            for (TagMapper tag : hospital.getTags()) {
+//                log.info("name : {},  type : {}, content : {}", hospital.getStoreName(), tag.getHospitalTag().getTagType(), tag.getHospitalTag().getTagContent());
+//                log.info("registrationInfo : {} ", hospital.getRegistrationInfo());
+//                log.info("\n");
+//            }
+//            log.info("최종 병원 정보 : {}", hospital);
+//        }
+//        log.info("=============================================");
+
+        List<TestDTO> list = new ArrayList<>();
+        for (Tuple tuple : hospitals) {
+            Hospital hospital1 = tuple.get(hospital);
+            Double distance = tuple.get(distanceAlias);
+            log.info("Hospital: " + hospital1 + ", Distance: " + distance);
+            list.add(TestDTO.builder()
+                    .storeId(hospital1.getStoreId())
+                    .storeName(hospital1.getStoreName())
+                    .thumbnailUrl(hospital1.getThumbnailUrl())
+                    .reviewCount(hospital1.getReviews().stream().count())
+                    .ratingAvg(Review.getRatingAvg(hospital1.getReviews()))
+                    .distance(formatDistance(distance))
+                    .tags(TagInfo.from(hospital1.getTags()))
+                    .build());
+        }
+        log.info("size : {}", hospitals.size());
+
+//
+        for (TestDTO testDTO : list) {
+            log.info("{}", testDTO);
+        }
+
+        return null;
+    }
+
+    private BooleanExpression businessHourEq(String businessHourCond) {
+        return businessHourCond != null ? hospitalTag.tagType.eq(HospitalTagType.BUSINESSHOUR).and(hospitalTag.tagContent.eq(businessHourCond)) : null;
+    }
+
+    private BooleanExpression specialitiesEq(String specialitiesCond) {
+        return specialitiesCond != null ? hospitalTag.tagType.eq(HospitalTagType.SPECIALITIES).and(hospitalTag.tagContent.eq(specialitiesCond)) : null;
+    }
+
+    private BooleanExpression emergencyEq(String emergencyCond) {
+        return emergencyCond.equals("EMERGENCY") ? hospitalTag.tagType.eq(HospitalTagType.EMERGENCY).and(hospitalTag.tagContent.eq(emergencyCond)) : null;
+    }
+
+    private BooleanExpression inDistance(String point, Integer radius) {
+        return radius != null
+                ?
+                Expressions.booleanTemplate(
+                        "ST_Contains(ST_Buffer(ST_PointFromText({0}, 4326), {1}), {2})",
+                        point, radius, hospital.address.point
+                ) : null;
+    }
+
+    private BooleanExpression isOpen(String isOpen, Time now) {
+        return isOpen.equals("OPEN")
+                ?
+                businessHour.startTime.isNotNull().and(businessHour.endTime.isNotNull())
+                        .and(businessHour.startTime.loe(now)).and(businessHour.endTime.goe(now))
+                :
+                null;
+    }
+
+    private double formatDistance(double distance) {
+        return Math.round((distance / 1000.0) * 10) / 10.0;
     }
 
 }

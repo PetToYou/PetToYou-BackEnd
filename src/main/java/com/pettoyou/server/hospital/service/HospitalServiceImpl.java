@@ -42,13 +42,22 @@ public class HospitalServiceImpl implements HospitalService {
             HospitalQueryInfo queryInfo,
             HospitalQueryCond queryCond
     ) {
-        return hospitalRepository.findHospitalsWithinRadius(
+        Page<StoreQueryTotalInfo> hospitalsWithinRadius = hospitalRepository.findHospitalsWithinRadius(
                 pageable,
                 getDayOfWeekNum(),
                 queryInfo.toPointString(),
                 LocalTime.now(),
                 queryCond
         );
+
+        hospitalRepository.findHospitalOptimization(
+                getDayOfWeekNum(),
+                queryInfo.toPointString(),
+                LocalTime.now(),
+                queryCond
+        );
+
+        return hospitalsWithinRadius;
     }
 
     // Get 요일 숫자 데이터 1~7

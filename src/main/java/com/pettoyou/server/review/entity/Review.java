@@ -9,6 +9,8 @@ import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -33,8 +35,6 @@ public class Review extends BaseEntity {
 
     private String content;
 
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
@@ -47,7 +47,12 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-
+    public static Double getRatingAvg(List<Review> reviews) {
+        return reviews.stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(0.0);
+    }
 }
 //ReviewId PK long
 //StoreId long FK >- Hospital.HospitalId
