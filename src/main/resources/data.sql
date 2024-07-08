@@ -5647,9 +5647,9 @@ values (1, 1, 'Appointment Reminder', 'Your appointment is scheduled for tomorro
 -- Inserting data into pet (Assuming Member data exists)
 insert into pet (pet_id, member_id, pet_name, species, pet_type, birth, adoption_date, bmi, weight, register_number, neutering_status, basic_vaccination_status, allergy, caution, pet_status)
 values
+
     (1, 1, 'Buddy', '포메라니안', 'DOG', '2021-03-10', '2021-03-20', 'NORMAL', 4.5, '123456789', 'NEUTERED', 'COMPLETED', 'NONE', 'NONE', 'ACTIVATE'),
     (2, 2, 'Whiskers', '러시안블루', 'CAT', '2019-05-05', '2019-05-15', 'THIN', 3.2, '987654321', 'NOT_NEUTERED', 'PENDING', 'NONE', 'CAUTION_WITH_OTHER_PETS', 'ACTIVATE');
-
 
 insert into role (role_id, role_type)
 values (1, 'ROLE_MEMBER'),

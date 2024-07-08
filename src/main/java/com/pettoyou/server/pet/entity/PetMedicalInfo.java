@@ -1,8 +1,7 @@
 package com.pettoyou.server.pet.entity;
 
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
-import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.pet.entity.enums.Bmi;
+import com.pettoyou.server.pet.entity.enums.NeuteringStatus;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,7 +20,8 @@ public class PetMedicalInfo {
 
     private String registerNumber;
 
-    private String neuteringStatus;
+    @Enumerated(EnumType.STRING)
+    private NeuteringStatus neuteringStatus;
 
     private String basicVaccinationStatus;
 

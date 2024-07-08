@@ -1,5 +1,6 @@
 package com.pettoyou.server.hospital.entity;
 
+
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.HospitalTag;
 import com.pettoyou.server.store.entity.Store;
@@ -26,8 +27,4 @@ public class TagMapper {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Hospital hospital;
-
-
-
-
 }
