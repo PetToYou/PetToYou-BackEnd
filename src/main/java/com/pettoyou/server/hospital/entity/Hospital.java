@@ -1,16 +1,21 @@
 package com.pettoyou.server.hospital.entity;
 
 
-import com.pettoyou.server.store.entity.Store;
+import com.pettoyou.server.constant.enums.BaseStatus;
+import com.pettoyou.server.photo.entity.PhotoData;
+import com.pettoyou.server.review.entity.Review;
+import com.pettoyou.server.store.entity.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @DiscriminatorValue("H")
@@ -21,9 +26,21 @@ public class Hospital extends Store {
 
     private String additionalServiceTag;
 
-//    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
-//    private List<TagMapper> tags = new ArrayList<>();
+    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TagMapper> tags;
 
-    //순환참조 문제 발생.
+
+
+
+    @Builder()
+    public Hospital(Long storeId,  String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
+                    String websiteLink, String storeInfo, PhotoData storeInfoPhoto, String additionalServiceTag, RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos,BaseStatus storeStatus
+    ) {
+        super(storeId, storeName, storePhone, thumbnail,  notice, address, websiteLink, storeInfo, storeInfoPhoto, storeStatus, registrationInfo, businessHours, reviews, storePhotos);
+        this.additionalServiceTag = additionalServiceTag;
+        this.tags= new ArrayList<>();
+        //기본값 적용.
+    }
 
 }
+

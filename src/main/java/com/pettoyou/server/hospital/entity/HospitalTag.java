@@ -1,5 +1,9 @@
 package com.pettoyou.server.hospital.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pettoyou.server.hospital.entity.enums.HospitalTagType;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,12 +21,12 @@ public class HospitalTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hospitalTagId;
 
-    private String tagType; // SERVICE, BUSINESSHOUR, SPECIALITIES
 
-    private String tagContent; // Service, BusinessHour, Specialities
+    @Enumerated(EnumType.STRING)
+    private HospitalTagType tagType;
 
-    @OneToMany(mappedBy = "hospitalTag")
-    private List<TagMapper> hospitalList = new ArrayList<>();
+    // Service, BusinessHour, Specialities, Emergency
+    private String tagContent;
 
 
 }

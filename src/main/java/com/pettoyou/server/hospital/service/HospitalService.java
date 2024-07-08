@@ -5,6 +5,7 @@ import com.pettoyou.server.hospital.dto.HospitalListDto;
 import com.pettoyou.server.hospital.entity.Hospital;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface HospitalService {
 
   //테스트 용
 
-  //void registerHospital(HospitalDto.Request hospital);
+  String registerHospital( List<MultipartFile> hospitalImg,MultipartFile storeInfoImg, MultipartFile thumbnailImg, HospitalDto.Request hospital);
 
   HospitalDto.Response getHospitalById(Long hospitalId);
 

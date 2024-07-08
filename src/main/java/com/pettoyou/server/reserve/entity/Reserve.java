@@ -7,6 +7,7 @@ import com.pettoyou.server.reserve.entity.enums.ReserveStatus;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 

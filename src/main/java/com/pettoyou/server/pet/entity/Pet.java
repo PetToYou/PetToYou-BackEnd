@@ -51,6 +51,7 @@ public class Pet extends BaseEntity {
     @Embedded
     private PetMedicalInfo petMedicalInfo;
 
+
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
 
