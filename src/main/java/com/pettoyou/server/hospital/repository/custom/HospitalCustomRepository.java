@@ -1,6 +1,7 @@
 package com.pettoyou.server.hospital.repository.custom;
 
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
+import com.pettoyou.server.hospital.dto.response.TestDTO;
 import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,8 @@ public interface HospitalCustomRepository {
             HospitalQueryCond queryCond
     );
 
-    List<StoreQueryTotalInfo> findHospitalOptimization(
+    Page<TestDTO> findHospitalOptimization(
+            Pageable pageable,
             int dayOfWeek,
             String point,
             LocalTime now,

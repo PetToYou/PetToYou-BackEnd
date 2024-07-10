@@ -5,6 +5,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
+import com.pettoyou.server.hospital.dto.response.TestDTO;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
@@ -42,22 +43,24 @@ public class HospitalServiceImpl implements HospitalService {
             HospitalQueryInfo queryInfo,
             HospitalQueryCond queryCond
     ) {
-        Page<StoreQueryTotalInfo> hospitalsWithinRadius = hospitalRepository.findHospitalsWithinRadius(
+        return hospitalRepository.findHospitalsWithinRadius(
                 pageable,
                 getDayOfWeekNum(),
                 queryInfo.toPointString(),
                 LocalTime.now(),
                 queryCond
         );
+    }
 
-        hospitalRepository.findHospitalOptimization(
+    @Override
+    public Page<TestDTO> getHospitalsTest(Pageable pageable, HospitalQueryInfo queryInfo, HospitalQueryCond queryCond) {
+        return hospitalRepository.findHospitalOptimization(
+                pageable,
                 getDayOfWeekNum(),
                 queryInfo.toPointString(),
                 LocalTime.now(),
                 queryCond
         );
-
-        return hospitalsWithinRadius;
     }
 
     // Get 요일 숫자 데이터 1~7

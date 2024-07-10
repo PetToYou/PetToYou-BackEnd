@@ -2,6 +2,7 @@ package com.pettoyou.server.hospital.repository.custom;
 
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.dto.response.Times;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.enums.HospitalTagType;
 import com.pettoyou.server.review.entity.Review;
@@ -32,7 +33,7 @@ import static com.pettoyou.server.hospital.entity.QHospitalTag.hospitalTag;
 import static com.pettoyou.server.hospital.entity.QTagMapper.tagMapper;
 import static com.pettoyou.server.review.entity.QReview.review;
 import static com.pettoyou.server.store.entity.QBusinessHour.businessHour;
-import static com.pettoyou.server.store.entity.QRegistrationInfo.*;
+import static com.pettoyou.server.store.entity.QRegistrationInfo.registrationInfo;
 
 @Repository
 @Slf4j
@@ -159,11 +160,15 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
     }
 
     @Override
-    public List<StoreQueryTotalInfo> findHospitalOptimization(int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond) {
-
+    public Page<TestDTO> findHospitalOptimization(
+            Pageable pageable,
+            int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond) {
+        // Todo : 동적 쿼리 적용해야하는데.. 답변이 달리면 진행할 예정!
         log.info("=============================================");
         log.info("테스트 시작~!~!~!~!~!~!~!~!~~!~!~!~!~!");
+        log.info("필터링 정보 : {}", queryCond);
         NumberPath<Double> distanceAlias = Expressions.numberPath(Double.class, "distance");
+
 
         // 일단 반경 내의 병원 정보를 모두 가져옴.
         List<Tuple> hospitals = jpaQueryFactory
@@ -177,40 +182,34 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .leftJoin(hospital.registrationInfo, registrationInfo).fetchJoin()
                 .where(inDistance(point, queryCond.radius()))
                 .fetch();
-//
-//        for (Hospital hospital : fetch) {
-//            for (TagMapper tag : hospital.getTags()) {
-//                log.info("name : {},  type : {}, content : {}", hospital.getStoreName(), tag.getHospitalTag().getTagType(), tag.getHospitalTag().getTagContent());
-//                log.info("registrationInfo : {} ", hospital.getRegistrationInfo());
-//                log.info("\n");
-//            }
-//            log.info("최종 병원 정보 : {}", hospital);
-//        }
-//        log.info("=============================================");
 
-        List<TestDTO> list = new ArrayList<>();
+//        // 병원 돌면서 DTO 채우기
+        List<TestDTO> result = new ArrayList<>();
         for (Tuple tuple : hospitals) {
             Hospital hospital1 = tuple.get(hospital);
             Double distance = tuple.get(distanceAlias);
             log.info("Hospital: " + hospital1 + ", Distance: " + distance);
-            list.add(TestDTO.builder()
+
+            result.add(TestDTO.builder()
                     .storeId(hospital1.getStoreId())
                     .storeName(hospital1.getStoreName())
                     .thumbnailUrl(hospital1.getThumbnailUrl())
-                    .reviewCount(hospital1.getReviews().stream().count())
+                    .time(Times.of(hospital1.getBusinessHours(), dayOfWeek))
+                    .reviewCount((long) hospital1.getReviews().size())
                     .ratingAvg(Review.getRatingAvg(hospital1.getReviews()))
                     .distance(formatDistance(distance))
                     .tags(TagInfo.from(hospital1.getTags()))
                     .build());
         }
-        log.info("size : {}", hospitals.size());
 
-//
-        for (TestDTO testDTO : list) {
+        log.info("size : {}", result.size());
+
+        for (TestDTO testDTO : result) {
             log.info("{}", testDTO);
         }
 
-        return null;
+        // Page 객체로 반환
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     private BooleanExpression businessHourEq(String businessHourCond) {
