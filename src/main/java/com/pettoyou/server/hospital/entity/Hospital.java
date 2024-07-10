@@ -24,23 +24,21 @@ import java.util.List;
 @Table(name = "hospital")
 public class Hospital extends Store {
 
+    // 병원의 기본 정보 설명 (태그에 담기지 못하는 애들)
+    // 주차가능, 제로페이 가능 등등...
     private String additionalServiceTag;
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TagMapper> tags;
 
-
-
-
     @Builder()
-    public Hospital(Long storeId,  String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
-                    String websiteLink, String storeInfo, PhotoData storeInfoPhoto, String additionalServiceTag, RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos,BaseStatus storeStatus
+    public Hospital(Long storeId, String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
+                    String websiteLink, String storeInfo, PhotoData storeInfoPhoto, String additionalServiceTag, RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos, BaseStatus storeStatus
     ) {
-        super(storeId, storeName, storePhone, thumbnail,  notice, address, websiteLink, storeInfo, storeInfoPhoto, storeStatus, registrationInfo, businessHours, reviews, storePhotos);
+        super(storeId, storeName, storePhone, thumbnail, notice, address, websiteLink, storeInfo, storeInfoPhoto, storeStatus, registrationInfo, businessHours, reviews, storePhotos);
         this.additionalServiceTag = additionalServiceTag;
-        this.tags= new ArrayList<>();
+        this.tags = new ArrayList<>();
         //기본값 적용.
     }
-
 }
 

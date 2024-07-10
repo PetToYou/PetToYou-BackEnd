@@ -1,22 +1,21 @@
 package com.pettoyou.server.hospital.controller;
 
-import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
-import com.pettoyou.server.hospital.dto.HospitalListDto;
-import com.pettoyou.server.hospital.entity.Hospital;
-import com.pettoyou.server.hospital.service.HospitalService;
 import com.pettoyou.server.hospital.dto.HospitalDto;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
+import com.pettoyou.server.hospital.dto.response.HospitalDetail;
+import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.service.HospitalService;
 
-import com.pettoyou.server.pet.dto.PetDto;
-import jakarta.annotation.Nullable;
+import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,33 +31,42 @@ public class HospitalController {
 
     private final HospitalService hospitalService;
 
-
-    //특정 반경 내에
+    // 모든 병원 조회 + 필터링 가능
     @GetMapping()
-    public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalList(Pageable pageable, @RequestBody HospitalListDto.Request location) {
+    public ResponseEntity<ApiResponse<Page<StoreQueryTotalInfo>>> getHospitalList(
+            Pageable pageable,
+            @ModelAttribute HospitalQueryInfo queryInfo,
+            @ModelAttribute HospitalQueryCond queryCond
+    ){
+        log.info("queryInfo : {}", queryInfo);
+        log.info("queryCond : {}", queryCond);
 
-        Page<HospitalListDto.Response> hospitalList = hospitalService.getHospitals(pageable, location);
+        Page<StoreQueryTotalInfo> response = hospitalService.getHospitals(pageable, queryInfo, queryCond);
 
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalList, CustomResponseStatus.SUCCESS));
-
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 
-    //특정 반경 + 영업 중
-    @GetMapping("/main")
-    public ResponseEntity<ApiResponse<Page<HospitalListDto.Response>>> getHospitalOpenList(Pageable pageable, @RequestBody HospitalListDto.Request location) {
+    @GetMapping("/test")
+    public ResponseEntity<ApiResponse<Page<TestDTO>>> getHospitalListTest(
+            Pageable pageable,
+            @ModelAttribute HospitalQueryInfo queryInfo,
+            @ModelAttribute HospitalQueryCond queryCond
+    ){
+        log.info("queryInfo : {}", queryInfo);
+        log.info("queryCond : {}", queryCond);
 
-        Page<HospitalListDto.Response> hospitalOpenList = hospitalService.getHospitalsOpen(pageable, location);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(hospitalOpenList, CustomResponseStatus.SUCCESS));
+        Page<TestDTO> response = hospitalService.getHospitalsTest(pageable, queryInfo, queryCond);
+
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 
-    //병원 상세페이지
+    // 병원 상세페이지 조회
     @GetMapping("/{hospitalId}")
-    public ResponseEntity<ApiResponse<HospitalDto.Response>> getHospital(@PathVariable Long hospitalId) {
+    public ResponseEntity<ApiResponse<HospitalDetail>> getHospitalDetail(@PathVariable Long hospitalId){
+        HospitalDetail response = hospitalService.getHospitalDetail(hospitalId);
 
-        HospitalDto.Response hospital = hospitalService.getHospitalById(hospitalId);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(hospital, CustomResponseStatus.SUCCESS));
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
-
 
     @PostMapping("/admin")
     public ResponseEntity<ApiResponse<String>> registerHospital(
@@ -81,6 +89,4 @@ public class HospitalController {
 
         return ResponseEntity.created(location).body(ApiResponse.createSuccess("등록 완료", CustomResponseStatus.SUCCESS));
     }
-
-
 }

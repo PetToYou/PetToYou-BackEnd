@@ -102,6 +102,4 @@ public abstract class Store extends BaseEntity {
         //기본값 적용.
         this.storeStatus = BaseStatus.ACTIVATE;
     }
-
-
 }

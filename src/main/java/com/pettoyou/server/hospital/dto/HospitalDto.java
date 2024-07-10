@@ -2,15 +2,12 @@ package com.pettoyou.server.hospital.dto;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.hospital.entity.Hospital;
-import com.pettoyou.server.hospital.entity.TagMapper;
-import com.pettoyou.server.photo.converter.PhotoConverter;
 import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.dto.AddressDto;
 import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import com.pettoyou.server.store.dto.StorePhotoDto;
 import com.pettoyou.server.store.entity.Address;
-import com.pettoyou.server.store.entity.Store;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;

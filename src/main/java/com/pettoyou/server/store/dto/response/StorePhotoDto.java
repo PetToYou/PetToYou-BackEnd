@@ -1,39 +1,24 @@
-package com.pettoyou.server.store.dto;
+package com.pettoyou.server.store.dto.response;
 
 import com.pettoyou.server.constant.enums.BaseStatus;
-import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.entity.StorePhoto;
 import com.pettoyou.server.store.entity.enums.StoreType;
-import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.Positive;
-import lombok.*;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO for {@link com.pettoyou.server.store.entity.StorePhoto}
- */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class StorePhotoDto {
-
-    LocalDateTime createdAt;
-    LocalDateTime modifiedAt;
-    Long storePhotoId;
-    StoreType storeType;
-    @Embedded
-    PhotoData storePhoto;
-
-    @Positive
-    Integer photoOrder;
-
-    BaseStatus photoStatus;
-
-    Long storeId;
-
-
+public record StorePhotoDto(
+        LocalDateTime createdAt,
+        LocalDateTime modifiedAt,
+        Long storePhotoId,
+        StoreType storeType,
+        String storePhotoUrl,
+        @Positive Integer photoOrder,
+        BaseStatus photoStatus,
+        Long storeId
+) {
     public static StorePhotoDto toDto(StorePhoto storePhoto){
 
         return StorePhotoDto.builder()
@@ -41,11 +26,10 @@ public class StorePhotoDto {
                 .modifiedAt(storePhoto.getModifiedAt())
                 .storePhotoId(storePhoto.getStorePhotoId())
                 .storeType(storePhoto.getStoreType())
-                .storePhoto(storePhoto.getStorePhoto())
+                .storePhotoUrl(storePhoto.getStorePhotoUrl())
                 .photoOrder(storePhoto.getPhotoOrder())
                 .photoStatus(storePhoto.getPhotoStatus())
                 .storeId(storePhoto.getStore().getStoreId())
                 .build();
-
     }
 }

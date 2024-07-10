@@ -5628,11 +5628,11 @@ values (1, 'Parking available, Zero - pay accepted'),
        (1853, 'Parking available, Zero - pay accepted');
 
 -- Inserting data into banner
-insert into banner (banner_id, banner_name, banner_link, banner_img, banner_status, banner_type)
-values (1, 'Summer Sale', 'https://example.com/summer-sale', 'https://example.com/summer-sale-img.jpg', 'ACTIVATE',
-        'MAIN'),
-       (2, 'Winter Wellness', 'https://example.com/winter-wellness', 'https://example.com/winter-wellness-img.jpg',
-        'ACTIVATE', 'HOSPITAL');
+# insert into banner (banner_id, banner_name, banner_link, banner_img, banner_status, banner_type)
+# values (1, 'Summer Sale', 'https://example.com/summer-sale', 'https://example.com/summer-sale-img.jpg', 'ACTIVATE',
+#         'MAIN'),
+#        (2, 'Winter Wellness', 'https://example.com/winter-wellness', 'https://example.com/winter-wellness-img.jpg',
+#         'ACTIVATE', 'HOSPITAL');
 
 -- Inserting data into member
 insert into member (member_id, name, nick_name, email, phone, provider, member_status)
@@ -5661,15 +5661,15 @@ values (1, 1, 1),
 
 
 
-# -- Inserting data into hospital_tag
-# insert into hospital_tag (hospital_tag_id, tag_content, tag_type)
-# values (1, '24/7 Emergency', 'SERVICE'),
-#        (2, 'Orthopedics Specialist', 'SPECIALITIES');
-#
-# -- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
-# insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id)
-# values (1, 1, 1),
-#        (2, 2, 1);
+-- Inserting data into hospital_tag
+insert into hospital_tag (hospital_tag_id, tag_content, tag_type)
+values (1, '24/7 Emergency', 'SERVICE'),
+       (2, 'Orthopedics Specialist', 'SPECIALITIES');
+
+-- Inserting data into tag_mapper (Assuming Hospital and HospitalTag data exists)
+insert into tag_mapper (tag_mapper_id, hospital_tag_id, store_id)
+values (1, 1, 1),
+       (2, 2, 1);
 
 -- Inserting data into store_photo (Assuming Store data exists)
 insert into store_photo (store_photo_id, store_id, store_photo_url, photo_order, photo_status, store_type)

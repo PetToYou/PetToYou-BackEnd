@@ -9,14 +9,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
-import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalDateTime;
 
 /**
  * DTO for {@link com.pettoyou.server.store.entity.BusinessHour}
  */
-
 public class BusinessHourDto {
     @Getter
     @AllArgsConstructor
@@ -44,7 +42,6 @@ public class BusinessHourDto {
                     .breakEndTime(req.getBreakEndTime()).build();
         }
     }
-
 
     @Getter
     @AllArgsConstructor
@@ -82,7 +79,6 @@ public class BusinessHourDto {
                     .openSt(businessHour.isOpenSt())
                     .storeId(businessHour.getStore().getStoreId())
                     .build();
-
         }
     }
 }
