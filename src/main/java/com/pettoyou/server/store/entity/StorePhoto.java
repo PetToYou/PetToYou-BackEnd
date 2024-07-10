@@ -3,6 +3,7 @@ package com.pettoyou.server.store.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
+import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,15 +32,18 @@ public class StorePhoto extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private StoreType storeType;
 
-    private String storePhotoUrl;
+    @Embedded
+    private PhotoData storePhoto;
 
     private Integer photoOrder;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private BaseStatus photoStatus;
+    private BaseStatus photoStatus = BaseStatus.ACTIVATE;
 
     @ManyToOne
     @JoinColumn(name = "store_id")
+    @JsonIgnore
     private Store store;
 
 }

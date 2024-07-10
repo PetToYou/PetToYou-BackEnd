@@ -193,7 +193,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
             result.add(TestDTO.builder()
                     .storeId(hospital1.getStoreId())
                     .storeName(hospital1.getStoreName())
-                    .thumbnailUrl(hospital1.getThumbnailUrl())
+                    .thumbnailUrl(hospital1.getThumbnail().getPhotoUrl())
                     .time(Times.of(hospital1.getBusinessHours(), dayOfWeek))
                     .reviewCount((long) hospital1.getReviews().size())
                     .ratingAvg(Review.getRatingAvg(hospital1.getReviews()))

@@ -41,5 +41,9 @@ public class BusinessHour extends BaseEntity {
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "store_id")
+    @JsonIgnore
     private Store store;
+
+
+
 }

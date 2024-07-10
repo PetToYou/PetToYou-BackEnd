@@ -1,12 +1,12 @@
 package com.pettoyou.server.store.service;
 
-import com.pettoyou.server.store.dto.StorePhotoDtos;
+import com.pettoyou.server.store.dto.StorePhotoDto;
 
 import java.util.List;
 
 public interface StoreService {
 
 
-    List<StorePhotoDtos> getAllStorePhoto(Long StoreId);
+    List<StorePhotoDto> getAllStorePhoto(Long StoreId);
 
 }
