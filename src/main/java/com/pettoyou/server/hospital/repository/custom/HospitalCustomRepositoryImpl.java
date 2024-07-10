@@ -59,7 +59,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                                 StoreQueryInfo.class,
                                 hospital.storeId.as("storeId"),
                                 hospital.storeName.as("storeName"),
-                                hospital.thumbnailUrl.as("thumbnailUrl"),
+                                hospital.thumbnail.photoUrl.as("thumbnailUrl"),
                                 businessHour.startTime.as("startTime"),
                                 businessHour.endTime.as("endTime"),
                                 businessHour.breakStartTime.as("breakStartTime"),
@@ -208,7 +208,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
             log.info("{}", testDTO);
         }
 
-        // Page 객체로 반환
+//         Page 객체로 반환
         return new PageImpl<>(result, pageable, result.size());
     }
 
@@ -245,5 +245,4 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
     private double formatDistance(double distance) {
         return Math.round((distance / 1000.0) * 10) / 10.0;
     }
-
 }

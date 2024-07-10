@@ -1,5 +1,6 @@
 package com.pettoyou.server.store.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.annotation.Nullable;

@@ -38,7 +38,7 @@ public record HospitalDetail(
                 .additionalServiceTag(hospital.getAdditionalServiceTag())
                 .storeInfo(hospital.getStoreInfo())
                 .storeStatus(hospital.getStoreStatus())
-                .storeInfoPhoto(hospital.getStoreInfoPhoto())
+                .storeInfoPhoto(hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
                 .businessHours(
                         hospital

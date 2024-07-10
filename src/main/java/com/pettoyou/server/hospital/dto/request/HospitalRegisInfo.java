@@ -1,10 +1,11 @@
 package com.pettoyou.server.hospital.dto.request;
 
-import com.pettoyou.server.store.dto.BusinessHourDtos;
+import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+
 
 public record HospitalRegisInfo(
         @NotNull String hospitalName,
@@ -21,7 +22,7 @@ public record HospitalRegisInfo(
         @NotNull String doro,
         @NotNull double longitude,
         @NotNull double latitude,
-        List<BusinessHourDtos> businessHours,
+        List<BusinessHourDto> businessHours,
         RegistrationInfoDto.Request registrationInfo
 ) {
 }
