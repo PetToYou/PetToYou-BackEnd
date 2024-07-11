@@ -14,6 +14,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,6 @@ public class Pet extends BaseEntity {
     @Embedded
     private PetMedicalInfo petMedicalInfo;
 
-
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
 
@@ -89,5 +89,10 @@ public class Pet extends BaseEntity {
         this.petType = modifyDto.getPetType().equals("DOG") ? PetType.DOG : PetType.CAT;
         this.adoptionDate = modifyDto.getAdoptionDate();
         this.petMedicalInfo = PetMedicalInfo.toPetMedicalInfo(modifyDto.getPetMedicalInfo());
+    }
+
+    public Integer petAgeCalculate(LocalDate currentLocalDate) {
+        Period age = Period.between(this.birth, currentLocalDate);
+        return age.getYears();
     }
 }
