@@ -2,7 +2,7 @@ package com.pettoyou.server.banner.controller;
 
 import com.pettoyou.server.banner.dto.request.BannerRegisterRequestDto;
 import com.pettoyou.server.banner.dto.response.BannerRegisterResponseDto;
-import com.pettoyou.server.banner.dto.response.QueryRespDto;
+import com.pettoyou.server.banner.dto.response.BannerQueryRespDto;
 import com.pettoyou.server.banner.entity.enums.BannerType;
 import com.pettoyou.server.banner.service.BannerService;
 import com.pettoyou.server.banner.service.query.BannerQueryService;
@@ -16,14 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 public class BannerController {
     private final BannerService bannerService;
     private final BannerQueryService bannerQueryService;
 
     // 배너 등록
-    @PostMapping("/banner")
+    @PostMapping("admin/banner")
     public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerRegister(
             @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
             @RequestPart(value = "bannerImg") MultipartFile bannerImg
@@ -34,7 +34,7 @@ public class BannerController {
     }
 
     // 배너 수정
-    @PutMapping("/banner/{bannerId}")
+    @PutMapping("admin/banner/{bannerId}")
     public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerModify(
             @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
             @RequestPart(value = "bannerImg") MultipartFile bannerImg,
@@ -45,7 +45,7 @@ public class BannerController {
     }
 
     // 배너 삭제
-    @DeleteMapping("/banner/{bannerId}")
+    @DeleteMapping("admin/banner/{bannerId}")
     public ResponseEntity<ApiResponse<String>> bannerModify(
             @PathVariable Long bannerId
     ) {
@@ -54,11 +54,10 @@ public class BannerController {
     }
 
     @GetMapping("/banners")
-    public ResponseEntity<ApiResponse<List<QueryRespDto>>> bannerQueryByBannerType(
+    public ResponseEntity<ApiResponse<List<BannerQueryRespDto>>> bannerQueryByBannerType(
             @RequestParam BannerType bannerType
     ) {
-        List<QueryRespDto> response = bannerQueryService.queryBannersByType(bannerType);
+        List<BannerQueryRespDto> response = bannerQueryService.queryBannersByType(bannerType);
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
-
     }
 }
