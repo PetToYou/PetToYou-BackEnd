@@ -1,6 +1,6 @@
 package com.pettoyou.server.banner.service.query;
 
-import com.pettoyou.server.banner.dto.response.QueryRespDto;
+import com.pettoyou.server.banner.dto.response.BannerQueryRespDto;
 import com.pettoyou.server.banner.entity.Banner;
 import com.pettoyou.server.banner.entity.enums.BannerType;
 import com.pettoyou.server.banner.repository.BannerRepository;
@@ -15,14 +15,14 @@ import java.util.List;
 public class BannerQueryServiceImpl implements BannerQueryService {
     private final BannerRepository bannerRepository;
     @Override
-    public List<QueryRespDto> queryBannersByType(BannerType bannerType) {
-        List<QueryRespDto> queryRespDtos = new ArrayList<>();
+    public List<BannerQueryRespDto> queryBannersByType(BannerType bannerType) {
+        List<BannerQueryRespDto> bannerQueryRespDtos = new ArrayList<>();
         List<Banner> bannerByBannerType = bannerRepository.findBannerByBannerType(bannerType);
 
         for (Banner banner : bannerByBannerType) {
-            queryRespDtos.add(QueryRespDto.from(banner));
+            bannerQueryRespDtos.add(BannerQueryRespDto.from(banner));
         }
 
-        return queryRespDtos;
+        return bannerQueryRespDtos;
     }
 }

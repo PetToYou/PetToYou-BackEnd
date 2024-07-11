@@ -5,15 +5,15 @@ import com.pettoyou.server.photo.entity.PhotoData;
 import lombok.Builder;
 
 @Builder
-public record QueryRespDto(
+public record BannerQueryRespDto(
     Long bannerId,
     String bannerName,
     PhotoData bannerImg,
     String bannerLink
 ) {
 
-    public static QueryRespDto from(Banner banner) {
-        return new QueryRespDto(
+    public static BannerQueryRespDto from(Banner banner) {
+        return new BannerQueryRespDto(
                 banner.getBannerId(),
                 banner.getBannerName(),
                 banner.getBannerImg(),
