@@ -4,8 +4,8 @@ import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
-import com.pettoyou.server.pet.dto.PetDto;
 import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
+import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
@@ -79,9 +79,9 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDto.Response.PetDetailInfo fetchPetDetailInfo(Long petId) {
+    public PetDetailInfoRespDto fetchPetDetailInfo(Long petId) {
         Pet pet = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
 
-        return new PetDto.Response.PetDetailInfo(pet);
+        return PetDetailInfoRespDto.from(pet);
     }
 }

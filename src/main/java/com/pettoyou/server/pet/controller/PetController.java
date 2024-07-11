@@ -3,8 +3,8 @@ package com.pettoyou.server.pet.controller;
 import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
-import com.pettoyou.server.pet.dto.PetDto;
 import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
+import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.service.PetService;
@@ -62,10 +62,10 @@ public class PetController {
     }
 
     @GetMapping("/pet/{id}")
-    public ResponseEntity<ApiResponse<PetDto.Response.PetDetailInfo>> fetchPetDetailInfo(
+    public ResponseEntity<ApiResponse<PetDetailInfoRespDto>> fetchPetDetailInfo(
             @PathVariable Long id) {
 
-        PetDto.Response.PetDetailInfo response = petService.fetchPetDetailInfo(id);
+        PetDetailInfoRespDto response = petService.fetchPetDetailInfo(id);
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 }

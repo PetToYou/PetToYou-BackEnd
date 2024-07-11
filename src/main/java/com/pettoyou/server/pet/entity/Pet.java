@@ -3,8 +3,6 @@ package com.pettoyou.server.pet.entity;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
-import com.pettoyou.server.pet.dto.PetDto;
-import com.pettoyou.server.pet.dto.request.PetMedicalInfoDto;
 import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
 import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;

@@ -1,7 +1,7 @@
 package com.pettoyou.server.pet.service;
 
-import com.pettoyou.server.pet.dto.PetDto;
 import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
+import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,5 +25,5 @@ public interface PetService {
 
     List<PetSimpleInfoDto> queryPetList(Long userId);
 
-    PetDto.Response.PetDetailInfo fetchPetDetailInfo(Long petId);
+    PetDetailInfoRespDto fetchPetDetailInfo(Long petId);
 }
