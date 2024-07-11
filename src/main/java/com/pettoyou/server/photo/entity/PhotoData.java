@@ -16,7 +16,6 @@ public class PhotoData {
     private String object;
     private String photoUrl;
 
-
     public static PhotoData of(String bucket, String object, String photoUrl) {
         return new PhotoData(bucket, object, photoUrl);
     }

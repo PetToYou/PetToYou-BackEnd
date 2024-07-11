@@ -1,7 +1,5 @@
 package com.pettoyou.server.hospital.service;
 
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
-import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
@@ -43,10 +41,7 @@ public class HospitalServiceImpl implements HospitalService {
     // 병원 상세 조회
     @Override
     public HospitalDetail getHospitalDetail(Long hospitalId) {
-        Hospital findHospital = hospitalRepository.findDistinctHospitalByStoreId(hospitalId)
-                .orElseThrow(() -> new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND));
-
-        return HospitalDetail.toDto(findHospital);
+        return hospitalRepository.findHospitalDetailById(hospitalId);
     }
 
     // 특정 반경내의 병원 조회
@@ -84,30 +79,28 @@ public class HospitalServiceImpl implements HospitalService {
         List<StorePhoto> storePhotoList = new ArrayList<>();
 
         //thumbnail 저장
-        if((thumbnailImg!=null)&& (!thumbnailImg.isEmpty()) ){
+        if ((thumbnailImg != null) && (!thumbnailImg.isEmpty())) {
             thumbnail = photoConverter.ImgUpload(thumbnailImg);
-        }
-        else {
+        } else {
             thumbnail = new PhotoData(null, null, null);
             //기본값 처리하기!!!
             //thumbnailUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHQQdAY4HvcdOtRxApXStj7oRvUNKlATHpWA&s";
         }
 
         //병원 저장
-        if((storeInfoImg!=null)&&(!storeInfoImg.isEmpty())){
+        if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
             PhotoData photoData = photoConverter.ImgUpload(storeInfoImg);
-            hospital = HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail, photoData );
-        }
-        else {
+            hospital = HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail, photoData);
+        } else {
             hospital = HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail);
         }
 
         //Store 사진 저장 - 메소드 분리
-        if((hospitalImgs!=null)&&(!hospitalImgs.isEmpty())){
+        if ((hospitalImgs != null) && (!hospitalImgs.isEmpty())) {
             storePhotoList = photoConverter.StoreImgsToEntity(hospitalImgs, hospital);
             hospital.getStorePhotos().addAll(storePhotoList);
             //병원 객체에 양방향 매핑
-//
+
             // cascade.all 옵션
         }
         //Tag 저장
@@ -117,12 +110,9 @@ public class HospitalServiceImpl implements HospitalService {
         hospital.getTags().addAll(tagMapperList);
         //hospital 객체에 tagMapper 매핑
 
-//
-//cascade.all
-
         //반드시 Tag 저장 후, StorePhoto 저장 후.  병원 저장
         hospitalRepository.save(hospital);
-        if(!storePhotoList.isEmpty()){
+        if (!storePhotoList.isEmpty()) {
             storePhotoRepository.saveAll(storePhotoList);
         }
         //cascade.all 옵션으로 자동으로 날아가면 각가의 photo에 대해 모두 날아가버림. repository.save 옵션으로 저장되기 때문. saveAll을 해줘야 쿼리가 한번만 나간다.
