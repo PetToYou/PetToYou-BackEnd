@@ -4,6 +4,7 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.dto.PetDto;
+import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
 import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
@@ -42,6 +43,9 @@ public class Pet extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PetType petType;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private LocalDate adoptionDate;
 
