@@ -5,6 +5,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.pet.dto.PetDto;
+import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.PetProfilePhoto;
 import com.pettoyou.server.pet.repository.PetPhotoRepository;
@@ -68,6 +69,11 @@ public class PetServiceImpl implements PetService {
     @Override
     public void petDelete(Long petId) {
         petRepository.deleteById(petId);
+    }
+
+    @Override
+    public List<PetSimpleInfoDto> queryPetList(Long userId) {
+        return petRepository.findAllPetsByMemberId(userId);
     }
 
     @Override

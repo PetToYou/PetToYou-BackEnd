@@ -4,6 +4,7 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.dto.PetDto;
+import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
 import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +45,9 @@ public class Pet extends BaseEntity {
     @Column(nullable = false)
     private PetType petType;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     private LocalDate adoptionDate;
 
     @Enumerated(EnumType.STRING)
@@ -50,7 +55,6 @@ public class Pet extends BaseEntity {
 
     @Embedded
     private PetMedicalInfo petMedicalInfo;
-
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
@@ -85,5 +89,10 @@ public class Pet extends BaseEntity {
         this.petType = modifyDto.getPetType().equals("DOG") ? PetType.DOG : PetType.CAT;
         this.adoptionDate = modifyDto.getAdoptionDate();
         this.petMedicalInfo = PetMedicalInfo.toPetMedicalInfo(modifyDto.getPetMedicalInfo());
+    }
+
+    public Integer petAgeCalculate(LocalDate currentLocalDate) {
+        Period age = Period.between(this.birth, currentLocalDate);
+        return age.getYears();
     }
 }
