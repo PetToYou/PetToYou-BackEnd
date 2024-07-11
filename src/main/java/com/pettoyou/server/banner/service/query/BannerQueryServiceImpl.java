@@ -7,7 +7,6 @@ import com.pettoyou.server.banner.repository.BannerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,13 +15,8 @@ public class BannerQueryServiceImpl implements BannerQueryService {
     private final BannerRepository bannerRepository;
     @Override
     public List<BannerQueryRespDto> queryBannersByType(BannerType bannerType) {
-        List<BannerQueryRespDto> bannerQueryRespDtos = new ArrayList<>();
-        List<Banner> bannerByBannerType = bannerRepository.findBannerByBannerType(bannerType);
+        List<Banner> bannersByBannerType = bannerRepository.findBannerByBannerType(bannerType);
 
-        for (Banner banner : bannerByBannerType) {
-            bannerQueryRespDtos.add(BannerQueryRespDto.from(banner));
-        }
-
-        return bannerQueryRespDtos;
+        return bannersByBannerType.stream().map(BannerQueryRespDto::from).toList();
     }
 }
