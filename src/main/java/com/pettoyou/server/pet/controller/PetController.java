@@ -49,8 +49,6 @@ public class PetController {
         return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제완료!", CustomResponseStatus.SUCCESS));
     }
 
-    /** TODO : 펫 조회 API 개발 */
-
     @GetMapping("/pets")
     public ResponseEntity<ApiResponse<List<PetSimpleInfoDto>>> petsQuery(
             @AuthenticationPrincipal PrincipalDetails principalDetails
