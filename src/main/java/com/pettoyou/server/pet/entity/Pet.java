@@ -3,7 +3,7 @@ package com.pettoyou.server.pet.entity;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
-import com.pettoyou.server.pet.dto.PetDto;
+import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
 import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
 import com.pettoyou.server.reserve.entity.Reserve;
@@ -46,6 +46,7 @@ public class Pet extends BaseEntity {
     private PetType petType;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Gender gender;
 
     private LocalDate adoptionDate;
@@ -56,6 +57,10 @@ public class Pet extends BaseEntity {
     @Embedded
     private PetMedicalInfo petMedicalInfo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
 
@@ -65,30 +70,27 @@ public class Pet extends BaseEntity {
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    public static Pet toEntity(PetDto.Request.Register registerDto, Member member) {
+    public static Pet toEntity(PetRegisterReqDto registerDto, Member member) {
         return builder()
-                .petName(registerDto.getName())
-                .species(registerDto.getSpecies())
-                .birth(registerDto.getBirth())
-                .petType(registerDto.getPetType().equals("DOG") ? PetType.DOG : PetType.CAT)
-                .adoptionDate(registerDto.getAdoptionDate() == null ? null : registerDto.getAdoptionDate())
-                .petMedicalInfo(PetMedicalInfo.toPetMedicalInfo(registerDto.getPetMedicalInfo()))
+                .petName(registerDto.petName())
+                .species(registerDto.species())
+                .birth(registerDto.birth())
+                .petType(registerDto.petType())
+                .gender(registerDto.gender())
+                .adoptionDate(registerDto.adoptionDate() == null ? null : registerDto.adoptionDate())
+                .petMedicalInfo(PetMedicalInfo.from(registerDto.petMedicalInfoDto()))
                 .member(member)
                 .petStatus(BaseStatus.ACTIVATE)
                 .build();
     }
 
-    public void modify(PetDto.Request.Register modifyDto) {
-        this.petName = modifyDto.getName();
-        this.species = modifyDto.getSpecies();
-        this.birth = modifyDto.getBirth();
-        this.petType = modifyDto.getPetType().equals("DOG") ? PetType.DOG : PetType.CAT;
-        this.adoptionDate = modifyDto.getAdoptionDate();
-        this.petMedicalInfo = PetMedicalInfo.toPetMedicalInfo(modifyDto.getPetMedicalInfo());
+    public void modify(PetRegisterReqDto modifyDto) {
+        this.petName = modifyDto.petName();
+        this.species = modifyDto.species();
+        this.birth = modifyDto.birth();
+        this.petType = modifyDto.petType();
+        this.adoptionDate = modifyDto.adoptionDate();
+        this.petMedicalInfo = PetMedicalInfo.from(modifyDto.petMedicalInfoDto());
     }
 
     public Integer petAgeCalculate(LocalDate currentLocalDate) {

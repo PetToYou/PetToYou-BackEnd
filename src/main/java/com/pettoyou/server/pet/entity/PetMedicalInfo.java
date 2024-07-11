@@ -1,7 +1,9 @@
 package com.pettoyou.server.pet.entity;
 
+import com.pettoyou.server.pet.dto.request.PetMedicalInfoDto;
 import com.pettoyou.server.pet.entity.enums.Bmi;
 import com.pettoyou.server.pet.entity.enums.NeuteringStatus;
+import com.pettoyou.server.pet.entity.enums.VaccinationStatus;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,33 +25,25 @@ public class PetMedicalInfo {
     @Enumerated(EnumType.STRING)
     private NeuteringStatus neuteringStatus;
 
-    private String basicVaccinationStatus;
+    @Enumerated(EnumType.STRING)
+    private VaccinationStatus vaccinationStatus;
 
     private String allergy;
 
-    private String caution;
+    private String currentFeedName;
 
-    public static PetMedicalInfo toPetMedicalInfo(PetMedicalInfo petMedicalInfo) {
+    private String medicalHistory;
+
+    public static PetMedicalInfo from(PetMedicalInfoDto petMedicalInfoDto) {
         return builder()
-                .weight(petMedicalInfo.getWeight() != null ? petMedicalInfo.getWeight() : null)
-                .bmi(petMedicalInfo.getBmi() != null ? petMedicalInfo.getBmi() : null)
-                .registerNumber(petMedicalInfo.getRegisterNumber() != null ? petMedicalInfo.getRegisterNumber() : null)
-                .neuteringStatus(petMedicalInfo.getNeuteringStatus() != null ? petMedicalInfo.getNeuteringStatus() : null)
-                .basicVaccinationStatus(petMedicalInfo.getBasicVaccinationStatus() != null ? petMedicalInfo.getBasicVaccinationStatus() : null)
-                .allergy(petMedicalInfo.getAllergy() != null ? petMedicalInfo.getAllergy() : null)
-                .caution(petMedicalInfo.getCaution() != null ? petMedicalInfo.getCaution() : null)
+                .weight(petMedicalInfoDto.weight())
+                .bmi(petMedicalInfoDto.bmi())
+                .registerNumber(petMedicalInfoDto.registerNumber())
+                .neuteringStatus(petMedicalInfoDto.neuteringStatus())
+                .vaccinationStatus(petMedicalInfoDto.vaccinationStatus())
+                .allergy(petMedicalInfoDto.allergy())
+                .currentFeedName(petMedicalInfoDto.currentFeedName())
+                .medicalHistory(petMedicalInfoDto.medicalHistory())
                 .build();
     }
-
-    private Bmi bmiType(String bmi) {
-        if (bmi.equals("THIN")) return Bmi.THIN;
-        else if (bmi.equals("NORMAL")) return Bmi.NORMAL;
-        else return Bmi.OBESE;
-    }
 }
-
-//Weight float
-//IsDesex boolean #neutering o, x
-//RegisterNumber long
-//NeuteringStatus string
-//BasicVaccinationStatus string
