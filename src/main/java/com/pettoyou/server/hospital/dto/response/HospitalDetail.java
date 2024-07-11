@@ -21,7 +21,6 @@ public record HospitalDetail(
         String additionalServiceTag,
         String storeInfo,
         String storeInfoPhoto,
-        BaseStatus storeStatus,
         Address address,
         List<BusinessHourDto> businessHours,
         List<StorePhotoDto> storePhotos,
@@ -36,9 +35,8 @@ public record HospitalDetail(
                 .notice(hospital.getNotice())
                 .websiteLink(hospital.getWebsiteLink())
                 .additionalServiceTag(hospital.getAdditionalServiceTag())
-                .storeInfo(hospital.getStoreInfo())
-                .storeStatus(hospital.getStoreStatus())
-                .storeInfoPhoto(hospital.getStoreInfoPhoto().getPhotoUrl())
+                .storeInfo(hospital.getStoreInfo() == null ? "test value" : hospital.getStoreInfo())
+                .storeInfoPhoto(hospital.getStoreInfoPhoto().getPhotoUrl()  == null ? "test value" : hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
                 .businessHours(
                         hospital
