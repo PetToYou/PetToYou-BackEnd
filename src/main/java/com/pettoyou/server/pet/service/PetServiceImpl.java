@@ -5,6 +5,8 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.pet.dto.PetDto;
+import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
+import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.PetProfilePhoto;
@@ -29,7 +31,7 @@ public class PetServiceImpl implements PetService {
     private final MemberRepository memberRepository;
 
     @Override
-    public PetDto.Response.Register petRegister(List<MultipartFile> petProfileImgs, PetDto.Request.Register petRegisterDto, Long loginMemberId) {
+    public PetRegisterRespDto petRegister(List<MultipartFile> petProfileImgs, PetRegisterReqDto petRegisterDto, Long loginMemberId) {
         Member member = memberRepository.findByMemberId(loginMemberId).orElseThrow(() -> new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND));
 
         Pet registerPet = Pet.toEntity(petRegisterDto, member);
@@ -44,11 +46,11 @@ public class PetServiceImpl implements PetService {
             }
         }
 
-        return PetDto.Response.Register.toDto(registerPet.getPetName());
+        return PetRegisterRespDto.from(registerPet.getPetName());
     }
 
     @Override
-    public void petModify(Long petId, List<MultipartFile> petProfileImgs, PetDto.Request.Register petRegisterDto, Long loginMemberId) {
+    public void petModify(Long petId, List<MultipartFile> petProfileImgs, PetRegisterReqDto petRegisterDto, Long loginMemberId) {
         Pet pet = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
         pet.modify(petRegisterDto);
 
