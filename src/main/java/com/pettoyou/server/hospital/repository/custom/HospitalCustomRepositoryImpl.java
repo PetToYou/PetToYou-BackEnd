@@ -1,14 +1,16 @@
 package com.pettoyou.server.hospital.repository.custom;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
+import com.pettoyou.server.hospital.dto.response.HospitalDetail;
+import com.pettoyou.server.hospital.dto.response.HospitalTagDto;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
 import com.pettoyou.server.hospital.dto.response.Times;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.enums.HospitalTagType;
 import com.pettoyou.server.review.entity.Review;
-import com.pettoyou.server.store.dto.response.StoreQueryInfo;
-import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
-import com.pettoyou.server.store.dto.response.TagInfo;
+import com.pettoyou.server.store.dto.response.*;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -210,6 +212,34 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
 
 //         Page 객체로 반환
         return new PageImpl<>(result, pageable, result.size());
+    }
+
+    @Override
+    public HospitalDetail findHospitalDetailById(Long hospitalId) {
+        Hospital findHospital = jpaQueryFactory
+                .selectFrom(hospital)
+                .leftJoin(hospital.registrationInfo, registrationInfo).fetchJoin()
+                .where(hospital.storeId.eq(hospitalId))
+                .fetchOne();
+
+        if (findHospital == null) {
+            throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
+        }
+
+        return HospitalDetail.builder()
+                .hospitalId(findHospital.getStoreId())
+                .hospitalName(findHospital.getStoreName())
+                .notice(findHospital.getNotice())
+                .websiteLink(findHospital.getWebsiteLink())
+                .additionalServiceTag(findHospital.getAdditionalServiceTag())
+                .storeInfo(findHospital.getStoreInfo())
+                .storeInfoPhoto(findHospital.getStoreInfoPhoto().getPhotoUrl())
+                .address(findHospital.getAddress())
+                .businessHours(findHospital.getBusinessHours().stream().map(BusinessHourDto::toDto).toList())
+                .storePhotos(findHospital.getStorePhotos().stream().map(StorePhotoDto::toDto).toList())
+                .registrationInfo(findHospital.getRegistrationInfo())
+                .hospitalTags(HospitalTagDto.toDto(findHospital.getTags()))
+                .build();
     }
 
     private BooleanExpression businessHourEq(String businessHourCond) {
