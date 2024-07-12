@@ -5,4 +5,6 @@ import com.pettoyou.server.scrap.dto.response.ScrapRegistRespDto;
 public interface ScrapService {
 
     ScrapRegistRespDto scrapRegist(Long storeId, Long memberId);
+
+    void scrapCancel(Long scrapId, Long memberId);
 }

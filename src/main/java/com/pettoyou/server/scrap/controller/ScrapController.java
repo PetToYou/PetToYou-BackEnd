@@ -9,10 +9,7 @@ import com.pettoyou.server.scrap.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +24,14 @@ public class ScrapController {
     ) {
         ScrapRegistRespDto response = scrapService.scrapRegist(scrapRegistReqDto.storeId(), principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+    }
+
+    @DeleteMapping("/scrap/{scrapId}")
+    public ResponseEntity<ApiResponse<String>> scrapRegister(
+            @PathVariable Long scrapId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        scrapService.scrapCancel(scrapId, principalDetails.getUserId());
+        return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제 완료", CustomResponseStatus.SUCCESS));
     }
 }

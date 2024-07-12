@@ -34,11 +34,14 @@ public enum CustomResponseStatus {
     PET_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4004", "해당 반려동물을 찾을 수 없습니다."),
     BANNER_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4005", "해당 배너를 찾을 수 없습니다."),
     HOSPITAL_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 병원을 찾을 수 없습니다."),
+    SCRAP_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 병원을 찾을 수 없습니다."),
+    STORE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 매장을 찾을 수 없습니다."),
 
     /***
      * 5000: NOT_MATCH
      */
     REFRESH_TOKEN_NOT_MATCH(HttpStatusCode.valueOf(HttpStatus.CONFLICT.value()), "5000", "잘못된 리프레시 토큰입니다."),
+    MEMBER_NOT_MATCH(HttpStatusCode.valueOf(HttpStatus.CONFLICT.value()), "5000", "멤버가 매칭되지 않습니다."),
 
     /***
      * 6000: Internal_Server_Error
