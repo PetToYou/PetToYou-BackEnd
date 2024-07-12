@@ -1,7 +1,6 @@
 package com.pettoyou.server.scrap.repository.custom;
 
 import com.pettoyou.server.scrap.dto.response.ScrapQueryRespDto;
-import com.pettoyou.server.scrap.entity.Scrap;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,7 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository{
                 .select(
                         Projections.constructor(
                                 ScrapQueryRespDto.class,
+                                scrap.scrapId,
                                 store.thumbnail.photoUrl,
                                 store.storeName,
                                 store.address
