@@ -31,4 +31,8 @@ public class Address {
     private Point point;
     //SRID 4326은 위도 경도 순으로  y, x
 
+    public String generateDefaultAddressFormat() {
+        return sido + " " + sigungu + " " + doro;
+    }
+
 }

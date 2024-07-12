@@ -3,7 +3,6 @@ package com.pettoyou.server.scrap.entity;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.store.entity.Store;
-import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +10,7 @@ import lombok.*;
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "scrap")
 public class Scrap extends BaseEntity {
 
@@ -19,11 +18,6 @@ public class Scrap extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "scrap_id")
     private Long scrapId;
-
-
-    @Enumerated(EnumType.STRING)
-    private StoreType storeType;
-
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -33,4 +27,12 @@ public class Scrap extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    private Scrap(Member member, Store store) {
+        this.member = member;
+        this.store = store;
+    }
+
+    public static Scrap of(Member member, Store store) {
+        return new Scrap(member, store);
+    }
 }
