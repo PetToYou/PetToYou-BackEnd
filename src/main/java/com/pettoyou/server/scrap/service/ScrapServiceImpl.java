@@ -4,6 +4,7 @@ import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
+import com.pettoyou.server.scrap.dto.response.ScrapQueryRespDto;
 import com.pettoyou.server.scrap.dto.response.ScrapRegistRespDto;
 import com.pettoyou.server.scrap.entity.Scrap;
 import com.pettoyou.server.scrap.repository.ScrapRepository;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -53,5 +56,10 @@ public class ScrapServiceImpl implements ScrapService {
         }
 
         scrapRepository.delete(findScrap);
+    }
+
+    @Override
+    public List<ScrapQueryRespDto> fetchScrapStore(Long memberId) {
+        return scrapRepository.findScrapListByMemberId(memberId);
     }
 }
