@@ -1,7 +1,7 @@
 package com.pettoyou.server.healthNote.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
-import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistReqDto;
+import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,7 +38,7 @@ public class HealthNote extends BaseEntity {
     @Column(name = "member_id")
     private Long memberId;
 
-    public static HealthNote of(HealthNoteRegistReqDto registDto, Long memberId) {
+    public static HealthNote of(HealthNoteRegistAndModifyReqDto registDto, Long memberId) {
         return HealthNote.builder()
                 .visitDate(registDto.visitDate())
                 .medicalRecord(registDto.medicalRecord())
@@ -48,5 +48,14 @@ public class HealthNote extends BaseEntity {
                 .petId(registDto.petId())
                 .memberId(memberId)
                 .build();
+    }
+
+    public void modifyHealthNote(HealthNoteRegistAndModifyReqDto modifyReqDto) {
+        this.visitDate = modifyReqDto.visitDate();
+        this.medicalRecord = modifyReqDto.medicalRecord();
+        this.caution = modifyReqDto.caution();
+        this.vetName = modifyReqDto.vetName();
+        this.storeId = modifyReqDto.hospitalId();
+        this.petId = modifyReqDto.petId();
     }
 }

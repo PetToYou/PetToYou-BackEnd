@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-public record HealthNoteRegistReqDto(
+public record HealthNoteRegistAndModifyReqDto(
         Long hospitalId,
         Long petId,
         LocalDate visitDate,

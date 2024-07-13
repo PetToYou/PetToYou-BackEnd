@@ -3,15 +3,12 @@ package com.pettoyou.server.healthNote.controller;
 import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
-import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistReqDto;
+import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import com.pettoyou.server.healthNote.service.HealthNoteCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,10 +18,20 @@ public class HealthNoteController {
 
     @PostMapping("healthNote")
     public ResponseEntity<ApiResponse<String>> registHealthNote(
-            @RequestBody HealthNoteRegistReqDto registReqDto,
+            @RequestBody HealthNoteRegistAndModifyReqDto registReqDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         healthNoteCommandService.registHealthNote(registReqDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess("등록완료", CustomResponseStatus.SUCCESS));
+    }
+
+    @PutMapping("healthNote/{healthNoteId}")
+    public ResponseEntity<ApiResponse<String>> registHealthNote(
+            @PathVariable Long healthNoteId,
+            @RequestBody HealthNoteRegistAndModifyReqDto modifyReqDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        healthNoteCommandService.modifyHealthNote(healthNoteId, modifyReqDto, principalDetails.getUserId());
+        return ResponseEntity.ok().body(ApiResponse.createSuccess("수정완료", CustomResponseStatus.SUCCESS));
     }
 }

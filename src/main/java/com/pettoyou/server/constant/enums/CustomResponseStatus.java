@@ -34,8 +34,9 @@ public enum CustomResponseStatus {
     PET_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4004", "해당 반려동물을 찾을 수 없습니다."),
     BANNER_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4005", "해당 배너를 찾을 수 없습니다."),
     HOSPITAL_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 병원을 찾을 수 없습니다."),
-    SCRAP_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 병원을 찾을 수 없습니다."),
-    STORE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 매장을 찾을 수 없습니다."),
+    SCRAP_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4007", "해당 병원을 찾을 수 없습니다."),
+    STORE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4008", "해당 매장을 찾을 수 없습니다."),
+    HEALTH_NOTE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4009", "해당 건강수첩을 찾을 수 없습니다."),
 
     /***
      * 5000: NOT_MATCH
