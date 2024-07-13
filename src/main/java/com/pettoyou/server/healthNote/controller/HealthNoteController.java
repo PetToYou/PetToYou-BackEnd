@@ -4,6 +4,7 @@ import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
+import com.pettoyou.server.healthNote.dto.response.HealthNoteDetailInfoDto;
 import com.pettoyou.server.healthNote.dto.response.HealthNoteSimpleInfoDto;
 import com.pettoyou.server.healthNote.service.HealthNoteCommandService;
 import com.pettoyou.server.healthNote.service.query.HealthNoteQueryService;
@@ -55,6 +56,15 @@ public class HealthNoteController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         List<HealthNoteSimpleInfoDto> response = healthNoteQueryService.fetchHealthNotesByPetId(petId, principalDetails.getUserId());
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+    }
+
+    @GetMapping("healthNote/{healthNoteId}")
+    public ResponseEntity<ApiResponse<HealthNoteDetailInfoDto>> fetchHealthNoteDetailInfo(
+            @PathVariable Long healthNoteId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        HealthNoteDetailInfoDto response = healthNoteQueryService.fetchHealthNoteDetailInfo(healthNoteId, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 }

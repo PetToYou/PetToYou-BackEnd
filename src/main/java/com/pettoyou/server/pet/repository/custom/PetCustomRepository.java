@@ -10,4 +10,6 @@ public interface PetCustomRepository {
     List<PetSimpleInfoDto> findAllPetsByMemberId(Long memberId);
 
     Optional<Pet> findPetUsingPetIdAndMemberId(Long petId, Long memberId);
+
+    String getPetNameByPetId(Long petId);
 }

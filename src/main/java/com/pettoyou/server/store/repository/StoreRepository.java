@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
-
     @Query("SELECT StorePhoto FROM StorePhoto WHERE storePhotoId = :storeId ")
     List<StorePhotoDto> getStorePhotoListByStoreId(Long storeId);
+
+    @Query("SELECT s.storeName FROM Store s WHERE s.storeId = :storeId")
+    String getStoreNameByStoreId(Long storeId);
 }

@@ -39,4 +39,13 @@ public class PetCustomRepositoryImpl implements PetCustomRepository{
                 .leftJoin(pet.member, member).fetchJoin()
                 .fetchOne());
     }
+
+    @Override
+    public String getPetNameByPetId(Long petId) {
+        return jpaQueryFactory
+                .select(pet.petName)
+                .from(pet)
+                .where(pet.petId.eq(petId))
+                .fetchOne();
+    }
 }
