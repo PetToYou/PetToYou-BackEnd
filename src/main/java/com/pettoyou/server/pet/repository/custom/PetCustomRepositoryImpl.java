@@ -1,5 +1,6 @@
 package com.pettoyou.server.pet.repository.custom;
 
+import com.pettoyou.server.member.entity.QMember;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -8,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import static com.pettoyou.server.member.entity.QMember.*;
 import static com.pettoyou.server.pet.entity.QPet.*;
 
 @Repository
@@ -26,5 +29,23 @@ public class PetCustomRepositoryImpl implements PetCustomRepository{
                 .fetch();
 
         return allPets.stream().map(PetSimpleInfoDto::of).toList();
+    }
+
+    @Override
+    public Optional<Pet> findPetUsingPetIdAndMemberId(Long petId, Long memberId) {
+        return Optional.ofNullable(jpaQueryFactory
+                .selectFrom(pet)
+                .where(pet.petId.eq(petId).and(pet.member.memberId.eq(memberId)))
+                .leftJoin(pet.member, member).fetchJoin()
+                .fetchOne());
+    }
+
+    @Override
+    public String getPetNameByPetId(Long petId) {
+        return jpaQueryFactory
+                .select(pet.petName)
+                .from(pet)
+                .where(pet.petId.eq(petId))
+                .fetchOne();
     }
 }

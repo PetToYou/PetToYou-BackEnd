@@ -1,6 +1,5 @@
 package com.pettoyou.server.store.controller;
 
-import com.pettoyou.server.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/store")
 public class StoreController {
 
-
-    //private final StoreService storeService;
+    // 병원 검색을 여기다가!
 
 }
