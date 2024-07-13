@@ -26,12 +26,21 @@ public class HealthNoteController {
     }
 
     @PutMapping("healthNote/{healthNoteId}")
-    public ResponseEntity<ApiResponse<String>> registHealthNote(
+    public ResponseEntity<ApiResponse<String>> modifyHealthNote(
             @PathVariable Long healthNoteId,
             @RequestBody HealthNoteRegistAndModifyReqDto modifyReqDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         healthNoteCommandService.modifyHealthNote(healthNoteId, modifyReqDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess("수정완료", CustomResponseStatus.SUCCESS));
+    }
+
+    @DeleteMapping("healthNote/{healthNoteId}")
+    public ResponseEntity<ApiResponse<String>> deleteHealthNote(
+            @PathVariable Long healthNoteId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        healthNoteCommandService.deleteHealthNote(healthNoteId, principalDetails.getUserId());
+        return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제완료", CustomResponseStatus.SUCCESS));
     }
 }

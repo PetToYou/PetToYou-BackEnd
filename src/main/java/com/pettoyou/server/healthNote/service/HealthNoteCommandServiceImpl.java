@@ -32,15 +32,28 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     @Override
     @Transactional
     public void modifyHealthNote(Long healthNoteId, HealthNoteRegistAndModifyReqDto modifyReqDto, Long authMemberId) {
-        HealthNote findHealthNote = healthNoteRepository.findById(healthNoteId).orElseThrow(() ->
-                new CustomException(CustomResponseStatus.HEALTH_NOTE_NOT_FOUND)
-        );
+        HealthNote findHealthNote = fetchHealthNoteById(healthNoteId);
 
         checkMemberAuthorization(findHealthNote.getMemberId(), authMemberId);
         checkValidHospital(modifyReqDto.hospitalId());
         checkValidPet(modifyReqDto.petId(), authMemberId);
 
         findHealthNote.modifyHealthNote(modifyReqDto);
+    }
+
+    @Override
+    public void deleteHealthNote(Long healthNoteId, Long authMemberId) {
+        HealthNote findHealthNote = fetchHealthNoteById(healthNoteId);
+
+        checkMemberAuthorization(findHealthNote.getMemberId(), authMemberId);
+
+        healthNoteRepository.delete(findHealthNote);
+    }
+
+    private HealthNote fetchHealthNoteById(Long healthNoteId) {
+        return healthNoteRepository.findById(healthNoteId).orElseThrow(() ->
+                new CustomException(CustomResponseStatus.HEALTH_NOTE_NOT_FOUND)
+        );
     }
 
     private void checkValidHospital(Long hospitalId) {

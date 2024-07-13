@@ -14,4 +14,9 @@ public interface HealthNoteCommandService {
             HealthNoteRegistAndModifyReqDto healthNoteRegistAndModifyReqDto,
             Long authMemberId
     );
+
+    void deleteHealthNote(
+            Long healthNoteId,
+            Long authMemberId
+    );
 }
