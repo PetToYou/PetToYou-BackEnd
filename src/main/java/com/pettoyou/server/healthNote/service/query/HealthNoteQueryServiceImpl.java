@@ -1,11 +1,40 @@
 package com.pettoyou.server.healthNote.service.query;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
+import com.pettoyou.server.healthNote.dto.response.HealthNoteSimpleInfoDto;
+import com.pettoyou.server.healthNote.entity.HealthNote;
+import com.pettoyou.server.healthNote.repository.HealthNoteRepository;
+import com.pettoyou.server.pet.entity.Pet;
+import com.pettoyou.server.pet.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class HealthNoteQueryServiceImpl {
+public class HealthNoteQueryServiceImpl implements HealthNoteQueryService {
+    private final PetRepository petRepository;
+    private final HealthNoteRepository healthNoteRepository;
+
+    @Override
+    public List<HealthNoteSimpleInfoDto> fetchHealthNotesByPetId(Long petId, Long authMemberId) {
+        Pet findPet = petRepository.findById(petId).orElseThrow(() ->
+                new CustomException(CustomResponseStatus.PET_NOT_FOUND)
+        );
+
+        checkMemberAuthorization(findPet.getMember().getMemberId(), authMemberId);
+
+        return healthNoteRepository.findHealthNotesByPetId(petId);
+    }
+
+    private void checkMemberAuthorization(Long petOwnerId, Long authMemberId) {
+        log.info("글쓴이 : {}, 로그인한 애 : {}", petOwnerId, authMemberId);
+        if (!petOwnerId.equals(authMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
+        }
+    }
 }

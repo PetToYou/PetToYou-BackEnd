@@ -4,17 +4,22 @@ import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
+import com.pettoyou.server.healthNote.dto.response.HealthNoteSimpleInfoDto;
 import com.pettoyou.server.healthNote.service.HealthNoteCommandService;
+import com.pettoyou.server.healthNote.service.query.HealthNoteQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member/")
 public class HealthNoteController {
     private final HealthNoteCommandService healthNoteCommandService;
+    private final HealthNoteQueryService healthNoteQueryService;
 
     @PostMapping("healthNote")
     public ResponseEntity<ApiResponse<String>> registHealthNote(
@@ -42,5 +47,14 @@ public class HealthNoteController {
     ) {
         healthNoteCommandService.deleteHealthNote(healthNoteId, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제완료", CustomResponseStatus.SUCCESS));
+    }
+
+    @GetMapping("healthNotes/{petId}")
+    public ResponseEntity<ApiResponse<List<HealthNoteSimpleInfoDto>>> fetchHealthNoteByPetId(
+            @PathVariable Long petId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        List<HealthNoteSimpleInfoDto> response = healthNoteQueryService.fetchHealthNotesByPetId(petId, principalDetails.getUserId());
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 }
