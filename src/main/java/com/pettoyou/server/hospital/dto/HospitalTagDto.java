@@ -25,8 +25,8 @@ public record HospitalTagDto(
         Map<HospitalTagType, List<String>> result = TagMappers.stream()
                 .collect(Collectors.groupingBy(mapper -> mapper.getHospitalTag().getTagType()
                 ,Collectors.mapping(mapper -> mapper.getHospitalTag().getTagContent(), Collectors.toList())
-
                 ));
+        // 각 Type 별 분류를 위해 Map으로 만들기. groupingBy 메소드 공부하기
         List<String> serviceList = result.get(HospitalTagType.SERVICE);
         List<String> businessHourList = result.get(BUSINESSHOUR);
         List<String> specialitiesList = result.get(SPECIALITIES);

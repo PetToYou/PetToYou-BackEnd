@@ -5,6 +5,7 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.review.entity.Review;
+import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -24,7 +25,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn // 하위 테이블의 구분 컬럼 생성
 @Table(name = "store", indexes = {
-        @Index(name = "idx_store_name", columnList = "storeNasme")
+        @Index(name = "idx_store_name", columnList = "storeName")
 })
 public abstract class Store extends BaseEntity {
 
@@ -60,6 +61,10 @@ public abstract class Store extends BaseEntity {
     private PhotoData storeInfoPhoto;
 
     @Enumerated(EnumType.STRING)
+    protected StoreType storeType;
+    //병원이나 미용실 엔티티에서 접근하기 위함.
+
+    @Enumerated(EnumType.STRING)
     private BaseStatus storeStatus;
 
     @Embedded
@@ -71,11 +76,6 @@ public abstract class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<StorePhoto> storePhotos = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
-//    private List<Reserve> reserves = new ArrayList<>();
-
-    // 쿼리가 따로 날아가기 때문에 굳이 OneToMany 연결할 필요가 없다?
-
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
@@ -83,9 +83,10 @@ public abstract class Store extends BaseEntity {
     @JoinColumn(name = "registration_info_id")
     private RegistrationInfo registrationInfo;
 
-    protected Store(Long storeId, String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
+    protected Store(StoreType storeType, Long storeId, String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
                     String websiteLink, String storeInfo, PhotoData storeInfoPhoto, BaseStatus storeStatus,
                     RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos) {
+        this.storeType = storeType;
         this.storeId = storeId;
         this.storeName = storeName;
         this.storePhone = storePhone;

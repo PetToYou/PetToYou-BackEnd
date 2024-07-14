@@ -7,6 +7,7 @@ import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -16,7 +17,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "review")
+@Table(name = "review", indexes = {
+        @Index(name = "idx_member_id", columnList = "memberId")
+})
+
+
 public class Review extends BaseEntity {
     @Id
     @GeneratedValue
@@ -29,19 +34,22 @@ public class Review extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BaseStatus reviewStatus;
 
-
-    @Builder.Default
-    private Double rating = 0.0;
-
+    @NotNull
+    private Integer rating;
+    private String treatmentType;
+    private String treatment;
+    private Integer price;
     private String content;
+
+
+    //Index
+    private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")

@@ -1,17 +1,20 @@
 package com.pettoyou.server.hospital.service;
 
 import com.pettoyou.server.hospital.dto.HospitalDto;
+import com.pettoyou.server.hospital.dto.HospitalTagDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
 import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.hospital.entity.HospitalTag;
+import com.pettoyou.server.hospital.entity.TagMapper;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
-import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
-import com.pettoyou.server.hospital.dto.HospitalTagDto;
-import com.pettoyou.server.hospital.entity.*;
+import com.pettoyou.server.hospital.repository.HospitalTagRepository;
+import com.pettoyou.server.hospital.repository.TagMapperRepository;
 import com.pettoyou.server.photo.converter.PhotoConverter;
 import com.pettoyou.server.photo.entity.PhotoData;
+import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
 import com.pettoyou.server.store.entity.StorePhoto;
 import com.pettoyou.server.store.entity.StorePhotoRepository;
 import jakarta.transaction.Transactional;
@@ -61,7 +64,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public Page<TestDTO> getHospitalsTest(Pageable pageable, HospitalQueryInfo queryInfo, HospitalQueryCond queryCond) {
+    public Page<TestDTO>    getHospitalsTest(Pageable pageable, HospitalQueryInfo queryInfo, HospitalQueryCond queryCond) {
         return hospitalRepository.findHospitalOptimization(
                 pageable,
                 getDayOfWeekNum(),
