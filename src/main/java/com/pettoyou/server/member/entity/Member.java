@@ -2,6 +2,7 @@ package com.pettoyou.server.member.entity;
 
 import com.pettoyou.server.alarm.entity.Alarm;
 import com.pettoyou.server.auth.OAuthInfoResponse;
+import com.pettoyou.server.member.dto.request.LoginReqDto;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
@@ -78,6 +79,24 @@ public class Member {
                 .email(joinParam.getEmail())
                 .provider(joinParam.getOAuthProvider())
                 .providerId(joinParam.getId())
+                .memberStatus(MemberStatus.ACTIVATE)
+                .build();
+    }
+
+    /***
+     * 프론트단에서 회원가입시 필요한 정보만
+     * @param loginReqDto
+     * @param provider
+     * @return
+     */
+    public static Member from(LoginReqDto loginReqDto, OAuthProvider provider) {
+        return Member.builder()
+                .name(loginReqDto.name())
+                .nickName(loginReqDto.nickname())
+                .phone(loginReqDto.phone())
+                .email(loginReqDto.email())
+                .provider(provider)
+                .providerId(loginReqDto.providerId())
                 .memberStatus(MemberStatus.ACTIVATE)
                 .build();
     }
