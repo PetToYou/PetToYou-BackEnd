@@ -90,6 +90,7 @@ public class Pet extends BaseEntity {
     }
 
     public Integer petAgeCalculate(LocalDate currentLocalDate) {
+        // Todo : 입양일만으로 나이를 구할 수 없는 경우가 있을것으로 파악됨. 해결필요
         Period age = Period.between(this.adoptionDate, currentLocalDate);
         return age.getYears();
     }
