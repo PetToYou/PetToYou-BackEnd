@@ -1,6 +1,7 @@
-package com.pettoyou.server;
+package com.pettoyou.server.review.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.member.entity.Member;
@@ -14,12 +15,16 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +33,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -35,7 +41,8 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,6 +52,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ReviewTest {
 
     MockMvc mockMvc;
+    @Mock
+    private PrincipalDetails principalDetails;
 
     @Autowired
     EntityManager em;
@@ -55,7 +64,7 @@ public class ReviewTest {
 
     @BeforeEach
     public void setup() {
-
+        MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .apply(SecurityMockMvcConfigurers.springSecurity())
@@ -110,17 +119,13 @@ public class ReviewTest {
                 .store(hospital)
                 .pet(pet)
                 .build();
-
-
-
+        principalDetails = mock(PrincipalDetails.class);
+        when(principalDetails.getUserId()).thenReturn(1L);
     }
 //mockMVC와 데이터
 
     @MockBean
     ReviewService reviewService;
-
-
-
 
     @Test
     @Transactional
@@ -150,6 +155,21 @@ public class ReviewTest {
         System.out.println(returnedReview);
     }
 
+
+//    @Test
+//    @WithMockUser(username = "user", roles = {"ADMIN"})
+//    void deleteReview_AsOwner_Success() throws Exception {
+//        Principal principal = mock(Principal.class);
+//        when(principal.getName()).thenReturn("user");
+//
+//        doNothing().when(reviewService).deleteReview(anyLong());
+//        mockMvc.perform(delete("/api/v1/review/{reviewId}", 1L)
+//                        .param("memberId", "1L")
+//                        .principal()
+//    ???
+//                )
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     void Get_service_테스트 () {

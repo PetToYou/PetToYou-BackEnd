@@ -4,11 +4,14 @@ import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.entity.Pet;
+import com.pettoyou.server.review.dto.ReviewReqDto;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
@@ -17,11 +20,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE review SET review_status = 'DEACTIVATE' WHERE review_id=?")
+@SQLRestriction("review_status = 'ACTIVATE'")
 @Table(name = "review", indexes = {
         @Index(name = "idx_member_id", columnList = "memberId")
 })
-
-
 public class Review extends BaseEntity {
     @Id
     @GeneratedValue
@@ -41,6 +44,8 @@ public class Review extends BaseEntity {
     private Integer price;
     private String content;
 
+    @Builder.Default
+    private Integer pinned=0;
 
     //Index
     private Long memberId;
@@ -60,6 +65,15 @@ public class Review extends BaseEntity {
                 .mapToDouble(Review::getRating)
                 .average()
                 .orElse(0.0);
+    }
+
+
+    public void modify(ReviewReqDto reviewDto){
+        this.treatmentType = reviewDto.treatmentType();
+        this.treatment = reviewDto.treatment();
+        this.price = reviewDto.price();
+        this.rating = reviewDto.rating();
+        this.content=reviewDto.content();
     }
 }
 //ReviewId PK long

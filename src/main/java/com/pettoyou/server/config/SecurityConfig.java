@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/v1/member/**").hasRole("MEMBER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/hospital_admin/**").hasRole("HOSPITAL")
+                        .requestMatchers("/api/v1/hospital/**").hasRole("HOSPITAL")
                         .anyRequest().permitAll()
                 )
                 // 커스텀 JWT 핸들러 및 엔트리 포인트를 사용하기 위해 httpBasic disable

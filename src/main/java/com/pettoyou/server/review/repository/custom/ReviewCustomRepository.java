@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface ReviewCustomRepository {
     Page<Tuple>findReviewsFetchJoinPetsByStoreId(Long StoreId, Pageable pageable);
+
+    long updatePinned(Long reviewId, Integer pinned);
 }

@@ -37,6 +37,7 @@ public record ReviewRespDto(@PastOrPresent LocalDateTime createdAt, @PastOrPrese
             .petName(tuple.get(pet.petName))
             .species(tuple.get(pet.species))
             .birth(tuple.get(pet.birth));
+
     if(tuple.get(review.modifiedAt)!=null){
         reviewRespDto.modifiedAt(tuple.get(review.modifiedAt));
     }

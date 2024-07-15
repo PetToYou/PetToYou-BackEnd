@@ -29,6 +29,16 @@ public record ReviewReqDto(String treatmentType,
 //null 값 어카지 ?
     }
 
+    public static Review toEntity(ReviewReqDto reviewReqDto){
+        return Review.builder()
+                .rating(reviewReqDto.rating)
+                .content(reviewReqDto.content)
+                .treatmentType(reviewReqDto.treatmentType)
+                .treatment(reviewReqDto.treatment)
+                .price(reviewReqDto.price)
+                .build();
+    }
+
 }
 //{
 //	진료항목 종류 treatment_type

@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 
@@ -32,7 +33,8 @@ public class ReviewServiceImpl implements ReviewService {
     ReviewCustomRepository reviewCustomRepository;
     PetRepository petRepository;
 
-    public String registerReiview(Long storeId,Long petId,  Long userId, List<MultipartFile> reviewImgs, ReviewReqDto reviewReqDto){
+
+    public String registerReiview(Long storeId, Long petId,  Long userId, List<MultipartFile> reviewImgs, ReviewReqDto reviewReqDto){
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(CustomResponseStatus.STORE_NOT_FOUND));
         Pet pet  = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
         StoreType storeType = store.getStoreType();
@@ -41,14 +43,24 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(reviewEntity);
         return reviewEntity.getReviewId().toString();
     }
-
     public Page<ReviewRespDto> getReview(Long storeId, Pageable pageable){
         Page<Tuple> reviewAndPet = reviewCustomRepository.findReviewsFetchJoinPetsByStoreId(storeId, pageable);
          List<ReviewRespDto> result = reviewAndPet.stream()
                  .map(ReviewRespDto::toDto).toList();
 
          return new PageImpl<>(result, reviewAndPet.getPageable(), reviewAndPet.getTotalElements());
-
+    }
+    public void deleteReview(Long reivewId){
+        reviewRepository.deleteById(reivewId);
     }
 
+    public long patchReviewPinned(Long reivewId, Integer pinned){
+        return reviewCustomRepository.updatePinned(reivewId, pinned);
+    }
+    public void putReview(Long reivewId, List<MultipartFile> reviewImgs, ReviewReqDto reviewReqDto) {
+        //Pet pet  = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
+        //펫 수정은 추후 고려..할까?
+        Review review = reviewRepository.findById(reivewId).orElseThrow(() -> new CustomException(CustomResponseStatus.REVIEW_NOT_FOUND));
+        review.modify(reviewReqDto);
+    }
 }

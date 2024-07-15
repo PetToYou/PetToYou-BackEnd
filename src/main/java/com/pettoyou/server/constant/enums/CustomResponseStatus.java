@@ -36,6 +36,7 @@ public enum CustomResponseStatus {
     HOSPITAL_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 병원을 찾을 수 없습니다."),
     SCRAP_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 병원을 찾을 수 없습니다."),
     STORE_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 매장을 찾을 수 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), "4006", "해당 리뷰를 찾을 수 없습니다."),
 
     /***
      * 5000: NOT_MATCH

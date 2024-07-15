@@ -64,7 +64,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public Page<TestDTO>    getHospitalsTest(Pageable pageable, HospitalQueryInfo queryInfo, HospitalQueryCond queryCond) {
+    public Page<TestDTO> getHospitalsTest(Pageable pageable, HospitalQueryInfo queryInfo, HospitalQueryCond queryCond) {
         return hospitalRepository.findHospitalOptimization(
                 pageable,
                 getDayOfWeekNum(),
