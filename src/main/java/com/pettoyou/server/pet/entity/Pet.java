@@ -38,9 +38,6 @@ public class Pet extends BaseEntity {
     @Column(nullable = false)
     private String species;
 
-    @Column(nullable = false)
-    private LocalDate birth;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PetType petType;
@@ -49,6 +46,7 @@ public class Pet extends BaseEntity {
     @Column(nullable = false)
     private Gender gender;
 
+    @Column(nullable = false)
     private LocalDate adoptionDate;
 
     @Enumerated(EnumType.STRING)
@@ -74,7 +72,6 @@ public class Pet extends BaseEntity {
         return builder()
                 .petName(registerDto.petName())
                 .species(registerDto.species())
-                .birth(registerDto.birth())
                 .petType(registerDto.petType())
                 .gender(registerDto.gender())
                 .adoptionDate(registerDto.adoptionDate() == null ? null : registerDto.adoptionDate())
@@ -87,14 +84,13 @@ public class Pet extends BaseEntity {
     public void modify(PetRegisterReqDto modifyDto) {
         this.petName = modifyDto.petName();
         this.species = modifyDto.species();
-        this.birth = modifyDto.birth();
         this.petType = modifyDto.petType();
         this.adoptionDate = modifyDto.adoptionDate();
         this.petMedicalInfo = PetMedicalInfo.from(modifyDto.petMedicalInfoDto());
     }
 
     public Integer petAgeCalculate(LocalDate currentLocalDate) {
-        Period age = Period.between(this.birth, currentLocalDate);
+        Period age = Period.between(this.adoptionDate, currentLocalDate);
         return age.getYears();
     }
 }

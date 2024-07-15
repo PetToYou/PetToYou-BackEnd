@@ -13,7 +13,6 @@ public record PetDetailInfoRespDto(
         Long petId,
         String petName,
         String species,
-        LocalDate birth,
         PetType petType,
         LocalDate adoptionDate,
         PetMedicalInfo petMedicalInfo,
@@ -24,7 +23,6 @@ public record PetDetailInfoRespDto(
                 .petId(pet.getPetId())
                 .petName(pet.getPetName())
                 .species(pet.getSpecies())
-                .birth(pet.getBirth())
                 .petType(pet.getPetType())
                 .adoptionDate(pet.getAdoptionDate())
                 .petMedicalInfo(pet.getPetMedicalInfo())

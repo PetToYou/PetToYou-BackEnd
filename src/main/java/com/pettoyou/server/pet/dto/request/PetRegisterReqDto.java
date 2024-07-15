@@ -10,8 +10,7 @@ public record PetRegisterReqDto(
         PetType petType,
         @NotBlank(message = "반려동물의 이름을 입력해주세요.")
         String petName,
-        @NotBlank(message = "반려동물의 생일을 입력해주세요.")
-        LocalDate birth,
+        @NotBlank(message = "반려동물의 입양일을 입력해주세요.")
         LocalDate adoptionDate,
         @NotBlank(message = "반려동물의 성별을 입력해주세요.")
         Gender gender,
