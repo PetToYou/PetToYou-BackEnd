@@ -1,6 +1,6 @@
 package com.pettoyou.server.hospital.dto.request;
 
-public record HospitalQueryInfo(
+public record HospitalQueryAddressInfo(
         double latitude,
         double longitude
 ) {
