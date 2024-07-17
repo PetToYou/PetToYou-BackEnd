@@ -13,7 +13,7 @@ public record PetSimpleInfoDto(
         String petName,
         String species,
         String gender,
-        Integer age,
+        String age,
         Double weight
 ) {
     public static PetSimpleInfoDto of(Pet pet) {

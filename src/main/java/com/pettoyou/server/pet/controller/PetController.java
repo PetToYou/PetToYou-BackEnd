@@ -29,7 +29,6 @@ public class PetController {
             @RequestPart(required = false, value = "petProfileImg") List<MultipartFile> petProfileImg,
             @RequestPart(value = "petRegisterDto") PetRegisterReqDto petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         PetRegisterRespDto response = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }

@@ -70,7 +70,7 @@ public class Pet extends BaseEntity {
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
-    public static Pet toEntity(PetRegisterReqDto registerDto, Member member) {
+    public static Pet of(PetRegisterReqDto registerDto, Member member) {
         return builder()
                 .petName(registerDto.petName())
                 .species(registerDto.species())
@@ -93,8 +93,16 @@ public class Pet extends BaseEntity {
         this.petMedicalInfo = PetMedicalInfo.from(modifyDto.petMedicalInfoDto());
     }
 
-    public Integer petAgeCalculate(LocalDate currentLocalDate) {
+    public String petAgeCalculate(LocalDate currentLocalDate) {
         Period age = Period.between(this.birth, currentLocalDate);
-        return age.getYears();
+
+        int years = age.getYears();
+        int months = age.getMonths();
+
+        if (years == 0) {
+            return months + "개월";
+        } else {
+            return years + "살";
+        }
     }
 }

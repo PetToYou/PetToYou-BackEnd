@@ -34,7 +34,7 @@ public class PetServiceImpl implements PetService {
     public PetRegisterRespDto petRegister(List<MultipartFile> petProfileImgs, PetRegisterReqDto petRegisterDto, Long loginMemberId) {
         Member member = memberRepository.findByMemberId(loginMemberId).orElseThrow(() -> new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND));
 
-        Pet registerPet = Pet.toEntity(petRegisterDto, member);
+        Pet registerPet = Pet.of(petRegisterDto, member);
 
         petRepository.save(registerPet);
 
