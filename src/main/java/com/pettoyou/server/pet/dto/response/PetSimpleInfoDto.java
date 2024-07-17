@@ -14,7 +14,7 @@ public record PetSimpleInfoDto(
         String species,
         String gender,
         String age,
-        Double weight
+        String weight
 ) {
     public static PetSimpleInfoDto of(Pet pet) {
         return PetSimpleInfoDto.builder()
@@ -24,7 +24,17 @@ public record PetSimpleInfoDto(
                 .species(pet.getSpecies())
                 .gender(pet.getGender() == Gender.MALE ? "남아" : "여아")
                 .age(pet.petAgeCalculate(LocalDate.now()))
-                .weight(pet.getPetMedicalInfo().getWeight()) // Todo : 5.0으로 나오나? 테스트해봐야함
+                .weight(formatWeight(pet.getPetMedicalInfo().getWeight()))
                 .build();
+    }
+
+    private static String formatWeight(Double weight) {
+        if (weight == null) {
+            return null;
+        }
+
+        if (weight % 1 != 0) return String.valueOf(weight);
+        return String.valueOf(weight.intValue());
+
     }
 }
