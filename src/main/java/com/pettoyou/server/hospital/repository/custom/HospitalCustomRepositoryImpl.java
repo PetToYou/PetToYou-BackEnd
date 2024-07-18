@@ -41,8 +41,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
             int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond
     ) {
         NumberPath<Double> distanceAlias = Expressions.numberPath(Double.class, "distance");
-        log.info("현재 시각 : {}", now);
-        log.info("수정 시각 : {}", now.minusHours(3));
         // 반경 내의 병원 + 태그 필터 정보들
         List<Tuple> hospitals = jpaQueryFactory
                 .select(
@@ -57,9 +55,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         hospitalTagsEqSubQuery(queryCond.tagIdList()),
                         openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
                 )
-                .orderBy(Expressions.stringTemplate(
-                        "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
-                        point, hospital.address.point).asc())
+                .orderBy(distanceAlias.asc())
                 .fetch();
 
         log.info("hospital size : {}", hospitals.size());
@@ -76,9 +72,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                     return TestDTO.of(matchingHospital, distance, dayOfWeek);
                 })
                 .toList();
-
-        log.info("size : {}", result.size());
-
         return new PageImpl<>(result, pageable, result.size());
     }
 
