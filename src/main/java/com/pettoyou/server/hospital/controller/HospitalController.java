@@ -4,7 +4,7 @@ import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
-import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
 import com.pettoyou.server.hospital.service.HospitalService;
@@ -33,30 +33,15 @@ public class HospitalController {
 
     // 모든 병원 조회 + 필터링 가능
     @GetMapping()
-    public ResponseEntity<ApiResponse<Page<StoreQueryTotalInfo>>> getHospitalList(
+    public ResponseEntity<ApiResponse<Page<TestDTO>>> getHospitalList(
             Pageable pageable,
-            @ModelAttribute HospitalQueryInfo queryInfo,
-            @ModelAttribute HospitalQueryCond queryCond
-    ){
-        log.info("queryInfo : {}", queryInfo);
-        log.info("queryCond : {}", queryCond);
-
-        Page<StoreQueryTotalInfo> response = hospitalService.getHospitals(pageable, queryInfo, queryCond);
-
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<ApiResponse<Page<TestDTO>>> getHospitalListTest(
-            Pageable pageable,
-            @ModelAttribute HospitalQueryInfo queryInfo,
+            @ModelAttribute HospitalQueryAddressInfo queryInfo,
             @ModelAttribute HospitalQueryCond queryCond
     ){
         log.info("queryInfo : {}", queryInfo);
         log.info("queryCond : {}", queryCond);
 
         Page<TestDTO> response = hospitalService.getHospitalsTest(pageable, queryInfo, queryCond);
-
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
 

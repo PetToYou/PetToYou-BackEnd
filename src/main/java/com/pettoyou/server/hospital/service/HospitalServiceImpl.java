@@ -2,12 +2,11 @@ package com.pettoyou.server.hospital.service;
 
 import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
-import com.pettoyou.server.hospital.dto.request.HospitalQueryInfo;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
-import com.pettoyou.server.store.dto.response.StoreQueryTotalInfo;
 import com.pettoyou.server.hospital.dto.HospitalTagDto;
 import com.pettoyou.server.hospital.entity.*;
 import com.pettoyou.server.photo.converter.PhotoConverter;
@@ -38,30 +37,8 @@ public class HospitalServiceImpl implements HospitalService {
     private final StorePhotoRepository storePhotoRepository;
     private final PhotoConverter photoConverter;
 
-    // 병원 상세 조회
     @Override
-    public HospitalDetail getHospitalDetail(Long hospitalId) {
-        return hospitalRepository.findHospitalDetailById(hospitalId);
-    }
-
-    // 특정 반경내의 병원 조회
-    @Override
-    public Page<StoreQueryTotalInfo> getHospitals(
-            Pageable pageable,
-            HospitalQueryInfo queryInfo,
-            HospitalQueryCond queryCond
-    ) {
-        return hospitalRepository.findHospitalsWithinRadius(
-                pageable,
-                getDayOfWeekNum(),
-                queryInfo.toPointString(),
-                LocalTime.now(),
-                queryCond
-        );
-    }
-
-    @Override
-    public Page<TestDTO> getHospitalsTest(Pageable pageable, HospitalQueryInfo queryInfo, HospitalQueryCond queryCond) {
+    public Page<TestDTO> getHospitalsTest(Pageable pageable, HospitalQueryAddressInfo queryInfo, HospitalQueryCond queryCond) {
         return hospitalRepository.findHospitalOptimization(
                 pageable,
                 getDayOfWeekNum(),
@@ -69,6 +46,12 @@ public class HospitalServiceImpl implements HospitalService {
                 LocalTime.now(),
                 queryCond
         );
+    }
+
+    // 병원 상세 조회
+    @Override
+    public HospitalDetail getHospitalDetail(Long hospitalId) {
+        return hospitalRepository.findHospitalDetailById(hospitalId);
     }
 
     @Override

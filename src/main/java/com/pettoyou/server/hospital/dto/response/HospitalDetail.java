@@ -27,31 +27,19 @@ public record HospitalDetail(
         RegistrationInfo registrationInfo,
         HospitalTagDto hospitalTags
 ) {
-    public static HospitalDetail toDto(Hospital hospital) {
+    public static HospitalDetail from(Hospital hospital) {
         return HospitalDetail.builder()
                 .hospitalId(hospital.getStoreId())
                 .hospitalName(hospital.getStoreName())
-                .storePhone(hospital.getStorePhone())
                 .notice(hospital.getNotice())
                 .websiteLink(hospital.getWebsiteLink())
                 .additionalServiceTag(hospital.getAdditionalServiceTag())
-                .storeInfo(hospital.getStoreInfo() == null ? "test value" : hospital.getStoreInfo())
-                .storeInfoPhoto(hospital.getStoreInfoPhoto().getPhotoUrl()  == null ? "test value" : hospital.getStoreInfoPhoto().getPhotoUrl())
+                .storeInfo(hospital.getStoreInfo())
+                .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? "test.jpg" : hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
-                .businessHours(
-                        hospital
-                                .getBusinessHours()
-                                .stream()
-                                .map(BusinessHourDto::toDto)
-                                .toList()
-                )
-                .storePhotos(
-                        hospital
-                                .getStorePhotos()
-                                .stream()
-                                .map(StorePhotoDto::toDto)
-                                .toList()
-                )
+                .businessHours(hospital.getBusinessHours().stream().map(BusinessHourDto::toDto).toList())
+                .storePhotos(hospital.getStorePhotos().stream().map(StorePhotoDto::toDto).toList())
+                .registrationInfo(hospital.getRegistrationInfo())
                 .hospitalTags(HospitalTagDto.toDto(hospital.getTags()))
                 .build();
     }
