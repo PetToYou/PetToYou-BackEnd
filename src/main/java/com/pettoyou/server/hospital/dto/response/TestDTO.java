@@ -23,15 +23,15 @@ public record TestDTO(
                 .storeName(hospital.getStoreName())
                 .thumbnailUrl(hospital.getThumbnail() == null ? "test.jpg" : hospital.getThumbnail().getPhotoUrl())
                 .time(Times.of(hospital.getBusinessHours(), dayOfWeek))
-                .reviewCount(hospital.getReviews() == null ? 5L : hospital.getReviews().size())
-                .ratingAvg(hospital.getReviews().isEmpty() ? 4.5 : Review.getRatingAvg(hospital.getReviews()))
+//                .reviewCount(hospital.getReviews() == null ? 5L : hospital.getReviews().size())
+//                .ratingAvg(hospital.getReviews().isEmpty() ? 4.5 : Review.getRatingAvg(hospital.getReviews()))
                 .distance(distanceFormatting(distance))
                 .tags(TagInfo.from(hospital.getTags()))
                 .build();
     }
 
     private static String distanceFormatting(double distance) {
-        return String.format("0.1f", distance / 1000.0 );
+        return String.format("%.2f", distance/1000.0);
     }
 
 }

@@ -6,13 +6,12 @@ import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
 import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.review.entity.QReview;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +23,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import static com.pettoyou.server.hospital.entity.QHospital.hospital;
 import static com.pettoyou.server.hospital.entity.QHospitalTag.hospitalTag;
@@ -44,16 +41,19 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
             Pageable pageable,
             int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond
     ) {
+        QReview review = QReview.review;
         NumberPath<Double> distanceAlias = Expressions.numberPath(Double.class, "distance");
         List<Tuple> hospitals = jpaQueryFactory
                 .select(
                         hospital,
+                        review.countDistinct(),review.rating.avg(),
                         Expressions.stringTemplate(
                                 "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
                                 point, hospital.address.point
                         ).as("distance"))
 //                .castToNum(Double.class).as(distanceAlias)
                 .from(hospital)
+                .leftJoin(hospital.reviews, review)
                 .where(
                         inDistance(point, queryCond.radius()),
                         hospitalTagsEqSubQuery(queryCond.tagIdList()),
@@ -62,6 +62,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(distanceAlias.asc())
+                .groupBy(hospital.storeId)
                 .fetch();
 
         Long countQuery = jpaQueryFactory
@@ -116,7 +117,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 JPAExpressions
                         .select(tagMapper.hospital.storeId)
                         .from(tagMapper)
-                        .leftJoin(tagMapper.hospital, hospital)
+//                        .leftJoin(tagMapper.hospital, hospital)
                         .leftJoin(tagMapper.hospitalTag, hospitalTag)
                         .where(tagMapper.hospitalTag.hospitalTagId.in(tagsCond)))
                 : null;
