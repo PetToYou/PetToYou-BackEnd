@@ -9,8 +9,8 @@ public interface StoreInterface {
     String getStoreId();
     String getHospitalName();
 
-    @Embedded
-    PhotoData getThumbnail();
+//    @Embedded
+//    PhotoData getThumbnail();
     Double getDistance() ;
     BusinessHour getBusinessHours();
 

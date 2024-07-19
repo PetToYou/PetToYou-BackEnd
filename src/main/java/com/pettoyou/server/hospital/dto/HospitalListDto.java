@@ -82,7 +82,7 @@ public class HospitalListDto {
                     .builder()
                     .storeId(h.getStoreId())
                     .hospitalName(h.getHospitalName())
-                    .thumbnailUrl(h.getThumbnail().getPhotoUrl())
+//                    .thumbnailUrl(h.getThumbnail().getPhotoUrl())
                     .distance(String.format("%.1f", h.getDistance() / 1000.0))
                     .openHour(
                             Optional
