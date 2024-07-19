@@ -34,6 +34,7 @@ public class HospitalController {
     // 모든 병원 조회 + 필터링 가능
     @GetMapping()
     public ResponseEntity<ApiResponse<Page<TestDTO>>> getHospitalList(
+//            @PageableDefault(size = 20, sort = "created_at", direction = Sort.Direction.DESC)
             Pageable pageable,
             @ModelAttribute HospitalQueryAddressInfo queryInfo,
             @ModelAttribute HospitalQueryCond queryCond

@@ -10,7 +10,9 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.pettoyou.server.hospital.entity.QHospital.hospital;
 import static com.pettoyou.server.hospital.entity.QHospitalTag.hospitalTag;
@@ -41,38 +45,53 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
             int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond
     ) {
         NumberPath<Double> distanceAlias = Expressions.numberPath(Double.class, "distance");
-        // 반경 내의 병원 + 태그 필터 정보들
         List<Tuple> hospitals = jpaQueryFactory
                 .select(
                         hospital,
                         Expressions.stringTemplate(
                                 "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
                                 point, hospital.address.point
-                        ).castToNum(Double.class).as(distanceAlias))
+                        ).as("distance"))
+//                .castToNum(Double.class).as(distanceAlias)
                 .from(hospital)
                 .where(
                         inDistance(point, queryCond.radius()),
                         hospitalTagsEqSubQuery(queryCond.tagIdList()),
                         openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
                 )
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
                 .orderBy(distanceAlias.asc())
                 .fetch();
 
-        log.info("hospital size : {}", hospitals.size());
+        Long countQuery = jpaQueryFactory
+                .select(
+                        hospital.count())
+                .from(hospital)
+                .where(
+                        inDistance(point, queryCond.radius()),
+                        hospitalTagsEqSubQuery(queryCond.tagIdList()),
+                        openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
+                )
+                .fetchOne();
+        if(countQuery == null){throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);};
 
+        log.info("hospital size : {}", hospitals.size());
         // 조회되는 병원이 없을 경우에 예외처리
         if (hospitals.isEmpty()) throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
 
-        // 병원 돌면서 DTO 생성
         List<TestDTO> result = hospitals.stream()
                 .map(t -> {
                     Hospital matchingHospital = t.get(hospital);
                     Double distance = t.get(distanceAlias);
                     log.info("Hospital: " + matchingHospital + ", Distance: " + distance);
+
                     return TestDTO.of(matchingHospital, distance, dayOfWeek);
                 })
                 .toList();
-        return new PageImpl<>(result, pageable, result.size());
+        log.info(countQuery.toString());
+        log.info(pageable.toString(), "page");
+        return new PageImpl<>(result, pageable, countQuery);
     }
 
     @Override

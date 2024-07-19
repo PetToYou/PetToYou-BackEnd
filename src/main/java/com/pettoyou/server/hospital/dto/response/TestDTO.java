@@ -13,11 +13,11 @@ public record TestDTO(
         Times time,
         Long reviewCount,
         Double ratingAvg,
-        Double distance,
+        String distance,
         TagInfo tags
 ) {
 
-    public static TestDTO of(Hospital hospital, Double distance, int dayOfWeek) {
+    public static TestDTO of(Hospital hospital,double distance,  int dayOfWeek) {
         return TestDTO.builder()
                 .storeId(hospital.getStoreId())
                 .storeName(hospital.getStoreName())
@@ -30,8 +30,8 @@ public record TestDTO(
                 .build();
     }
 
-    private static double distanceFormatting(double distance) {
-        return Math.round((distance / 1000.0) * 10) / 10.0;
+    private static String distanceFormatting(double distance) {
+        return String.format("0.1f", distance / 1000.0 );
     }
 
 }
