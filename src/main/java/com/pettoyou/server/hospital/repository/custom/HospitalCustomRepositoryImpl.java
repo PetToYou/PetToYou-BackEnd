@@ -51,6 +51,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         NumberPath<Long> reviewCount = Expressions.numberPath(Long.class, "reviewCount");
         NumberPath<Double> ratingAvg = Expressions.numberPath(Double.class, "ratingAvg");
 
+        // 1. 필터 조건에 부합하는 병원 가져오기
         List<Tuple> hospitals = jpaQueryFactory
                 .select(
                         hospital.storeId,
@@ -75,6 +76,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .groupBy(hospital.storeId)
                 .fetch();
 
+        // 2. 각 병원에서 가지고있는 HospitalTag를 Map에 담기
         Map<Long, List<HospitalTag>> hospitalTagMap = jpaQueryFactory
                 .select(tagMapper)
                 .from(tagMapper)
@@ -92,6 +94,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         Collectors.mapping(TagMapper::getHospitalTag, Collectors.toList())
                 ));
 
+        // 3. 각 병원에서 가지고 있는 오늘의 영업 시간을 Map에 담기
         Map<Long, BusinessHour> businessHourMap = jpaQueryFactory
                 .select(businessHour)
                 .from(businessHour)
@@ -110,6 +113,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         bh -> bh
                 ));
 
+        // 4. 페이징을 위한 조회된 병원의 전체 개수 구하는 쿼리
         Long countQuery = jpaQueryFactory
                 .select(
                         hospital.count())
@@ -127,6 +131,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         // 조회되는 병원이 없을 경우에 예외처리
         if (hospitals.isEmpty()) throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
 
+        // 최종적으로 hospital을 DTO에 담기
         List<TestDTO> result = hospitals.stream()
                 .map(t -> {
                     Long storeId = t.get(hospital.storeId);
