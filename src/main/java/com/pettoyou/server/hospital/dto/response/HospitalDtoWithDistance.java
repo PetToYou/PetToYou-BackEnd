@@ -1,12 +1,11 @@
 package com.pettoyou.server.hospital.dto.response;
 
 import com.pettoyou.server.hospital.entity.Hospital;
-import com.pettoyou.server.review.entity.Review;
 import com.pettoyou.server.store.dto.response.TagInfo;
 import lombok.Builder;
 
 @Builder
-public record TestDTO(
+public record HospitalDtoWithDistance(
         Long storeId,
         String storeName,
         String thumbnailUrl,
@@ -17,8 +16,8 @@ public record TestDTO(
         TagInfo tags
 ) {
 
-    public static TestDTO of(Hospital hospital,double distance,  int dayOfWeek) {
-        return TestDTO.builder()
+    public static HospitalDtoWithDistance of(Hospital hospital, double distance, int dayOfWeek) {
+        return HospitalDtoWithDistance.builder()
                 .storeId(hospital.getStoreId())
                 .storeName(hospital.getStoreName())
                 .thumbnailUrl(hospital.getThumbnail() == null ? "test.jpg" : hospital.getThumbnail().getPhotoUrl())

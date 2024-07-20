@@ -24,7 +24,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn // 하위 테이블의 구분 컬럼 생성
 @Table(name = "store", indexes = {
-        @Index(name = "idx_store_name", columnList = "storeNasme")
+        @Index(name = "idx_store_name", columnList = "storeName")
 })
 public abstract class Store extends BaseEntity {
 

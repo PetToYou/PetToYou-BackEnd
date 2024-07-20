@@ -3,11 +3,15 @@ package com.pettoyou.server.hospital.repository.custom;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
+import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
-import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
+import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.hospital.entity.QHospital;
 import com.pettoyou.server.review.entity.QReview;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.pettoyou.server.hospital.entity.QHospital.hospital;
 import static com.pettoyou.server.hospital.entity.QHospitalTag.hospitalTag;
@@ -37,7 +42,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<TestDTO> findHospitalOptimization(
+    public Page<HospitalDtoWithDistance> findHospitalOptimization(
             Pageable pageable,
             int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond
     ) {
@@ -46,7 +51,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         List<Tuple> hospitals = jpaQueryFactory
                 .select(
                         hospital,
-                        review.countDistinct(),review.rating.avg(),
+                        review.countDistinct(), review.rating.avg(),
                         Expressions.stringTemplate(
                                 "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
                                 point, hospital.address.point
@@ -75,24 +80,64 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
                 )
                 .fetchOne();
-        if(countQuery == null){throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);};
+        if (countQuery == null) {
+            throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
+        }
+        ;
 
         log.info("hospital size : {}", hospitals.size());
         // 조회되는 병원이 없을 경우에 예외처리
         if (hospitals.isEmpty()) throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
 
-        List<TestDTO> result = hospitals.stream()
+        List<HospitalDtoWithDistance> result = hospitals.stream()
                 .map(t -> {
                     Hospital matchingHospital = t.get(hospital);
                     Double distance = t.get(distanceAlias);
                     log.info("Hospital: " + matchingHospital + ", Distance: " + distance);
 
-                    return TestDTO.of(matchingHospital, distance, dayOfWeek);
+                    return HospitalDtoWithDistance.of(matchingHospital, distance, dayOfWeek);
                 })
                 .toList();
         log.info(countQuery.toString());
         log.info(pageable.toString(), "page");
         return new PageImpl<>(result, pageable, countQuery);
+    }
+
+    @Override
+    public Page<HospitalDtoWithAddress> findHospitalBySearch(Pageable pageable, HosptialSearchQueryInfo queryInfo, Integer dayOfWeek) {
+        QHospital hospital = QHospital.hospital;
+        List<HospitalDtoWithAddress> content = jpaQueryFactory
+                .select(Projections.constructor(HospitalDtoWithAddress.class,
+                                hospital.storeId, hospital.storeName,
+                                hospital.thumbnail.photoUrl.as("thumbnailUrl"), hospital.address,
+                                businessHour)
+                        )
+                .from(hospital)
+                .leftJoin(hospital.businessHours, businessHour)
+                .on(businessHour.dayOfWeek.eq(dayOfWeek))
+                .where(hospital.storeName.contains(queryInfo.storeName()))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
+        Long total = jpaQueryFactory.
+                select(hospital.count())
+                .from(hospital)
+                .where(hospital.storeName.like(queryInfo.storeName()))
+                .fetchOne();
+        if (total == null) {
+            throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
+        }
+// query Projection 문서 참고.
+//        List<HospitalDtoWithAddress> results = content.stream().map(tuple -> HospitalDtoWithAddress.of(
+//                        tuple.get(hospital.storeId),
+//                        tuple.get(hospital.storeName),
+//                        tuple.get(hospital.thumbnail.photoUrl),
+//                        tuple.get(hospital.address),
+//                        tuple.get(businessHour))).collect(Collectors.toList());
+
+
+        return new PageImpl<>(content, pageable, total);
     }
 
     @Override
@@ -118,7 +163,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         .select(tagMapper.hospital.storeId)
                         .from(tagMapper)
 //                        .leftJoin(tagMapper.hospital, hospital)
-                        .leftJoin(tagMapper.hospitalTag, hospitalTag)
+//                        .leftJoin(tagMapper.hospitalTag, hospitalTag)
                         .where(tagMapper.hospitalTag.hospitalTagId.in(tagsCond)))
                 : null;
     }

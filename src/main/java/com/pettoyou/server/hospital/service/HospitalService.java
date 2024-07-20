@@ -1,10 +1,11 @@
 package com.pettoyou.server.hospital.service;
 
-import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
+import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
-import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
+import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,13 +18,16 @@ public interface HospitalService {
             List<MultipartFile> hospitalImg,
             MultipartFile storeInfoImg,
             MultipartFile thumbnailImg,
-            HospitalDto.Request hospital);
+            com.pettoyou.server.hospital.dto.HospitalDto.Request hospital);
 
-    Page<TestDTO> getHospitalsTest(
+    Page<HospitalDtoWithDistance> getHospitalsTest(
             Pageable pageable,
             HospitalQueryAddressInfo queryInfo,
             HospitalQueryCond queryCond
     );
+
+    // 병원 검색. 거리 대신 주소로.
+    Page<HospitalDtoWithAddress> getHospitalSearch(Pageable pageable, HosptialSearchQueryInfo queryInfo);
 
     HospitalDetail getHospitalDetail(
             Long hospitalId

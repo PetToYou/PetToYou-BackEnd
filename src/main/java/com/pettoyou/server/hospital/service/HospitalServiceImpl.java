@@ -1,10 +1,11 @@
 package com.pettoyou.server.hospital.service;
 
-import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
+import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
-import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
+import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.hospital.dto.HospitalTagDto;
@@ -38,7 +39,7 @@ public class HospitalServiceImpl implements HospitalService {
     private final PhotoConverter photoConverter;
 
     @Override
-    public Page<TestDTO> getHospitalsTest(Pageable pageable, HospitalQueryAddressInfo queryInfo, HospitalQueryCond queryCond) {
+    public Page<HospitalDtoWithDistance> getHospitalsTest(Pageable pageable, HospitalQueryAddressInfo queryInfo, HospitalQueryCond queryCond) {
         return hospitalRepository.findHospitalOptimization(
                 pageable,
                 getDayOfWeekNum(),
@@ -48,6 +49,11 @@ public class HospitalServiceImpl implements HospitalService {
         );
     }
 
+    @Override
+    public Page<HospitalDtoWithAddress> getHospitalSearch(Pageable pageable, HosptialSearchQueryInfo queryInfo){
+        return hospitalRepository.findHospitalBySearch(pageable, queryInfo, getDayOfWeekNum());
+    }
+
     // 병원 상세 조회
     @Override
     public HospitalDetail getHospitalDetail(Long hospitalId) {
@@ -55,7 +61,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public String registerHospital(List<MultipartFile> hospitalImgs, MultipartFile storeInfoImg, MultipartFile thumbnailImg, HospitalDto.Request hospitalDto) {
+    public String registerHospital(List<MultipartFile> hospitalImgs, MultipartFile storeInfoImg, MultipartFile thumbnailImg, com.pettoyou.server.hospital.dto.HospitalDto.Request hospitalDto) {
 
         Hospital hospital;
         PhotoData thumbnail;
@@ -73,9 +79,9 @@ public class HospitalServiceImpl implements HospitalService {
         //병원 저장
         if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
             PhotoData photoData = photoConverter.ImgUpload(storeInfoImg);
-            hospital = HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail, photoData);
+            hospital = com.pettoyou.server.hospital.dto.HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail, photoData);
         } else {
-            hospital = HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail);
+            hospital = com.pettoyou.server.hospital.dto.HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail);
         }
 
         //Store 사진 저장 - 메소드 분리
