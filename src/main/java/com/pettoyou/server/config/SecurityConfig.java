@@ -14,6 +14,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +26,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
+
+    CorsConfigurationSource corsConfigurationSource() {
+        return request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedHeaders(Collections.singletonList("*"));
+            config.setAllowedMethods(Collections.singletonList("*"));
+            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000")); // ⭐️ 허용할 origin
+            config.setAllowCredentials(true);
+            return config;
+        };
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/hospital_admin/**").hasRole("HOSPITAL")
                         .anyRequest().permitAll()
                 )
+                // CORS 해결하기 위한 코드 추가
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 // 커스텀 JWT 핸들러 및 엔트리 포인트를 사용하기 위해 httpBasic disable
                 .httpBasic(AbstractHttpConfigurer::disable)
                 // 인증 및 인가에 대한 예외 처리를 다룸
