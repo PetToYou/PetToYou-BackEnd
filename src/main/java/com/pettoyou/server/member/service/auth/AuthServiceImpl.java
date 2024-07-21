@@ -10,8 +10,6 @@ import com.pettoyou.server.config.redis.util.RedisUtil;
 import com.pettoyou.server.constant.entity.AuthTokens;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
-import com.pettoyou.server.member.dto.MemberDto;
-import com.pettoyou.server.member.dto.response.LoginRespDto;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.MemberRole;
 import com.pettoyou.server.member.entity.Role;
@@ -57,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public MemberDto.Response.Reissue reissue(String refreshToken) {
+    public AuthTokens reissue(String refreshToken) {
         String resolveToken = jwtUtil.resolveToken(refreshToken);
         String emailInToken = jwtUtil.getEmailInToken(resolveToken);
 
@@ -70,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
         AuthTokens generateToken = authTokenGenerator.generate(emailInToken);
         redisUtil.setData(RT + emailInToken, generateToken.refreshToken(), jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
 
-        return MemberDto.Response.Reissue.from(generateToken);
+        return generateToken;
     }
 
     @Override
