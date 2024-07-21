@@ -5,11 +5,11 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.dto.response.Times;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.HospitalTag;
 import com.pettoyou.server.hospital.entity.TagMapper;
 import com.pettoyou.server.review.entity.QReview;
-import com.pettoyou.server.store.entity.BusinessHour;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -57,6 +57,10 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         hospital.storeId,
                         hospital.storeName,
                         hospital.thumbnail.photoUrl,
+                        businessHour.startTime,
+                        businessHour.endTime,
+                        businessHour.breakStartTime,
+                        businessHour.breakEndTime,
                         review.countDistinct().as(reviewCount),
                         review.rating.avg().as(ratingAvg),
                         Expressions.stringTemplate(
@@ -64,6 +68,10 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                                 point, hospital.address.point
                         ).as("distance"))
                 .from(hospital)
+
+                .leftJoin(hospital.businessHours, businessHour)
+                .on(businessHour.dayOfWeek.eq(dayOfWeek))
+
                 .leftJoin(hospital.reviews, review)
                 .where(
                         inDistance(point, queryCond.radius()),
@@ -73,7 +81,16 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(distanceAlias.asc())
-                .groupBy(hospital.storeId)
+                .groupBy(
+                        hospital.storeId,
+                        hospital.storeName,
+                        hospital.thumbnail.photoUrl,
+                        businessHour.startTime,
+                        businessHour.endTime,
+                        businessHour.breakStartTime,
+                        businessHour.breakEndTime,
+                        hospital.address.point
+                )
                 .fetch();
 
         // 2. 각 병원에서 가지고있는 HospitalTag를 Map에 담기
@@ -94,26 +111,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         Collectors.mapping(TagMapper::getHospitalTag, Collectors.toList())
                 ));
 
-        // 3. 각 병원에서 가지고 있는 오늘의 영업 시간을 Map에 담기
-        Map<Long, BusinessHour> businessHourMap = jpaQueryFactory
-                .select(businessHour)
-                .from(businessHour)
-                .where(
-                        businessHour.store.storeId.in(
-                                        hospitals.stream()
-                                                .map(h -> h.get(hospital.storeId))
-                                                .toList()
-                                )
-                                .and(businessHour.dayOfWeek.eq(dayOfWeek))
-                )
-                .fetch()
-                .stream()
-                .collect(Collectors.toMap(
-                        bh -> bh.getStore().getStoreId(),
-                        bh -> bh
-                ));
-
-        // 4. 페이징을 위한 조회된 병원의 전체 개수 구하는 쿼리
+        // 3. 페이징을 위한 조회된 병원의 전체 개수 구하는 쿼리
         Long countQuery = jpaQueryFactory
                 .select(
                         hospital.count())
@@ -141,13 +139,18 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                     Double ratingAverage = t.get(ratingAvg);
                     Double distance = t.get(distanceAlias);
 
+                    Time startTime = t.get(businessHour.startTime);
+                    Time endTime = t.get(businessHour.endTime);
+                    Time breakStartTime = t.get(businessHour.breakStartTime);
+                    Time breakEndTime = t.get(businessHour.breakEndTime);
+
                     return TestDTO.of(
                             storeId,
                             storeName,
                             thumbnailUrl,
                             reviewCnt,
                             ratingAverage,
-                            businessHourMap.get(storeId),
+                            Times.of(startTime, endTime, breakStartTime, breakEndTime),
                             hospitalTagMap.get(storeId),
                             distance
                     );

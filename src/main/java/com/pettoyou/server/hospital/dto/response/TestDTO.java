@@ -2,7 +2,6 @@ package com.pettoyou.server.hospital.dto.response;
 
 import com.pettoyou.server.hospital.entity.HospitalTag;
 import com.pettoyou.server.store.dto.response.TagInfo;
-import com.pettoyou.server.store.entity.BusinessHour;
 import lombok.Builder;
 
 import java.util.List;
@@ -18,14 +17,13 @@ public record TestDTO(
         String distance,
         TagInfo tags
 ) {
-
     public static TestDTO of(
             Long storeId,
             String storeName,
             String thumbnailUrl,
             Long reviewCount,
             Double ratingAvg,
-            BusinessHour businessHour,
+            Times time,
             List<HospitalTag> hospitalTags,
             double distance
             ) {
@@ -33,7 +31,7 @@ public record TestDTO(
                 .storeId(storeId)
                 .storeName(storeName)
                 .thumbnailUrl(thumbnailUrl == null ? "test.jpg" : thumbnailUrl)
-                .time(Times.of(businessHour))
+                .time(time)
                 .reviewCount(reviewCount == null ? 5L : reviewCount)
                 .ratingAvg(ratingAvg == null ? 4.5 : ratingAvg)
                 .distance(distanceFormatting(distance))

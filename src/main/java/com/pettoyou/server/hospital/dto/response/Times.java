@@ -1,6 +1,5 @@
 package com.pettoyou.server.hospital.dto.response;
 
-import com.pettoyou.server.store.entity.BusinessHour;
 import lombok.Builder;
 
 import java.sql.Time;
@@ -12,13 +11,12 @@ public record Times(
         Time breakStartTime,
         Time breakEndTime
 ) {
-
-    public static Times of(BusinessHour businessHour) {
+    public static Times of(Time startTime, Time endTime, Time breakStartTime, Time breakEndTime) {
         return Times.builder()
-                        .startTime(businessHour.getStartTime())
-                        .endTime(businessHour.getEndTime())
-                        .breakStartTime(businessHour.getBreakStartTime())
-                        .breakEndTime(businessHour.getBreakEndTime())
+                        .startTime(startTime)
+                        .endTime(endTime)
+                        .breakStartTime(breakStartTime)
+                        .breakEndTime(breakEndTime)
                         .build();
     }
 }
