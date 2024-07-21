@@ -4,12 +4,12 @@ import com.pettoyou.server.constant.entity.AuthTokens;
 import lombok.Builder;
 
 @Builder
-public record LoginRespDto(
+public record LoginAndReissueRespDto(
     String accessToken,
     Long exprTime
 ) {
-    public static LoginRespDto from(AuthTokens authTokens) {
-        return LoginRespDto.builder()
+    public static LoginAndReissueRespDto from(AuthTokens authTokens) {
+        return LoginAndReissueRespDto.builder()
                 .accessToken(authTokens.accessToken())
                 .exprTime(authTokens.exprTime())
                 .build();

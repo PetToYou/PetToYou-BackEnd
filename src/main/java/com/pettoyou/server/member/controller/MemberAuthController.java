@@ -5,14 +5,12 @@ import com.pettoyou.server.auth.naver.NaverLoginParam;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.entity.AuthTokens;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
-import com.pettoyou.server.member.dto.MemberDto;
-import com.pettoyou.server.member.dto.response.LoginRespDto;
+import com.pettoyou.server.member.dto.response.LoginAndReissueRespDto;
 import com.pettoyou.server.member.service.auth.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +23,7 @@ public class MemberAuthController {
 
     // 로그인 및 강제 회원가입
     @PostMapping("/kakao")
-    public ResponseEntity<ApiResponse<LoginRespDto>> loginKakao(
+    public ResponseEntity<ApiResponse<LoginAndReissueRespDto>> loginKakao(
             @RequestBody KakaoLoginParam kakaoLoginParam,
             HttpServletResponse response
     ) {
@@ -38,23 +36,42 @@ public class MemberAuthController {
         response.addCookie(refreshTokenCookie);
 
         return ResponseEntity.ok()
-                .body(ApiResponse.createSuccess(LoginRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
+                .body(ApiResponse.createSuccess(LoginAndReissueRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
     }
 
     @PostMapping("/naver")
-    public ResponseEntity<ApiResponse<LoginRespDto>> loginNaver(@RequestBody NaverLoginParam naverLoginParam) {
+    public ResponseEntity<ApiResponse<LoginAndReissueRespDto>> loginNaver(
+            @RequestBody NaverLoginParam naverLoginParam,
+            HttpServletResponse response
+    ) {
         AuthTokens authTokens = authService.signIn(naverLoginParam);
 
+        Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
+        response.addCookie(refreshTokenCookie);
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, authTokens.refreshToken())
-                .body(ApiResponse.createSuccess(LoginRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
+                .body(ApiResponse.createSuccess(LoginAndReissueRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
     }
 
     // 토큰 재발급
     @PostMapping("/reissue")
-    public ResponseEntity<ApiResponse<MemberDto.Response.Reissue>> reissue(@RequestHeader("Authorization") String refreshToken) {
-        MemberDto.Response.Reissue reissueDto = authService.reissue(refreshToken);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(reissueDto, CustomResponseStatus.SUCCESS));
+    public ResponseEntity<ApiResponse<LoginAndReissueRespDto>> reissue(
+            @CookieValue("refreshToken") String refreshToken,
+            HttpServletResponse response
+    ) {
+        log.info("refreshToken : {}", refreshToken);
+        AuthTokens authTokens = authService.reissue(refreshToken);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
+        response.addCookie(refreshTokenCookie);
+
+        return ResponseEntity.ok().body(ApiResponse.createSuccess(LoginAndReissueRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
     }
 
     // 로그아웃
