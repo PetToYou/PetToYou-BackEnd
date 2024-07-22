@@ -123,8 +123,9 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         Long total = jpaQueryFactory.
                 select(hospital.count())
                 .from(hospital)
-                .where(hospital.storeName.like(queryInfo.storeName()))
+                .where(hospital.storeName.contains(queryInfo.storeName()))
                 .fetchOne();
+
         if (total == null) {
             throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
         }
