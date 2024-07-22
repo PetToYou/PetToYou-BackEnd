@@ -3,7 +3,7 @@ package com.pettoyou.server.hospital.dto;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.photo.entity.PhotoData;
-import com.pettoyou.server.store.dto.AddressDto;
+import com.pettoyou.server.store.dto.request.AddressDto;
 import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import com.pettoyou.server.store.dto.StorePhotoDto;

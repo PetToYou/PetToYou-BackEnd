@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record TestDTO(
+public record HospitalDtoWithDistance(
         Long storeId,
         String storeName,
         String thumbnailUrl,
@@ -17,7 +17,7 @@ public record TestDTO(
         String distance,
         TagInfo tags
 ) {
-    public static TestDTO of(
+    public static HospitalDtoWithDistance of(
             Long storeId,
             String storeName,
             String thumbnailUrl,
@@ -27,7 +27,7 @@ public record TestDTO(
             List<HospitalTag> hospitalTags,
             double distance
             ) {
-        return TestDTO.builder()
+        return HospitalDtoWithDistance.builder()
                 .storeId(storeId)
                 .storeName(storeName)
                 .thumbnailUrl(thumbnailUrl == null ? "test.jpg" : thumbnailUrl)

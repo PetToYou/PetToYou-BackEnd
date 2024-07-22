@@ -1,4 +1,4 @@
-package com.pettoyou.server.store.dto;
+package com.pettoyou.server.store.dto.request;
 
 import com.pettoyou.server.store.entity.Address;
 import jakarta.validation.constraints.*;
@@ -7,13 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.Range;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.math.BigDecimal;
 
 /**
  * DTO for {@link com.pettoyou.server.store.entity.Address}

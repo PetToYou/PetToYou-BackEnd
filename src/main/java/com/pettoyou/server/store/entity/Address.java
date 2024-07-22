@@ -1,6 +1,7 @@
 package com.pettoyou.server.store.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pettoyou.server.store.dto.request.AddressDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
@@ -34,5 +35,6 @@ public class Address {
     public String generateDefaultAddressFormat() {
         return sido + " " + sigungu + " " + doro;
     }
+
 
 }
