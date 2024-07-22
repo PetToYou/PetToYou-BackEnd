@@ -79,6 +79,5 @@ public class MemberAuthController {
     public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String accessToken) {
         authService.logout(accessToken);
         return ResponseEntity.ok().body(ApiResponse.createSuccess("Logout Success", CustomResponseStatus.SUCCESS));
-
     }
 }

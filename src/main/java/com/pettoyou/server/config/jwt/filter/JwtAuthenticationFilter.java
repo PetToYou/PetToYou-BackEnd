@@ -3,6 +3,7 @@ package com.pettoyou.server.config.jwt.filter;
 import com.pettoyou.server.config.jwt.util.JwtUtil;
 import com.pettoyou.server.config.redis.util.RedisUtil;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,11 +29,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String EXCEPTION = "exception";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.resolveToken(request.getHeader("Authorization"));
+        String resolveToken = jwtUtil.resolveToken(request.getHeader("Authorization"));
 
-        if (token.isEmpty()) {
+        if (resolveToken.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -43,18 +46,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String isLogout = redisUtil.getData("LOGOUT:"+token);
+            String blackToken = redisUtil.getData("LOGOUT:");
             // getData 해서 값이 가져와지면 AT가 블랙리스트에 등록된 상태이므로 로그아웃된 상태임.
-            if (isLogout != null) {
-                request.setAttribute(EXCEPTION, CustomResponseStatus.LOGOUT_MEMBER.getMessage());
-                return;
+            if (blackToken != null) {
+                if (Objects.equals(blackToken, resolveToken)) throw new CustomException(CustomResponseStatus.LOGOUT_MEMBER);
             }
 
             /***
              * 권한 확인 로직에서 현재 Lazy 전략의 에러가 발생함. 이를 오늘 고치도록!
              */
-            Authentication authentication = jwtUtil.getAuthentication(token);
+            Authentication authentication = jwtUtil.getAuthentication(resolveToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (CustomException e) {
+            request.setAttribute(EXCEPTION, CustomResponseStatus.LOGOUT_MEMBER.getMessage());
         } catch (ExpiredJwtException e) {
             request.setAttribute(EXCEPTION, CustomResponseStatus.EXPIRED_JWT.getMessage());
         } catch (JwtException | IllegalArgumentException | SignatureException
