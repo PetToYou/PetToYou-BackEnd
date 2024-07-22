@@ -63,14 +63,13 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         hospital.storeId,
                         hospital.storeName,
                         hospital.thumbnail.photoUrl,
-                       businessHour,
+                        businessHour,
                         review.countDistinct().as(reviewCount),
                         review.rating.avg().as(ratingAvg),
                         Expressions.stringTemplate(
                                 "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
                                 point, hospital.address.point
                         ).as("distance"))
-//                .castToNum(Double.class).as(distanceAlias)
                 .from(hospital)
                 .leftJoin(hospital.businessHours, businessHour)
                 .on(businessHour.dayOfWeek.eq(dayOfWeek))
@@ -143,7 +142,8 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                             ratingAverage,
                             Times.of(businessHour1),
                             hospitalTagMap.get(storeId),
-                            distance);
+                            distance
+                    );
                 })
                 .toList();
         log.info(countQuery.toString());
@@ -156,10 +156,10 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         QHospital hospital = QHospital.hospital;
         List<HospitalDtoWithAddress> content = jpaQueryFactory
                 .select(Projections.constructor(HospitalDtoWithAddress.class,
-                                hospital.storeId, hospital.storeName,
-                                hospital.thumbnail.photoUrl.as("thumbnailUrl"), hospital.address,
-                                businessHour)
-                        )
+                        hospital.storeId, hospital.storeName,
+                        hospital.thumbnail.photoUrl.as("thumbnailUrl"), hospital.address,
+                        businessHour)
+                )
                 .from(hospital)
                 .leftJoin(hospital.businessHours, businessHour)
                 .on(businessHour.dayOfWeek.eq(dayOfWeek))
@@ -211,8 +211,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 JPAExpressions
                         .select(tagMapper.hospital.storeId)
                         .from(tagMapper)
-//                        .leftJoin(tagMapper.hospital, hospital)
-//                        .leftJoin(tagMapper.hospitalTag, hospitalTag)
                         .where(tagMapper.hospitalTag.hospitalTagId.in(tagsCond)))
                 : null;
     }

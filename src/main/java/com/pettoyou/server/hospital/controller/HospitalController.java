@@ -8,11 +8,14 @@ import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.service.HospitalService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

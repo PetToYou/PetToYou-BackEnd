@@ -14,25 +14,26 @@ import lombok.Builder;
  */
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record HospitalDtoWithAddress(@NotNull Long storeId,
-                                     @NotNull @Size(min = 2) String storeName,
-                                     String thumbnailUrl,
-                                     AddressDto addressDto,
-                                     //response/dto
-                                     Times time,
-                                     TagInfo tags)
-         {
-             public HospitalDtoWithAddress(Long storeId,
-                                           String storeName,
-                                           String thumbnailUrl,
-                                           Address address,
-                                           BusinessHour businessHour) {
-                 this(storeId, storeName, thumbnailUrl, AddressDto.toDto(address), businessHour!=null? Times.of(businessHour): null, null);
-             }
+public record HospitalDtoWithAddress(
+        @NotNull Long storeId,
+        @NotNull @Size(min = 2) String storeName,
+        String thumbnailUrl,
+        AddressDto addressDto,
+        //response/dto
+        Times time,
+        TagInfo tags) {
+    public HospitalDtoWithAddress(
+            Long storeId,
+            String storeName,
+            String thumbnailUrl,
+            Address address,
+            BusinessHour businessHour) {
+        this(storeId, storeName, thumbnailUrl, AddressDto.toDto(address), businessHour != null ? Times.of(businessHour) : null, null);
+    }
 
-             // *********null 수정 필요 {@link com.pettoyou.server.Times.java} *************//
+    // *********null 수정 필요 {@link com.pettoyou.server.Times.java} *************//
 
-             //필드주입방식
+    //필드주입방식
 //             public static HospitalDtoWithAddress of(Long storeId, String storeName, String photoUrl, Address address, BusinessHour businessHour)
 //             {
 //                 return HospitalDtoWithAddress.builder()
