@@ -5,7 +5,10 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.TestDTO;
+import com.pettoyou.server.hospital.dto.response.Times;
 import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.hospital.entity.HospitalTag;
+import com.pettoyou.server.hospital.entity.TagMapper;
 import com.pettoyou.server.review.entity.QReview;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -23,6 +26,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.pettoyou.server.hospital.entity.QHospital.hospital;
 import static com.pettoyou.server.hospital.entity.QHospitalTag.hospitalTag;
@@ -43,16 +48,28 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
     ) {
         QReview review = QReview.review;
         NumberPath<Double> distanceAlias = Expressions.numberPath(Double.class, "distance");
+        NumberPath<Long> reviewCount = Expressions.numberPath(Long.class, "reviewCount");
+        NumberPath<Double> ratingAvg = Expressions.numberPath(Double.class, "ratingAvg");
+
+        // 1. 필터 조건에 부합하는 병원 가져오기
         List<Tuple> hospitals = jpaQueryFactory
                 .select(
-                        hospital,
-                        review.countDistinct(),review.rating.avg(),
+                        hospital.storeId,
+                        hospital.storeName,
+                        hospital.thumbnail.photoUrl,
+                        businessHour.startTime,
+                        businessHour.endTime,
+                        businessHour.breakStartTime,
+                        businessHour.breakEndTime,
+                        review.countDistinct().as(reviewCount),
+                        review.rating.avg().as(ratingAvg),
                         Expressions.stringTemplate(
                                 "ST_Distance_Sphere(ST_PointFromText({0}, 4326), {1})",
                                 point, hospital.address.point
                         ).as("distance"))
-//                .castToNum(Double.class).as(distanceAlias)
                 .from(hospital)
+                .leftJoin(hospital.businessHours, businessHour)
+                .on(businessHour.dayOfWeek.eq(dayOfWeek))
                 .leftJoin(hospital.reviews, review)
                 .where(
                         inDistance(point, queryCond.radius()),
@@ -62,9 +79,31 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(distanceAlias.asc())
-                .groupBy(hospital.storeId)
+                .groupBy(
+                        hospital,
+                        businessHour
+                )
                 .fetch();
 
+        // 2. 각 병원에서 가지고있는 HospitalTag를 Map에 담기
+        Map<Long, List<HospitalTag>> hospitalTagMap = jpaQueryFactory
+                .select(tagMapper)
+                .from(tagMapper)
+                .where(
+                        tagMapper.hospital.storeId.in(
+                                hospitals.stream()
+                                        .map(h -> h.get(hospital.storeId))
+                                        .toList()
+                        )
+                )
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tm -> tm.getHospital().getStoreId(),
+                        Collectors.mapping(TagMapper::getHospitalTag, Collectors.toList())
+                ));
+
+        // 3. 페이징을 위한 조회된 병원의 전체 개수 구하는 쿼리
         Long countQuery = jpaQueryFactory
                 .select(
                         hospital.count())
@@ -75,19 +114,38 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                         openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
                 )
                 .fetchOne();
-        if(countQuery == null){throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);};
 
+        if (countQuery == null) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
         log.info("hospital size : {}", hospitals.size());
+
         // 조회되는 병원이 없을 경우에 예외처리
         if (hospitals.isEmpty()) throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
 
+        // 최종적으로 hospital을 DTO에 담기
         List<TestDTO> result = hospitals.stream()
                 .map(t -> {
-                    Hospital matchingHospital = t.get(hospital);
+                    Long storeId = t.get(hospital.storeId);
+                    String storeName = t.get(hospital.storeName);
+                    String thumbnailUrl = t.get(hospital.thumbnail.photoUrl);
+                    Long reviewCnt = t.get(reviewCount);
+                    Double ratingAverage = t.get(ratingAvg);
                     Double distance = t.get(distanceAlias);
-                    log.info("Hospital: " + matchingHospital + ", Distance: " + distance);
 
-                    return TestDTO.of(matchingHospital, distance, dayOfWeek);
+                    Time startTime = t.get(businessHour.startTime);
+                    Time endTime = t.get(businessHour.endTime);
+                    Time breakStartTime = t.get(businessHour.breakStartTime);
+                    Time breakEndTime = t.get(businessHour.breakEndTime);
+
+                    return TestDTO.of(
+                            storeId,
+                            storeName,
+                            thumbnailUrl,
+                            reviewCnt,
+                            ratingAverage,
+                            Times.of(startTime, endTime, breakStartTime, breakEndTime),
+                            hospitalTagMap.get(storeId),
+                            distance
+                    );
                 })
                 .toList();
         log.info(countQuery.toString());
@@ -117,7 +175,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 JPAExpressions
                         .select(tagMapper.hospital.storeId)
                         .from(tagMapper)
-//                        .leftJoin(tagMapper.hospital, hospital)
                         .leftJoin(tagMapper.hospitalTag, hospitalTag)
                         .where(tagMapper.hospitalTag.hospitalTagId.in(tagsCond)))
                 : null;

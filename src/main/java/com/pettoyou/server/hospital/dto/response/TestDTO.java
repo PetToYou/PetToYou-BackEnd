@@ -1,9 +1,10 @@
 package com.pettoyou.server.hospital.dto.response;
 
-import com.pettoyou.server.hospital.entity.Hospital;
-import com.pettoyou.server.review.entity.Review;
+import com.pettoyou.server.hospital.entity.HospitalTag;
 import com.pettoyou.server.store.dto.response.TagInfo;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record TestDTO(
@@ -16,17 +17,25 @@ public record TestDTO(
         String distance,
         TagInfo tags
 ) {
-
-    public static TestDTO of(Hospital hospital,double distance,  int dayOfWeek) {
+    public static TestDTO of(
+            Long storeId,
+            String storeName,
+            String thumbnailUrl,
+            Long reviewCount,
+            Double ratingAvg,
+            Times time,
+            List<HospitalTag> hospitalTags,
+            double distance
+            ) {
         return TestDTO.builder()
-                .storeId(hospital.getStoreId())
-                .storeName(hospital.getStoreName())
-                .thumbnailUrl(hospital.getThumbnail() == null ? "test.jpg" : hospital.getThumbnail().getPhotoUrl())
-                .time(Times.of(hospital.getBusinessHours(), dayOfWeek))
-//                .reviewCount(hospital.getReviews() == null ? 5L : hospital.getReviews().size())
-//                .ratingAvg(hospital.getReviews().isEmpty() ? 4.5 : Review.getRatingAvg(hospital.getReviews()))
+                .storeId(storeId)
+                .storeName(storeName)
+                .thumbnailUrl(thumbnailUrl == null ? "test.jpg" : thumbnailUrl)
+                .time(time)
+                .reviewCount(reviewCount == null ? 5L : reviewCount)
+                .ratingAvg(ratingAvg == null ? 4.5 : ratingAvg)
                 .distance(distanceFormatting(distance))
-                .tags(TagInfo.from(hospital.getTags()))
+                .tags(TagInfo.from(hospitalTags))
                 .build();
     }
 
