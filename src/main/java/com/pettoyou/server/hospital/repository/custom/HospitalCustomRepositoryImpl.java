@@ -68,10 +68,8 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                                 point, hospital.address.point
                         ).as("distance"))
                 .from(hospital)
-
                 .leftJoin(hospital.businessHours, businessHour)
                 .on(businessHour.dayOfWeek.eq(dayOfWeek))
-
                 .leftJoin(hospital.reviews, review)
                 .where(
                         inDistance(point, queryCond.radius()),
@@ -82,14 +80,8 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .offset(pageable.getOffset())
                 .orderBy(distanceAlias.asc())
                 .groupBy(
-                        hospital.storeId,
-                        hospital.storeName,
-                        hospital.thumbnail.photoUrl,
-                        businessHour.startTime,
-                        businessHour.endTime,
-                        businessHour.breakStartTime,
-                        businessHour.breakEndTime,
-                        hospital.address.point
+                        hospital,
+                        businessHour
                 )
                 .fetch();
 
