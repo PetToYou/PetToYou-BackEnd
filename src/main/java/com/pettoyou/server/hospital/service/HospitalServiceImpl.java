@@ -13,7 +13,7 @@ import com.pettoyou.server.hospital.entity.*;
 import com.pettoyou.server.photo.converter.PhotoConverter;
 import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.entity.StorePhoto;
-import com.pettoyou.server.store.entity.StorePhotoRepository;
+import com.pettoyou.server.store.repository.StorePhotoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

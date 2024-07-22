@@ -27,12 +27,14 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String EXCEPTION = "exception";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String LOGOUT = "LOGOUT:";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String resolveToken = jwtUtil.resolveToken(request.getHeader("Authorization"));
+        String resolveToken = jwtUtil.resolveToken(request.getHeader(AUTHORIZATION));
 
         if (resolveToken.isEmpty()) {
             filterChain.doFilter(request, response);
@@ -40,40 +42,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            if (request.getRequestURI().equals("/api/v1/auth/reissue")) {
-                log.info("재발급 요청 들어왔습니다!");
-                filterChain.doFilter(request, response);
-                return;
-            }
+            handleBlacklistedToken(redisUtil.getData(LOGOUT), resolveToken);
 
-            String blackToken = redisUtil.getData("LOGOUT:");
-            // getData 해서 값이 가져와지면 AT가 블랙리스트에 등록된 상태이므로 로그아웃된 상태임.
-            if (blackToken != null) {
-                if (Objects.equals(blackToken, resolveToken)) throw new CustomException(CustomResponseStatus.LOGOUT_MEMBER);
-            }
-
-            /***
-             * 권한 확인 로직에서 현재 Lazy 전략의 에러가 발생함. 이를 오늘 고치도록!
-             */
             Authentication authentication = jwtUtil.getAuthentication(resolveToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (CustomException e) {
-            request.setAttribute(EXCEPTION, CustomResponseStatus.LOGOUT_MEMBER.getMessage());
+            handleException(request, CustomResponseStatus.LOGOUT_MEMBER);
         } catch (ExpiredJwtException e) {
-            request.setAttribute(EXCEPTION, CustomResponseStatus.EXPIRED_JWT.getMessage());
-        } catch (JwtException | IllegalArgumentException | SignatureException
-                 | UnsupportedJwtException | MalformedJwtException e) {
-            request.setAttribute(EXCEPTION, CustomResponseStatus.BAD_JWT.getMessage());
+            handleException(request, CustomResponseStatus.EXPIRED_JWT);
+        } catch (JwtException | IllegalArgumentException | SignatureException | UnsupportedJwtException |
+                 MalformedJwtException e) {
+            handleException(request, CustomResponseStatus.BAD_JWT);
         }
 
         filterChain.doFilter(request, response);
     }
 
+    // 로그아웃한 사용자가 접근하는지 파악. -> 접근할경우 예외발생
+    private void handleBlacklistedToken(String blackTokenInRedis, String resolveToken) throws CustomException {
+        if (blackTokenInRedis != null && Objects.equals(blackTokenInRedis, resolveToken)) {
+            throw new CustomException(CustomResponseStatus.LOGOUT_MEMBER);
+        }
+    }
+
+    private void handleException(HttpServletRequest request, CustomResponseStatus status) {
+        request.setAttribute(EXCEPTION, status.getMessage());
+    }
+
     // JWT 필터를 타지 않아도 되는 URI 를 해당 메서드에 설정
-    // 이 필터에 토큰 없어도 되는 애들 넣으면 될거같은데
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/v1/auth/kakao", "api/v1/auth/reissue"};
+        String[] excludePath = {"/api/v1/auth/kakao", "/api/v1/auth/naver", "api/v1/auth/reissue"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }

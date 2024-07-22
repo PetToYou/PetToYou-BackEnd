@@ -14,14 +14,12 @@ import lombok.*;
 @Table(name = "alarm")
 public class Alarm {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alarmId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
-
 
     private String alarmTitle;
 

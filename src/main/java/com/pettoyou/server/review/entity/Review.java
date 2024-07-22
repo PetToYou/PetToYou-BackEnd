@@ -18,8 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "review")
 public class Review extends BaseEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "review_id")
     private Long reviewId;
 
@@ -28,7 +27,6 @@ public class Review extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private BaseStatus reviewStatus;
-
 
     @Builder.Default
     private Double rating = 0.0;

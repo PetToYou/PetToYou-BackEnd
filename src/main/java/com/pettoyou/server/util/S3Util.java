@@ -1,6 +1,5 @@
 package com.pettoyou.server.util;
 
-
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.photo.entity.PhotoData;

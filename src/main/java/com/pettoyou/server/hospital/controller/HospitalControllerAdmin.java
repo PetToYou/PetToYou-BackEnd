@@ -25,7 +25,6 @@ public class HospitalControllerAdmin {
     private final HospitalService hospitalService;
 
     // 모든 병원 조회 + 필터링 가능
-
     @PostMapping()
     public ResponseEntity<ApiResponse<String>> registerHospital(
             @RequestPart(required = false, value = "hospitalImg") List<MultipartFile> hospitalImg,
@@ -33,13 +32,13 @@ public class HospitalControllerAdmin {
             @RequestPart(required = false, value = "thumbnailImg") MultipartFile thumbnailImg,
             @RequestPart(value = "hospitalDto") @Valid HospitalDto.Request hospitalDto
     ) {
-        String hospitalId = hospitalService.registerHospital(hospitalImg, storeInfoImg,thumbnailImg, hospitalDto);
+        String hospitalId = hospitalService.registerHospital(hospitalImg, storeInfoImg, thumbnailImg, hospitalDto);
 
         // 현재 요청 URI에서 path 부분만 가져오기
         String currentPath = ServletUriComponentsBuilder.fromCurrentRequest().build().getPath();
-// "/admin" 부분 제거하기
+        // "/admin" 부분 제거하기
         String newPath = currentPath.replace("/admin", "");
-// 새로운 URI 생성
+        // 새로운 URI 생성
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(newPath + "/{id}")
                 .buildAndExpand(hospitalId)

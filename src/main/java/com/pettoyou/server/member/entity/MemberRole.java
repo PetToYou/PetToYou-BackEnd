@@ -10,8 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class MemberRole {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberRoleId;
 
     @ManyToOne

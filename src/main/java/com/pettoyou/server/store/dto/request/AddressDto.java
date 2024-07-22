@@ -1,5 +1,7 @@
 package com.pettoyou.server.store.dto.request;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.store.entity.Address;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -15,22 +17,24 @@ import org.locationtech.jts.io.WKTReader;
  * DTO for {@link com.pettoyou.server.store.entity.Address}
  */
 
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Slf4j
-public class AddressDto  {
+public class AddressDto {
     @NotNull
     @Pattern(regexp = "^\\d{3}-\\d{2}$")
     private String zipCode;
+
     @NotNull
     private String sido;
+
     @NotNull
     private String sigungu;
 
     private String eupmyun;
+
     @NotNull
     private String doro;
 
@@ -42,18 +46,16 @@ public class AddressDto  {
     @NotNull
     private double longitude;
 
+    public static Address toEntity(AddressDto addressDto) {
 
-
-    public static Address toEntity(AddressDto addressDto)  {
-
-        if(addressDto.longitude<124 || addressDto.longitude>134){
+        if (addressDto.longitude < 124 || addressDto.longitude > 134) {
             throw new IllegalArgumentException("경도를 정확하게 입력해주세요 : 124~134");
         }
-        if(addressDto.latitude<34 || addressDto.latitude>44){
+        if (addressDto.latitude < 34 || addressDto.latitude > 44) {
             throw new IllegalArgumentException("위도를 정확하게 입력해주세요 34~44");
         }
 
-       String pointWKT = (String.format("POINT(%s %s)", addressDto.longitude, addressDto.latitude));
+        String pointWKT = (String.format("POINT(%s %s)", addressDto.longitude, addressDto.latitude));
         Point point = null;
         log.info(pointWKT);
 
@@ -61,14 +63,10 @@ public class AddressDto  {
         try {
             point = (Point) new WKTReader().read(pointWKT);
             point.setSRID(4326);
-            //Exception 만드릭
             log.info(point.toString());
+        } catch (ParseException e) {
+            throw new CustomException(CustomResponseStatus.POINT_PARSING_ERROR);
         }
-        catch (ParseException e)     {
-            System.out.println("Parsing Error in Point"  + e.getMessage());
-        }
-
-
 
         return Address.builder()
                 .sido(addressDto.sido)

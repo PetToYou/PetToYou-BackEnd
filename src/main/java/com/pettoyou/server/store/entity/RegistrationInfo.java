@@ -14,8 +14,7 @@ import lombok.*;
 @Table(name = "registration_info")
 public class RegistrationInfo extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "registration_info_id")
     private Long registrationInfoId;
 

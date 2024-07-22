@@ -19,7 +19,6 @@ public class PhotoConverter {
 
     private final S3Util s3Util;
 
-
     public List<StorePhoto> StoreImgsToEntity(List<MultipartFile> storeImgs, Store store) {
 
         List<StorePhoto> photoList = new ArrayList<>();

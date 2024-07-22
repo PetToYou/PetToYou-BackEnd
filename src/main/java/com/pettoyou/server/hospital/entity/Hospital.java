@@ -33,9 +33,9 @@ public class Hospital extends Store {
 
     @Builder()
     public Hospital(Long storeId, String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
-                    String websiteLink, String storeInfo, PhotoData storeInfoPhoto, String additionalServiceTag, RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos, BaseStatus storeStatus
+                    String websiteLink, String storeInfo, PhotoData storeInfoPhoto, String additionalServiceTag, RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos
     ) {
-        super(storeId, storeName, storePhone, thumbnail, notice, address, websiteLink, storeInfo, storeInfoPhoto, storeStatus, registrationInfo, businessHours, reviews, storePhotos);
+        super(storeId, storeName, storePhone, thumbnail, notice, address, websiteLink, storeInfo, storeInfoPhoto, registrationInfo, businessHours, reviews, storePhotos);
         this.additionalServiceTag = additionalServiceTag;
         this.tags = new ArrayList<>();
         //기본값 적용.

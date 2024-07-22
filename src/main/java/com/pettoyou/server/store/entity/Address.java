@@ -1,7 +1,7 @@
 package com.pettoyou.server.store.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.pettoyou.server.store.dto.request.AddressDto;
+import com.pettoyou.server.store.util.PointSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
@@ -14,14 +14,14 @@ import org.locationtech.jts.geom.Point;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Address {
-
-
     private String zipCode;
+
     private String addressDetail;
+
     private String sido;
+
     private String sigungu;
 
-    @Column(nullable = true)
     private String eupmyun;
 
     private String doro;
@@ -35,6 +35,4 @@ public class Address {
     public String generateDefaultAddressFormat() {
         return sido + " " + sigungu + " " + doro;
     }
-
-
 }

@@ -17,8 +17,7 @@ import java.sql.Time;
 @Table(name = "business_hour")
 public class BusinessHour extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "business_hour_id")
     private Long businessHourId;
 
@@ -44,7 +43,4 @@ public class BusinessHour extends BaseEntity {
     @JoinColumn(name = "store_id")
     @JsonIgnore
     private Store store;
-
-
-
 }

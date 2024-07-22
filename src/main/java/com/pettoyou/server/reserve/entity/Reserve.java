@@ -7,7 +7,6 @@ import com.pettoyou.server.reserve.entity.enums.ReserveStatus;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -18,19 +17,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "reserve")
 public class Reserve extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reserve_id")
     private Long reserveId;
-
 
     private LocalDateTime reserveTime;
     //Date와 Time 분리????
 
     @Enumerated(EnumType.STRING)
     private ReserveStatus reserveStatus;
-
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
@@ -43,6 +38,5 @@ public class Reserve extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
 
 }

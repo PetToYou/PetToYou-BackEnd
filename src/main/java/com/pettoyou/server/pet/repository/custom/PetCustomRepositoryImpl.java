@@ -1,6 +1,5 @@
 package com.pettoyou.server.pet.repository.custom;
 
-import com.pettoyou.server.member.entity.QMember;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.querydsl.jpa.impl.JPAQueryFactory;

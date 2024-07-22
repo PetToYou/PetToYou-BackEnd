@@ -21,7 +21,7 @@ public enum CustomResponseStatus {
     /***
      * 3000: ACCESS DENIED
      */
-    ACCESS_DENIED(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()), "3000", "인증되지 않은 사용자입니다."),
+    ACCESS_DENIED(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()), "3000", "권한이 없습니다."),
     LOGOUT_MEMBER(HttpStatusCode.valueOf(HttpStatus.FORBIDDEN.value()), "3001", "로그아웃된 사용자입니다."),
 
     /***
@@ -48,8 +48,8 @@ public enum CustomResponseStatus {
      * 6000: Internal_Server_Error
      */
     INTERNAL_SERVER_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6000", "내부 서버 오류입니다."),
-    S3_UPLOAD_FAIL(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6001", "S3에 파일을 업로드하지 못했습니다.");
-
+    S3_UPLOAD_FAIL(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6001", "S3에 파일을 업로드하지 못했습니다."),
+    POINT_PARSING_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6002", "POINT Parsing FAIL");
 
     private final HttpStatusCode httpStatusCode;
     private final String code;

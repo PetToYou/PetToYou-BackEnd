@@ -9,16 +9,16 @@ import lombok.Builder;
  */
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record AddressDto(String sido,
-                         String sigungu,
-                         String eupmyun)
-        {
+public record AddressDto(
+        String sido,
+        String sigungu,
+        String eupmyun) {
 
-                public static AddressDto toDto(Address address){
-                        return AddressDto.builder()
-                                .sido(address.getSido())
-                                .eupmyun(address.getEupmyun())
-                                .sigungu(address.getSigungu())
-                                .build();
-                }
+    public static AddressDto toDto(Address address) {
+        return AddressDto.builder()
+                .sido(address.getSido())
+                .eupmyun(address.getEupmyun())
+                .sigungu(address.getSigungu())
+                .build();
+    }
 }

@@ -11,8 +11,7 @@ import lombok.*;
 @Builder
 @Table(name = "hospital_tag")
 public class HospitalTag {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hospitalTagId;
 
     @Enumerated(EnumType.STRING)

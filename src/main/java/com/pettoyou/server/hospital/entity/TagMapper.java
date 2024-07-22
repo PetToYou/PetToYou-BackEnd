@@ -16,8 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "tag_mapper")
 public class TagMapper {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagMapperId;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -19,22 +19,24 @@ import java.time.LocalDateTime;
 @Builder
 public class StorePhotoDto {
 
-    LocalDateTime createdAt;
-    LocalDateTime modifiedAt;
-    Long storePhotoId;
-    StoreType storeType;
-    @Embedded
-    PhotoData storePhoto;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
+
+    private Long storePhotoId;
+
+    private StoreType storeType;
+
+    private PhotoData storePhoto;
 
     @Positive
-    Integer photoOrder;
+    private Integer photoOrder;
 
-    BaseStatus photoStatus;
+    private BaseStatus photoStatus;
 
-    Long storeId;
+    private Long storeId;
 
-
-    public static StorePhotoDto toDto(StorePhoto storePhoto){
+    public static StorePhotoDto toDto(StorePhoto storePhoto) {
 
         return StorePhotoDto.builder()
                 .createdAt(storePhoto.getCreatedAt())

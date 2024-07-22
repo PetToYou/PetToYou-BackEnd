@@ -1,6 +1,5 @@
 package com.pettoyou.server.store.service;
 
-
 import com.pettoyou.server.store.dto.StorePhotoDto;
 import com.pettoyou.server.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
@@ -18,14 +17,8 @@ public class StoreServiceImpl implements StoreService{
 
     private final StoreRepository storeRepository;
 
-
     //store photo
     public List<StorePhotoDto> getAllStorePhoto(Long StoreId){
-
-        List<StorePhotoDto> storePhotoList = storeRepository.getStorePhotoListByStoreId(StoreId);
-        return storePhotoList;
+        return storeRepository.getStorePhotoListByStoreId(StoreId);
     }
-
-
-
 }

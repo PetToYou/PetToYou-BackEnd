@@ -20,8 +20,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "banner")
 public class Banner extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bannerId;
     private String bannerName;
     private PhotoData bannerImg;

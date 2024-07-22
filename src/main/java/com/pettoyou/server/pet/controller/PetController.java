@@ -28,7 +28,8 @@ public class PetController {
     public ResponseEntity<ApiResponse<PetRegisterRespDto>> petRegister(
             @RequestPart(required = false, value = "petProfileImg") List<MultipartFile> petProfileImg,
             @RequestPart(value = "petRegisterDto") PetRegisterReqDto petRegisterDto,
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
         PetRegisterRespDto response = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
     }
@@ -38,15 +39,16 @@ public class PetController {
             @PathVariable Long id,
             @RequestPart(required = false, value = "petProfileImg") List<MultipartFile> petProfileImg,
             @RequestPart(value = "petModifyDto") PetRegisterReqDto petRegisterDto,
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
         petService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ResponseEntity.ok().body(ApiResponse.createSuccess("수정완료!", CustomResponseStatus.SUCCESS));
     }
 
     @DeleteMapping("/pet/{id}")
     public ResponseEntity<ApiResponse<String>> petDelete(
-            @PathVariable Long id) {
+            @PathVariable Long id
+    ) {
         petService.petDelete(id);
         return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제완료!", CustomResponseStatus.SUCCESS));
     }
@@ -62,7 +64,8 @@ public class PetController {
 
     @GetMapping("/pet/{id}")
     public ResponseEntity<ApiResponse<PetDetailInfoRespDto>> fetchPetDetailInfo(
-            @PathVariable Long id) {
+            @PathVariable Long id
+    ) {
 
         PetDetailInfoRespDto response = petService.fetchPetDetailInfo(id);
         return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));

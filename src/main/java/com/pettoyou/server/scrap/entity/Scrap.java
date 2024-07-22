@@ -14,8 +14,7 @@ import lombok.*;
 @Table(name = "scrap")
 public class Scrap extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "scrap_id")
     private Long scrapId;
 

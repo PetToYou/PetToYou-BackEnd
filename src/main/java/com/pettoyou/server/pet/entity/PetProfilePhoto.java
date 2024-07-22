@@ -1,6 +1,5 @@
 package com.pettoyou.server.pet.entity;
 
-
 import com.pettoyou.server.photo.entity.PhotoData;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,8 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "pet_profile_photo")
 public class PetProfilePhoto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petProfilePhotoId;
 
     @ManyToOne

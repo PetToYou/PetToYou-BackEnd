@@ -27,8 +27,7 @@ import java.util.List;
 @SQLRestriction("pet_status = 'ACTIVATE'")
 @Table(name = "pet")
 public class Pet extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pet_id")
     private Long petId;
 

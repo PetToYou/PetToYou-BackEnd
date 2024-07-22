@@ -1,6 +1,5 @@
 package com.pettoyou.server.store.entity;
 
-
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.photo.entity.PhotoData;
@@ -28,8 +27,7 @@ import java.util.List;
 })
 public abstract class Store extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
     private Long storeId;
 
@@ -42,11 +40,10 @@ public abstract class Store extends BaseEntity {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "bucket", column =@Column(name = "thumbnail_bucket")),
-            @AttributeOverride(name = "object", column =@Column(name = "thumbnail_object")),
-            @AttributeOverride(name = "photoUrl", column =@Column(name = "thumbnail_photo_url"))
-    }
-    )
+            @AttributeOverride(name = "bucket", column = @Column(name = "thumbnail_bucket")),
+            @AttributeOverride(name = "object", column = @Column(name = "thumbnail_object")),
+            @AttributeOverride(name = "photoUrl", column = @Column(name = "thumbnail_photo_url"))
+    })
     private PhotoData thumbnail;
 
     private String notice;
@@ -71,11 +68,6 @@ public abstract class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<StorePhoto> storePhotos = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
-//    private List<Reserve> reserves = new ArrayList<>();
-
-    // 쿼리가 따로 날아가기 때문에 굳이 OneToMany 연결할 필요가 없다?
-
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
@@ -83,9 +75,12 @@ public abstract class Store extends BaseEntity {
     @JoinColumn(name = "registration_info_id")
     private RegistrationInfo registrationInfo;
 
-    protected Store(Long storeId, String storeName, String storePhone, PhotoData thumbnail, String notice, Address address,
-                    String websiteLink, String storeInfo, PhotoData storeInfoPhoto, BaseStatus storeStatus,
-                    RegistrationInfo registrationInfo, List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos) {
+    protected Store(
+            Long storeId, String storeName, String storePhone, PhotoData thumbnail,
+            String notice, Address address, String websiteLink, String storeInfo,
+            PhotoData storeInfoPhoto, RegistrationInfo registrationInfo,
+            List<BusinessHour> businessHours, List<Review> reviews, List<StorePhoto> storePhotos
+    ) {
         this.storeId = storeId;
         this.storeName = storeName;
         this.storePhone = storePhone;
