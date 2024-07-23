@@ -7,7 +7,6 @@ import com.pettoyou.server.banner.entity.enums.BannerType;
 import com.pettoyou.server.banner.service.BannerService;
 import com.pettoyou.server.banner.service.query.BannerQueryService;
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +29,7 @@ public class BannerController {
     ) {
 
         BannerRegisterResponseDto response = bannerService.bannerRegister(bannerRegisterRequestDto, bannerImg);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 
     // 배너 수정
@@ -41,7 +40,7 @@ public class BannerController {
             @PathVariable Long bannerId
     ) {
         BannerRegisterResponseDto response = bannerService.bannerModify(bannerRegisterRequestDto, bannerImg, bannerId);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 
     // 배너 삭제
@@ -50,7 +49,7 @@ public class BannerController {
             @PathVariable Long bannerId
     ) {
         bannerService.bannerDelete(bannerId);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(null, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("배너 삭제 완료");
     }
 
     @GetMapping("/banners")
@@ -58,6 +57,6 @@ public class BannerController {
             @RequestParam BannerType bannerType
     ) {
         List<BannerQueryRespDto> response = bannerQueryService.queryBannersByType(bannerType);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 }

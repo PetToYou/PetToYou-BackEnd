@@ -6,10 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +25,27 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
-    public static <T> ApiResponse<T> createSuccess(T data, CustomResponseStatus customResponseStatus) {
-        return new ApiResponse<>(
-                HttpStatusCode.valueOf(HttpStatus.OK.value()),
-                customResponseStatus.getCode(),
-                customResponseStatus.getMessage(),
-                data);
+    // HospitalControllerAdmin
+    public static <T> ResponseEntity<ApiResponse<T>> createSuccessWithOk(T data) {
+        return ResponseEntity.ok()
+                .body(
+                        new ApiResponse<>(
+                                HttpStatusCode.valueOf(HttpStatus.OK.value()),
+                                CustomResponseStatus.SUCCESS.getCode(),
+                                CustomResponseStatus.SUCCESS.getMessage(),
+                                data)
+                );
+    }
+
+    public static <T> ResponseEntity<ApiResponse<T>> createSuccessWithCreated(T data, URI location) {
+        return ResponseEntity.created(location)
+                .body(
+                        new ApiResponse<>(
+                                HttpStatusCode.valueOf(HttpStatus.OK.value()),
+                                CustomResponseStatus.SUCCESS.getCode(),
+                                CustomResponseStatus.SUCCESS.getMessage(),
+                                data)
+                );
     }
 
     /***

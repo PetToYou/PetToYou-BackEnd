@@ -1,7 +1,6 @@
 package com.pettoyou.server.hospital.controller;
 
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.hospital.dto.HospitalDto;
 import com.pettoyou.server.hospital.service.HospitalService;
 
@@ -44,6 +43,6 @@ public class HospitalControllerAdmin {
                 .buildAndExpand(hospitalId)
                 .toUri();
 
-        return ResponseEntity.created(location).body(ApiResponse.createSuccess("등록 완료", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithCreated("병원 등록 완료!", location);
     }
 }
