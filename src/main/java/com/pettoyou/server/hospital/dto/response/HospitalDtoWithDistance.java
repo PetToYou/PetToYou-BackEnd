@@ -26,7 +26,7 @@ public record HospitalDtoWithDistance(
             Times time,
             List<HospitalTag> hospitalTags,
             double distance
-            ) {
+    ) {
         return HospitalDtoWithDistance.builder()
                 .storeId(storeId)
                 .storeName(storeName)
@@ -40,7 +40,7 @@ public record HospitalDtoWithDistance(
     }
 
     private static String distanceFormatting(double distance) {
-        return String.format("%.2f", distance/1000.0);
+        return String.format("%.2f", distance / 1000.0);
     }
 
 }

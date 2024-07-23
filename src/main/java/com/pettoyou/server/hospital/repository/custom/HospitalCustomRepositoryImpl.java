@@ -26,6 +26,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -133,7 +134,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                             reviewCnt,
                             ratingAverage,
                             times,
-                            hospitalTagMap.get(storeId),
+                            hospitalTagMap.getOrDefault(storeId, new ArrayList<>()),
                             distance
                     );
                 })
