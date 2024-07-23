@@ -5628,11 +5628,9 @@ values (1, 'Parking available, Zero - pay accepted'),
        (1853, 'Parking available, Zero - pay accepted');
 
 -- Inserting data into banner
-# insert into banner (banner_id, banner_name, banner_link, banner_img, banner_status, banner_type)
-# values (1, 'Summer Sale', 'https://example.com/summer-sale', 'https://example.com/summer-sale-img.jpg', 'ACTIVATE',
-#         'MAIN'),
-#        (2, 'Winter Wellness', 'https://example.com/winter-wellness', 'https://example.com/winter-wellness-img.jpg',
-#         'ACTIVATE', 'HOSPITAL');
+# insert into banner (banner_id, banner_name, banner_link, banner_img, banner_status)
+# values (1, 'Summer Sale', 'https://example.com/summer-sale', 'https://example.com/summer-sale-img.jpg', 'ACTIVATE'),
+#        (2, 'Winter Wellness', 'https://example.com/winter-wellness', 'https://example.com/winter-wellness-img.jpg', 'ACTIVATE');
 
 -- Inserting data into member
 insert into member (member_id, name, nick_name, email, phone, provider, member_status)
@@ -5680,7 +5678,7 @@ INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (18, '�
 INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (19, '정형외과전문', 'SPECIALITIES');
 INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (20, '외과수술전문', 'SPECIALITIES');
 INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (21, '치과전문', 'SPECIALITIES');
-INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (22, '야간응급진료', 'SPECIALITIES');
+INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (22, '야간응급진료', 'EMERGENCY');
 INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (23, '안과전문', 'SPECIALITIES');
 INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (24, '스케일링', 'SPECIALITIES');
 INSERT INTO hospital_tag (hospital_tag_id, tag_content, tag_type) VALUES (25, '건강검진', 'SPECIALITIES');

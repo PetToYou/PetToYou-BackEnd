@@ -17,6 +17,5 @@ public record BannerQueryRespDto(
                 banner.getBannerName(),
                 banner.getBannerImg().getPhotoUrl(),
                 banner.getBannerLink());
-
     }
 }

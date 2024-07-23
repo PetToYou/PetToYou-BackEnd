@@ -14,9 +14,8 @@ import java.util.List;
 public class BannerQueryServiceImpl implements BannerQueryService {
     private final BannerRepository bannerRepository;
     @Override
-    public List<BannerQueryRespDto> queryBannersByType(BannerType bannerType) {
-        List<Banner> bannersByBannerType = bannerRepository.findBannerByBannerType(bannerType);
-
-        return bannersByBannerType.stream().map(BannerQueryRespDto::from).toList();
+    public List<BannerQueryRespDto> queryBannersByType() {
+        List<Banner> banners = bannerRepository.findAll();
+        return banners.stream().map(BannerQueryRespDto::from).toList();
     }
 }
