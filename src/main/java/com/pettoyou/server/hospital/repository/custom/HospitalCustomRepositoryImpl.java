@@ -8,11 +8,7 @@ import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.dto.response.Times;
-import com.pettoyou.server.hospital.entity.Hospital;
-import com.pettoyou.server.hospital.entity.HospitalTag;
-import com.pettoyou.server.hospital.entity.QHospital;
-import com.pettoyou.server.hospital.entity.TagMapper;
-import com.pettoyou.server.review.entity.QReview;
+import com.pettoyou.server.hospital.entity.*;
 import com.pettoyou.server.store.entity.BusinessHour;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -87,21 +83,22 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .fetch();
 
         // 2. 각 병원에서 가지고있는 HospitalTag를 Map에 담기
+        List<Long> hospitalIds = hospitals.stream()
+                .map(t -> t.get(hospital.storeId))
+                .toList();
+
         Map<Long, List<HospitalTag>> hospitalTagMap = jpaQueryFactory
-                .select(tagMapper)
-                .from(tagMapper)
-                .where(
-                        tagMapper.hospital.storeId.in(
-                                hospitals.stream()
-                                        .map(h -> h.get(hospital.storeId))
-                                        .toList()
-                        )
+                .select(
+                        tagMapper.hospital.storeId,
+                        tagMapper.hospitalTag
                 )
+                .from(tagMapper)
+                .where(tagMapper.hospital.storeId.in(hospitalIds))
                 .fetch()
                 .stream()
                 .collect(Collectors.groupingBy(
-                        tm -> tm.getHospital().getStoreId(),
-                        Collectors.mapping(TagMapper::getHospitalTag, Collectors.toList())
+                        tuple -> tuple.get(tagMapper.hospital.storeId),
+                        Collectors.mapping(tuple -> tuple.get(tagMapper.hospitalTag), Collectors.toList())
                 ));
 
         // 3. 페이징을 위한 조회된 병원의 전체 개수 구하는 쿼리
