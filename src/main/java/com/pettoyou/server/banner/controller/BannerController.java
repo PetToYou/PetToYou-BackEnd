@@ -3,7 +3,6 @@ package com.pettoyou.server.banner.controller;
 import com.pettoyou.server.banner.dto.request.BannerRegisterRequestDto;
 import com.pettoyou.server.banner.dto.response.BannerRegisterResponseDto;
 import com.pettoyou.server.banner.dto.response.BannerQueryRespDto;
-import com.pettoyou.server.banner.entity.enums.BannerType;
 import com.pettoyou.server.banner.service.BannerService;
 import com.pettoyou.server.banner.service.query.BannerQueryService;
 import com.pettoyou.server.constant.dto.ApiResponse;
@@ -53,10 +52,8 @@ public class BannerController {
     }
 
     @GetMapping("/banners")
-    public ResponseEntity<ApiResponse<List<BannerQueryRespDto>>> bannerQueryByBannerType(
-            @RequestParam BannerType bannerType
-    ) {
-        List<BannerQueryRespDto> response = bannerQueryService.queryBannersByType(bannerType);
+    public ResponseEntity<ApiResponse<List<BannerQueryRespDto>>> bannerQueryByBannerType() {
+        List<BannerQueryRespDto> response = bannerQueryService.queryBannersByType();
         return ApiResponse.createSuccessWithOk(response);
     }
 }
