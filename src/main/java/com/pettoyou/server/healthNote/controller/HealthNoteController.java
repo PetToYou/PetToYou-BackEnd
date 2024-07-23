@@ -2,7 +2,6 @@ package com.pettoyou.server.healthNote.controller;
 
 import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import com.pettoyou.server.healthNote.dto.response.HealthNoteDetailInfoDto;
 import com.pettoyou.server.healthNote.dto.response.HealthNoteSimpleInfoDto;
@@ -28,7 +27,7 @@ public class HealthNoteController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         healthNoteCommandService.registHealthNote(registReqDto, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess("등록완료", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("건강수첩 등록완료");
     }
 
     @PutMapping("healthNote/{healthNoteId}")
@@ -38,7 +37,8 @@ public class HealthNoteController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         healthNoteCommandService.modifyHealthNote(healthNoteId, modifyReqDto, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess("수정완료", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("건강수첩 수정완료");
+
     }
 
     @DeleteMapping("healthNote/{healthNoteId}")
@@ -47,7 +47,7 @@ public class HealthNoteController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         healthNoteCommandService.deleteHealthNote(healthNoteId, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제완료", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("건강수첩 삭제완료");
     }
 
     @GetMapping("healthNotes/{petId}")
@@ -56,7 +56,7 @@ public class HealthNoteController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         List<HealthNoteSimpleInfoDto> response = healthNoteQueryService.fetchHealthNotesByPetId(petId, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 
     @GetMapping("healthNote/{healthNoteId}")
@@ -65,6 +65,6 @@ public class HealthNoteController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         HealthNoteDetailInfoDto response = healthNoteQueryService.fetchHealthNoteDetailInfo(healthNoteId, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 }

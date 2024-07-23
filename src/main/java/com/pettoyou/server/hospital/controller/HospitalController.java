@@ -1,7 +1,6 @@
 package com.pettoyou.server.hospital.controller;
 
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
@@ -35,14 +34,13 @@ public class HospitalController {
         log.info("queryCond : {}", queryCond);
 
         Page<HospitalDtoWithDistance> response = hospitalService.getHospitalsTest(pageable, queryInfo, queryCond);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 
     // 병원 상세페이지 조회
     @GetMapping("/{hospitalId}")
     public ResponseEntity<ApiResponse<HospitalDetail>> getHospitalDetail(@PathVariable Long hospitalId){
         HospitalDetail response = hospitalService.getHospitalDetail(hospitalId);
-
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 }

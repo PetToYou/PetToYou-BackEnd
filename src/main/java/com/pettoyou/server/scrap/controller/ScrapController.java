@@ -2,7 +2,6 @@ package com.pettoyou.server.scrap.controller;
 
 import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.scrap.dto.request.ScrapRegistReqDto;
 import com.pettoyou.server.scrap.dto.response.ScrapQueryRespDto;
 import com.pettoyou.server.scrap.dto.response.ScrapRegistRespDto;
@@ -26,7 +25,7 @@ public class ScrapController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         ScrapRegistRespDto response = scrapService.scrapRegist(scrapRegistReqDto.storeId(), principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 
     @DeleteMapping("/scrap/{scrapId}")
@@ -35,7 +34,7 @@ public class ScrapController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         scrapService.scrapCancel(scrapId, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제 완료", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("찜 해제 완료");
     }
 
     @GetMapping("/scraps")
@@ -43,6 +42,6 @@ public class ScrapController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         List<ScrapQueryRespDto> response = scrapService.fetchScrapStore(principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 }

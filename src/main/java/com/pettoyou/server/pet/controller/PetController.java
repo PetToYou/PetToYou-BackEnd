@@ -2,7 +2,6 @@ package com.pettoyou.server.pet.controller;
 
 import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
 import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
@@ -31,7 +30,7 @@ public class PetController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         PetRegisterRespDto response = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 
     @PutMapping("/pet/{id}")
@@ -42,7 +41,7 @@ public class PetController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         petService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
-        return ResponseEntity.ok().body(ApiResponse.createSuccess("수정완료!", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("반려동물 정보 수정 완료");
     }
 
     @DeleteMapping("/pet/{id}")
@@ -50,7 +49,7 @@ public class PetController {
             @PathVariable Long id
     ) {
         petService.petDelete(id);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess("삭제완료!", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("반려동물 삭제 완료");
     }
 
     @GetMapping("/pets")
@@ -58,16 +57,14 @@ public class PetController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         List<PetSimpleInfoDto> response = petService.queryPetList(principalDetails.getUserId());
-
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 
     @GetMapping("/pet/{id}")
     public ResponseEntity<ApiResponse<PetDetailInfoRespDto>> fetchPetDetailInfo(
             @PathVariable Long id
     ) {
-
         PetDetailInfoRespDto response = petService.fetchPetDetailInfo(id);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(response, CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(response);
     }
 }

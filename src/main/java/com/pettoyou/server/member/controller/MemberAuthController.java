@@ -4,7 +4,6 @@ import com.pettoyou.server.auth.kakao.KakaoLoginParam;
 import com.pettoyou.server.auth.naver.NaverLoginParam;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.constant.entity.AuthTokens;
-import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.member.dto.response.LoginAndReissueRespDto;
 import com.pettoyou.server.member.service.auth.AuthService;
 import jakarta.servlet.http.Cookie;
@@ -35,8 +34,7 @@ public class MemberAuthController {
 //        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
         response.addCookie(refreshTokenCookie);
 
-        return ResponseEntity.ok()
-                .body(ApiResponse.createSuccess(LoginAndReissueRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(LoginAndReissueRespDto.from(authTokens));
     }
 
     @PostMapping("/naver")
@@ -52,8 +50,7 @@ public class MemberAuthController {
 //        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
         response.addCookie(refreshTokenCookie);
 
-        return ResponseEntity.ok()
-                .body(ApiResponse.createSuccess(LoginAndReissueRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(LoginAndReissueRespDto.from(authTokens));
     }
 
     // 토큰 재발급
@@ -71,13 +68,13 @@ public class MemberAuthController {
 //        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
         response.addCookie(refreshTokenCookie);
 
-        return ResponseEntity.ok().body(ApiResponse.createSuccess(LoginAndReissueRespDto.from(authTokens), CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk(LoginAndReissueRespDto.from(authTokens));
     }
 
     // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String accessToken) {
         authService.logout(accessToken);
-        return ResponseEntity.ok().body(ApiResponse.createSuccess("Logout Success", CustomResponseStatus.SUCCESS));
+        return ApiResponse.createSuccessWithOk("로그아웃이 완료되었습니다.");
     }
 }
