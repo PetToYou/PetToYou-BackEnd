@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static com.pettoyou.server.hospital.entity.QHospital.hospital;
 import static com.pettoyou.server.hospital.entity.QTagMapper.tagMapper;
+import static com.pettoyou.server.review.entity.QReview.*;
 import static com.pettoyou.server.store.entity.QBusinessHour.businessHour;
 import static com.pettoyou.server.store.entity.QRegistrationInfo.registrationInfo;
 
@@ -50,7 +51,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
             Pageable pageable,
             int dayOfWeek, String point, LocalTime now, HospitalQueryCond queryCond
     ) {
-        QReview review = QReview.review;
         NumberPath<Double> distanceAlias = Expressions.numberPath(Double.class, "distance");
         NumberPath<Long> reviewCount = Expressions.numberPath(Long.class, "reviewCount");
         NumberPath<Double> ratingAvg = Expressions.numberPath(Double.class, "ratingAvg");
@@ -58,8 +58,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         // 1. 필터 조건에 부합하는 병원 가져오기
         List<Tuple> hospitals = jpaQueryFactory
                 .select(
-                        hospital,
-                        review.countDistinct(), review.rating.avg(),
                         hospital.storeId,
                         hospital.storeName,
                         hospital.thumbnail.photoUrl,
@@ -108,8 +106,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
 
         // 3. 페이징을 위한 조회된 병원의 전체 개수 구하는 쿼리
         Long countQuery = jpaQueryFactory
-                .select(
-                        hospital.count())
+                .select(hospital.count())
                 .from(hospital)
                 .where(
                         inDistance(point, queryCond.radius()),
@@ -119,10 +116,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .fetchOne();
 
         if (countQuery == null) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
-        log.info("hospital size : {}", hospitals.size());
-
-        // 조회되는 병원이 없을 경우에 예외처리
-        if (hospitals.isEmpty()) throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
 
         List<HospitalDtoWithDistance> result = hospitals.stream()
                 .map(t -> {
@@ -132,7 +125,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                     Long reviewCnt = t.get(reviewCount);
                     Double ratingAverage = t.get(ratingAvg);
                     Double distance = t.get(distanceAlias);
-                    BusinessHour businessHour1 = t.get(businessHour);
+                    BusinessHour storeBusinessHour = t.get(businessHour);
 
                     return HospitalDtoWithDistance.of(
                             storeId,
@@ -140,13 +133,13 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                             thumbnailUrl,
                             reviewCnt,
                             ratingAverage,
-                            Times.of(businessHour1),
+                            Times.of(storeBusinessHour),
                             hospitalTagMap.get(storeId),
                             distance
                     );
                 })
                 .toList();
-        log.info(countQuery.toString());
+
         log.info(pageable.toString(), "page");
         return new PageImpl<>(result, pageable, countQuery);
     }

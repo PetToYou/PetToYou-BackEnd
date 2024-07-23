@@ -70,7 +70,6 @@ public class BusinessHourDto {
                     .createdAt(businessHour.getCreatedAt())
                     .modifiedAt(businessHour.getModifiedAt())
                     .businessHourId(businessHour.getBusinessHourId())
-                    .storeType(businessHour.getStoreType())
                     .dayOfWeek(businessHour.getDayOfWeek())
                     .startTime(businessHour.getStartTime())
                     .endTime(businessHour.getEndTime())

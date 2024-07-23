@@ -14,7 +14,6 @@ public record BusinessHourDto(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
         @NotNull Long businessHourId,
-        StoreType storeType,
         @Positive Integer dayOfWeek,
         Time startTime,
         Time endTime,
@@ -28,7 +27,6 @@ public record BusinessHourDto(
                 .createdAt(businessHour.getCreatedAt())
                 .modifiedAt(businessHour.getModifiedAt())
                 .businessHourId(businessHour.getBusinessHourId())
-                .storeType(businessHour.getStoreType())
                 .dayOfWeek(businessHour.getDayOfWeek())
                 .startTime(businessHour.getStartTime())
                 .endTime(businessHour.getEndTime())
