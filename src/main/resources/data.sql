@@ -5712,39 +5712,39 @@ values (1, 1, 1),
 
 insert into registration_info (registration_info_id, store_type, ceo_name, ceo_phone, ceo_email,
                                business_number)
-values (1, 'HOSPITAL', 'CEO Name', '01000000000', 'ceo@example.com', '123-45-67890');
+values (1,  'CEO Name', '01000000000', 'ceo@example.com', '123-45-67890');
 
 -- Inserting data into reserve (Assuming Store, Pet, and Member data exists)
 # insert into reserve (reserve_id, store_id, pet_id, member_id, reserve_time, reserve_status)
 # values (1, 1, 1, 1, '2024-03-10 12:34:56', 'RESERVE_COMPLETE');
 
 -- Inserting data into business_hour (Assuming Store data exists)
-insert into business_hour (business_hour_id, store_id, store_type, day_of_week, start_time, end_time, break_start_time,
+insert into business_hour (business_hour_id, store_id, day_of_week, start_time, end_time, break_start_time,
                            break_end_time, open_st)
-values (1, 1, 'HOSPITAL', 1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
-       (2, 1, 'HOSPITAL', 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
-       (3, 1, 'HOSPITAL', 3, '10:00', '17:00', NULL, NULL, true),        -- 수요일, 점심시간 없음
-       (4, 1, 'HOSPITAL', 4, '09:00', '18:00', '12:00', '13:00', true),  -- 목요일
-       (5, 1, 'HOSPITAL', 5, '09:00', '19:00', NULL, NULL, true),        -- 금요일, 점심시간 길게       (6, 1, 'HOSPITAL', 6, '00:00', '00:00', NULL, NULL, false),       -- 토요일, 휴무
-       (7, 1, 'HOSPITAL', 7, '09:00', '15:00', NULL, NULL, true),        -- 일요일, 점심시간 없음
-       (8, 2, 'HOSPITAL', 1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
-       (9, 2, 'HOSPITAL', 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
-       (10, 2, 'HOSPITAL', 3, '10:00', '17:00', NULL, NULL, true),       -- 수요일, 점심시간 없음
-       (11, 2, 'HOSPITAL', 4, '09:00', '18:00', '12:00', '13:00', true), -- 목요일
-       (12, 2, 'HOSPITAL', 5, '09:00', '20:00', '12:00', '14:00', true), -- 금요일, 점심시간 길게
-       (13, 2, 'HOSPITAL', 6, '00:00', '00:00', NULL, NULL, false),      -- 토요일, 휴무
-       (14, 2, 'HOSPITAL', 7, '09:00', '15:00', NULL, NULL, true),
-       (15, 476, 'HOSPITAL', 1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
-       (16, 476, 'HOSPITAL', 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
-       (17, 476, 'HOSPITAL', 3, '10:00', '17:00', NULL, NULL, true),        -- 수요일, 점심시간 없음
-       (18, 476, 'HOSPITAL', 4, '09:00', '18:00', '12:00', '13:00', true),  -- 목요일
-       (19, 476, 'HOSPITAL', 5, '09:00', '20:00', NULL, NULL, true),        -- 금요일, 점심시간 길게
-       (20, 476, 'HOSPITAL', 6, '00:00', '00:00', NULL, NULL, false);
+values (1, 1,  1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
+       (2, 1, 2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
+       (3, 1,  3, '10:00', '17:00', NULL, NULL, true),        -- 수요일, 점심시간 없음
+       (4, 1,  4, '09:00', '18:00', '12:00', '13:00', true),  -- 목요일
+       (5, 1,  5, '09:00', '19:00', NULL, NULL, true),        -- 금요일, 점심시간 길게       (6, 1,  6, '00:00', '00:00', NULL, NULL, false),       -- 토요일, 휴무
+       (7, 1,  7, '09:00', '15:00', NULL, NULL, true),        -- 일요일, 점심시간 없음
+       (8, 2,  1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
+       (9, 2,  2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
+       (10, 2,  3, '10:00', '17:00', NULL, NULL, true),       -- 수요일, 점심시간 없음
+       (11, 2,  4, '09:00', '18:00', '12:00', '13:00', true), -- 목요일
+       (12, 2,  5, '09:00', '20:00', '12:00', '14:00', true), -- 금요일, 점심시간 길게
+       (13, 2,  6, '00:00', '00:00', NULL, NULL, false),      -- 토요일, 휴무
+       (14, 2,  7, '09:00', '15:00', NULL, NULL, true),
+       (15, 476,  1, '09:00', '18:00', '12:00', '13:00', true),  -- 월요일
+       (16, 476,  2, '09:00', '19:00', '13:00', '14:00', true),  -- 화요일
+       (17, 476,  3, '10:00', '17:00', NULL, NULL, true),        -- 수요일, 점심시간 없음
+       (18, 476,  4, '09:00', '18:00', '12:00', '13:00', true),  -- 목요일
+       (19, 476,  5, '09:00', '20:00', NULL, NULL, true),        -- 금요일, 점심시간 길게
+       (20, 476,  6, '00:00', '00:00', NULL, NULL, false);
 
 -- 일요일, 점심시간 없음
 
 -- Inserting data into review (Assuming Store, Member, and Pet data exists)
 # insert into review (review_id, store_id, member_id, pet_id, store_type, rating, content, review_status)
-# values (1, 1, 1, 1, 'HOSPITAL', 4.5, 'Great service and friendly staff.', 'ACTIVATE');
+# values (1, 1, 1, 1,  4.5, 'Great service and friendly staff.', 'ACTIVATE');
 
 -- For salon and insurance, you would follow a similar pattern, ensuring Store data exists where necessary

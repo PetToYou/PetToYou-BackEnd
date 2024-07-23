@@ -32,6 +32,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.pettoyou.server.hospital.entity.QHospital.hospital;
@@ -79,7 +80,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 )
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
-                .orderBy(distanceAlias.asc())
+                .orderBy(distanceAlias.asc().nullsLast())
                 .groupBy(
                         hospital,
                         businessHour
@@ -124,8 +125,9 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                     String thumbnailUrl = t.get(hospital.thumbnail.photoUrl);
                     Long reviewCnt = t.get(reviewCount);
                     Double ratingAverage = t.get(ratingAvg);
-                    Double distance = t.get(distanceAlias);
+                    Double distance = Optional.ofNullable(t.get(distanceAlias)).orElse(Double.MAX_VALUE);
                     BusinessHour storeBusinessHour = t.get(businessHour);
+                    Times times = storeBusinessHour!=null ? Times.of(storeBusinessHour) : null;
 
                     return HospitalDtoWithDistance.of(
                             storeId,
@@ -133,7 +135,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                             thumbnailUrl,
                             reviewCnt,
                             ratingAverage,
-                            Times.of(storeBusinessHour),
+                            times,
                             hospitalTagMap.get(storeId),
                             distance
                     );
@@ -170,14 +172,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         if (total == null) {
             throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
         }
-// query Projection 문서 참고.
-//        List<HospitalDtoWithAddress> results = content.stream().map(tuple -> HospitalDtoWithAddress.of(
-//                        tuple.get(hospital.storeId),
-//                        tuple.get(hospital.storeName),
-//                        tuple.get(hospital.thumbnail.photoUrl),
-//                        tuple.get(hospital.address),
-//                        tuple.get(businessHour))).collect(Collectors.toList());
-
 
         return new PageImpl<>(content, pageable, total);
     }
