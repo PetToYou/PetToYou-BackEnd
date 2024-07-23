@@ -3,7 +3,9 @@ package com.pettoyou.server.hospital.controller;
 import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
+import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
+import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.service.HospitalService;
 
@@ -34,6 +36,12 @@ public class HospitalController {
         log.info("queryCond : {}", queryCond);
 
         Page<HospitalDtoWithDistance> response = hospitalService.getHospitalsTest(pageable, queryInfo, queryCond);
+        return ApiResponse.createSuccessWithOk(response);
+    }
+    //병원 검색 조회
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<HospitalDtoWithAddress>>> getSearchHospitalList(Pageable pageable, @ModelAttribute HosptialSearchQueryInfo queryInfo){
+        Page<HospitalDtoWithAddress> response = hospitalService.getHospitalSearch(pageable, queryInfo);
         return ApiResponse.createSuccessWithOk(response);
     }
 
