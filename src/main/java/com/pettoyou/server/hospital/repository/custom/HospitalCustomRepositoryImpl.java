@@ -16,12 +16,13 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Time;
@@ -104,15 +105,15 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 ));
 
         // 3. 페이징을 위한 조회된 병원의 전체 개수 구하는 쿼리
-        Long countQuery = jpaQueryFactory
+        JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(hospital.count())
                 .from(hospital)
                 .where(
                         inDistance(point, queryCond.radius()),
                         hospitalTagsEqSubQuery(queryCond.tagIdList()),
                         openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
-                )
-                .fetchOne();
+                );
+
 
         if (countQuery == null) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
 
@@ -141,12 +142,12 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .toList();
 
         log.info(pageable.toString(), "page");
-        return new PageImpl<>(result, pageable, countQuery);
+        return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
     }
 
     @Override
     public Page<HospitalDtoWithAddress> findHospitalBySearch(Pageable pageable, HosptialSearchQueryInfo queryInfo, Integer dayOfWeek) {
-        QHospital hospital = QHospital.hospital;
+
         List<HospitalDtoWithAddress> content = jpaQueryFactory
                 .select(Projections.constructor(HospitalDtoWithAddress.class,
                         hospital.storeId, hospital.storeName,
@@ -161,17 +162,17 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .offset(pageable.getOffset())
                 .fetch();
 
-        Long total = jpaQueryFactory.
+        JPAQuery<Long> countQuery = jpaQueryFactory.
                 select(hospital.count())
                 .from(hospital)
-                .where(hospital.storeName.contains(queryInfo.storeName()))
-                .fetchOne();
+                .where(hospital.storeName.contains(queryInfo.storeName()));
+//                .fetchOne();
 
-        if (total == null) {
+        if (content == null) {
             throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
         }
-
-        return new PageImpl<>(content, pageable, total);
+        //페이징 최적화
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     @Override
