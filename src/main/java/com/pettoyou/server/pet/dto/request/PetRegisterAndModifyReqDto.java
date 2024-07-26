@@ -2,11 +2,13 @@ package com.pettoyou.server.pet.dto.request;
 
 import com.pettoyou.server.pet.entity.enums.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public record PetRegisterReqDto(
+@Builder
+public record PetRegisterAndModifyReqDto(
         @NotBlank(message = "반려동물의 타입(강아지 or 고양이)을 선택해주세요.")
         PetType petType,
         @NotBlank(message = "반려동물의 이름을 입력해주세요.")
@@ -16,11 +18,11 @@ public record PetRegisterReqDto(
         LocalDate adoptionDate,
         @NotBlank(message = "반려동물의 성별을 입력해주세요.")
         Gender gender,
-        @NotBlank(message = "반려동물의 품종을 입력해주세요.")
-        String species,
+        @NotBlank(message = "반려동물의 품종을 선택해주세요.")
+        Species species,
         PetMedicalInfoDto petMedicalInfoDto
 ) {
-        public PetRegisterReqDto {
+        public PetRegisterAndModifyReqDto {
                 // 입양일을 입력하지 않은 경우엔 입양일은 생일과 동일해진다.
                 if (Objects.isNull(adoptionDate)) adoptionDate = birth;
         }

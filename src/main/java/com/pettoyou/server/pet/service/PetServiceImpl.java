@@ -4,13 +4,11 @@ import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
-import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
+import com.pettoyou.server.pet.dto.request.PetRegisterAndModifyReqDto;
 import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
-import com.pettoyou.server.pet.entity.PetProfilePhoto;
-import com.pettoyou.server.pet.repository.PetPhotoRepository;
 import com.pettoyou.server.pet.repository.PetRepository;
 import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.util.S3Util;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -27,50 +26,71 @@ import java.util.List;
 public class PetServiceImpl implements PetService {
     private final S3Util s3Util;
     private final PetRepository petRepository;
-    private final PetPhotoRepository petPhotoRepository;
     private final MemberRepository memberRepository;
 
     @Override
-    public PetRegisterRespDto petRegister(List<MultipartFile> petProfileImgs, PetRegisterReqDto petRegisterDto, Long loginMemberId) {
-        Member member = memberRepository.findByMemberId(loginMemberId).orElseThrow(() -> new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND));
+    public PetRegisterRespDto petRegister(
+            MultipartFile petProfileImg,
+            PetRegisterAndModifyReqDto petRegisterDto,
+            Long loginMemberId
+    ) {
+        Member member = memberRepository.findByMemberId(loginMemberId).orElseThrow(
+                () -> new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND)
+        );
 
-        Pet registerPet = Pet.of(petRegisterDto, member);
-
-        petRepository.save(registerPet);
-
-        if (!petProfileImgs.isEmpty()) {
-            for (MultipartFile petProfileImg : petProfileImgs) {
-                PhotoData photoData = s3Util.uploadFile(petProfileImg);
-                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(photoData, registerPet);
-                petPhotoRepository.save(petProfilePhoto);
-            }
+        PhotoData photoData;
+        if (petProfileImg != null) {
+            photoData = s3Util.uploadFile(petProfileImg);
+        } else {
+            photoData = PhotoData.generateDefaultPetProfilePhotoData();
         }
+
+        Pet registerPet = Pet.of(petRegisterDto, photoData, member);
+        petRepository.save(registerPet);
 
         return PetRegisterRespDto.from(registerPet.getPetName());
     }
 
     @Override
-    public void petModify(Long petId, List<MultipartFile> petProfileImgs, PetRegisterReqDto petRegisterDto, Long loginMemberId) {
-        Pet pet = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
-        pet.modify(petRegisterDto);
+    public void petModify(
+            Long petId,
+            MultipartFile petProfileImg,
+            PetRegisterAndModifyReqDto petModifyDto,
+            Long loginMemberId
+    ) {
+        Pet pet = petRepository.findById(petId).orElseThrow(
+                () -> new CustomException(CustomResponseStatus.PET_NOT_FOUND)
+        );
 
-        for (PetProfilePhoto petProfilePhoto : pet.getPetProfilePhotos()) {
-            s3Util.deleteFile(petProfilePhoto.getPhotoData().getBucket(), petProfilePhoto.getPhotoData().getObject());
-            petPhotoRepository.delete(petProfilePhoto);
+        if (!Objects.equals(pet.getMember().getMemberId(), loginMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
         }
 
-        if (!petProfileImgs.isEmpty()) {
-            for (MultipartFile petProfileImg : petProfileImgs) {
-                PhotoData photoData = s3Util.uploadFile(petProfileImg);
-                PetProfilePhoto petProfilePhoto = PetProfilePhoto.toPetProfilePhoto(photoData, pet);
-                petPhotoRepository.save(petProfilePhoto);
-            }
+        PhotoData newPhotoData;
+        if (petProfileImg != null) {
+            s3Util.deleteFile(pet.getProfilePhotoData().getBucket(), pet.getProfilePhotoData().getObject());
+            newPhotoData = s3Util.uploadFile(petProfileImg);
+        } else {
+            newPhotoData = PhotoData.generateDefaultPetProfilePhotoData();
         }
+
+        pet.modify(petModifyDto, newPhotoData);
     }
 
     @Override
-    public void petDelete(Long petId) {
-        petRepository.deleteById(petId);
+    public void petDelete(
+            Long petId,
+            Long loginMemberId
+    ) {
+        Pet pet = petRepository.findById(petId).orElseThrow(
+                () -> new CustomException(CustomResponseStatus.PET_NOT_FOUND)
+        );
+
+        if (!Objects.equals(pet.getMember().getMemberId(), loginMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
+        }
+
+        petRepository.delete(pet);
     }
 
     @Override
@@ -79,8 +99,16 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDetailInfoRespDto fetchPetDetailInfo(Long petId) {
+    public PetDetailInfoRespDto fetchPetDetailInfo(
+            Long petId,
+            Long loginMemberId
+
+    ) {
         Pet pet = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
+
+        if (!Objects.equals(pet.getMember().getMemberId(), loginMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
+        }
 
         return PetDetailInfoRespDto.from(pet);
     }

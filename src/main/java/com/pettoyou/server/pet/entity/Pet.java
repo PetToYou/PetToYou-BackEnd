@@ -3,9 +3,11 @@ package com.pettoyou.server.pet.entity;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.member.entity.Member;
-import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
+import com.pettoyou.server.pet.dto.request.PetRegisterAndModifyReqDto;
 import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
+import com.pettoyou.server.pet.entity.enums.Species;
+import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
@@ -34,8 +36,8 @@ public class Pet extends BaseEntity {
     @Column(nullable = false)
     private String petName;
 
-    @Column(nullable = false)
-    private String species;
+    @Enumerated(EnumType.STRING)
+    private Species species;
 
     @Column(nullable = false)
     private LocalDate birth;
@@ -54,14 +56,14 @@ public class Pet extends BaseEntity {
     private BaseStatus petStatus;
 
     @Embedded
+    private PhotoData profilePhotoData;
+
+    @Embedded
     private PetMedicalInfo petMedicalInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<PetProfilePhoto> petProfilePhotos = new ArrayList<>();
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
     private List<Reserve> reserves = new ArrayList<>();
@@ -69,7 +71,7 @@ public class Pet extends BaseEntity {
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
-    public static Pet of(PetRegisterReqDto registerDto, Member member) {
+    public static Pet of(PetRegisterAndModifyReqDto registerDto, PhotoData profilePhotoData, Member member) {
         return builder()
                 .petName(registerDto.petName())
                 .species(registerDto.species())
@@ -80,16 +82,18 @@ public class Pet extends BaseEntity {
                 .petMedicalInfo(PetMedicalInfo.from(registerDto.petMedicalInfoDto()))
                 .member(member)
                 .petStatus(BaseStatus.ACTIVATE)
+                .profilePhotoData(profilePhotoData)
                 .build();
     }
 
-    public void modify(PetRegisterReqDto modifyDto) {
+    public void modify(PetRegisterAndModifyReqDto modifyDto, PhotoData newPhoto) {
         this.petName = modifyDto.petName();
         this.species = modifyDto.species();
         this.birth = modifyDto.birth();
         this.petType = modifyDto.petType();
         this.adoptionDate = modifyDto.adoptionDate();
         this.petMedicalInfo = PetMedicalInfo.from(modifyDto.petMedicalInfoDto());
+        this.profilePhotoData = newPhoto;
     }
 
     public String petAgeCalculate(LocalDate currentLocalDate) {
