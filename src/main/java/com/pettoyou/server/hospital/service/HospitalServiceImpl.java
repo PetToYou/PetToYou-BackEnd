@@ -64,6 +64,7 @@ public class HospitalServiceImpl implements HospitalService {
 //        return hospitalRepository.findHospitalDetailById(hospitalId);
         Hospital hospital = hospitalRepository.findById(hospitalId)
                 .orElseThrow(()-> new CustomException(CustomResponseStatus.STORE_NOT_FOUND));
+
         List<HospitalTag> tagList = hospitalRepository.findTagList(hospitalId);
 
         return HospitalDetail.from(hospital, tagList);
