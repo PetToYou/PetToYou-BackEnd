@@ -6,7 +6,6 @@ import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.dto.request.AddressDto;
 import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
-import com.pettoyou.server.store.dto.StorePhotoDto;
 import com.pettoyou.server.store.entity.Address;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.Embedded;
@@ -45,8 +44,7 @@ public class HospitalDto{
 //        private String thumbnailUrl;
 
         private String storeInfo;
-        @Embedded
-        private PhotoData storeInfoPhoto;
+
         @NotNull
         private AddressDto address;
 
@@ -147,7 +145,6 @@ public class HospitalDto{
         @NotNull
         private Long hospitalId;
 
-
         @NotNull
         private String hospitalName;
 
@@ -161,18 +158,8 @@ public class HospitalDto{
         private PhotoData storeInfoPhoto;
         private BaseStatus storeStatus;
         private Address address;
-
-        //
         @Builder.Default
         private List<BusinessHourDto.Response> businessHours = new ArrayList<>();
-
-        @Builder.Default
-        private List<StorePhotoDto> storePhotos = new ArrayList<>();
-//    //페이징
-
-
-        //    private List<Review> reviews = new ArrayList<>();
-//    //페이징
         private RegistrationInfoDto.Response registrationInfo;
 
 
@@ -194,14 +181,7 @@ public class HospitalDto{
                                     .getBusinessHours()
                                     .stream()
                                     .map(BusinessHourDto.Response::toDto)
-                                    .collect(Collectors.toList())
-                    )
-                    .storePhotos(
-                            hospital
-                                    .getStorePhotos()
-                                    .stream()
-                                    .map(StorePhotoDto::toDto)
-                                    .collect(Collectors.toList())
+                                    .toList()
                     )
                     .registrationInfo(RegistrationInfoDto.Response.toRegistrationInfoDto(hospital.getRegistrationInfo()))
                     .build();

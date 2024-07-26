@@ -32,8 +32,6 @@ public record HospitalTagDto(
         List<String> specialitiesList = result.get(SPECIALITIES);
         List<String> emergency = result.get(EMERGENCY);
 
-
-
             return HospitalTagDto.builder()
                 .services(serviceList)
                 .businessHours(businessHourList)
@@ -41,6 +39,21 @@ public record HospitalTagDto(
                 .emergency(emergency)
                 .build();
     }
+
+    public static HospitalTagDto toDtoFromTags(List<HospitalTag> tags)
+    {
+        Map<HospitalTagType, List<String>> result = tags.stream()
+                .collect(Collectors.groupingBy(HospitalTag::getTagType
+                        ,Collectors.mapping(HospitalTag::getTagContent, Collectors.toList())
+                ));
+        return HospitalTagDto.builder()
+                .services(result.get(SERVICE))
+                .businessHours(result.get(BUSINESSHOUR))
+                .specialities(result.get(SPECIALITIES))
+                .emergency(result.get(EMERGENCY))
+                .build();
+    }
+
 
     public static List<TagMapper> toEntity(Hospital hospital, List<HospitalTag> tags){
 

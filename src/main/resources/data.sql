@@ -5697,9 +5697,9 @@ values (1, 1, 1),
        (2, 2, 1);
 
 -- Inserting data into store_photo (Assuming Store data exists)
-# insert into store_photo (store_photo_id, store_id, store_photo_url, photo_order, photo_status, store_type)
-# values (1, 1, 'https://example.com/store1/photo1.jpg', 1, 'ACTIVATE', 'HOSPITAL'),
-#        (2, 1, 'https://example.com/store1/photo2.jpg', 2, 'ACTIVATE', 'HOSPITAL');
+insert into store_photo (store_photo_id, store_id, photo_url, bucket, object, photo_order, photo_status, store_type)
+values (1, 1, 'https://example.com/store1/photo1.jpg', 'bucket', 'object', 1, 'ACTIVATE', 'HOSPITAL'),
+       (2, 1, 'https://example.com/store1/photo2.jpg','bucket', 'object', 2, 'ACTIVATE', 'HOSPITAL');
 
 -- Inserting data into like (Assuming Member and Store data exists)
 # insert into scrap (scrap_id, member_id, store_id, store_type)

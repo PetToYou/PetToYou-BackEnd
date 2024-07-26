@@ -27,13 +27,11 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.pettoyou.server.hospital.entity.QHospital.hospital;
+import static com.pettoyou.server.hospital.entity.QHospitalTag.hospitalTag;
 import static com.pettoyou.server.hospital.entity.QTagMapper.tagMapper;
 import static com.pettoyou.server.review.entity.QReview.*;
 import static com.pettoyou.server.store.entity.QBusinessHour.businessHour;
@@ -177,18 +175,28 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
 
     @Override
     public HospitalDetail findHospitalDetailById(Long hospitalId) {
-        Hospital findHospital = jpaQueryFactory
+        Hospital hospitalDetail = jpaQueryFactory
                 .selectFrom(hospital)
-                .leftJoin(hospital.registrationInfo, registrationInfo).fetchJoin()
                 .where(hospital.storeId.eq(hospitalId))
                 .fetchOne();
 
-        if (findHospital == null) {
+        if (hospitalDetail == null){
             throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
         }
+        return HospitalDetail.from(hospitalDetail);
 
-        return HospitalDetail.from(findHospital);
     }
+
+    @Override
+    public List<HospitalTag> findTagList(Long hospitalId){
+        return jpaQueryFactory
+                .select(hospitalTag)
+                .from(tagMapper)
+                .join(tagMapper.hospitalTag, hospitalTag)
+                .where(tagMapper.hospital.storeId.eq(hospitalId))
+                .fetch();
+    }
+
 
     private BooleanExpression hospitalTagsEqSubQuery(List<Long> tagsCond) {
         // BusinessHour, Specialities, Emergency 모두 여기서 처리됨.

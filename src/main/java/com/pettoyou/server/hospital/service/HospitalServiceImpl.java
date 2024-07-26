@@ -1,5 +1,7 @@
 package com.pettoyou.server.hospital.service;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
 import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
@@ -10,6 +12,8 @@ import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.hospital.dto.HospitalTagDto;
 import com.pettoyou.server.hospital.entity.*;
+import com.pettoyou.server.hospital.repository.HospitalTagRepository;
+import com.pettoyou.server.hospital.repository.TagMapperRepository;
 import com.pettoyou.server.photo.converter.PhotoConverter;
 import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.entity.StorePhoto;
@@ -57,7 +61,13 @@ public class HospitalServiceImpl implements HospitalService {
     // 병원 상세 조회
     @Override
     public HospitalDetail getHospitalDetail(Long hospitalId) {
-        return hospitalRepository.findHospitalDetailById(hospitalId);
+//        return hospitalRepository.findHospitalDetailById(hospitalId);
+        Hospital hospital = hospitalRepository.findById(hospitalId)
+                .orElseThrow(()-> new CustomException(CustomResponseStatus.STORE_NOT_FOUND));
+        List<HospitalTag> tagList = hospitalRepository.findTagList(hospitalId);
+
+        return HospitalDetail.from(hospital, tagList);
+
     }
 
     @Override
