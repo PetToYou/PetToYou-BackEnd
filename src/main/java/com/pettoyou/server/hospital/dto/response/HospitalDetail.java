@@ -27,7 +27,6 @@ public record HospitalDetail(
         String storeInfoPhoto,
         Address address,
         List<Times> businessHours,
-        List<StorePhotoDto> storePhotos,
         RegistrationInfo registrationInfo,
         HospitalTagDto hospitalTags
 ) {
@@ -44,7 +43,6 @@ public record HospitalDetail(
                 .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? "default_url" : hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
                 .businessHours(hospital.getBusinessHours().stream().map(Times::of).toList())
-                .storePhotos(hospital.getStorePhotos().stream().map(StorePhotoDto::toDto).toList())
                 .registrationInfo(hospital.getRegistrationInfo())
                 .hospitalTags(HospitalTagDto.toDtoFromTags(tagList))
                 .build();
@@ -62,7 +60,6 @@ public record HospitalDetail(
                 .storeInfo(hospital.getStoreInfo())
                 .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? "default_url" : hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
-                .storePhotos(hospital.getStorePhotos().stream().map(StorePhotoDto::toDto).toList())
                 .registrationInfo(hospital.getRegistrationInfo())
                 .hospitalTags(HospitalTagDto.toDto(hospital.getTags()))
                 .build();
