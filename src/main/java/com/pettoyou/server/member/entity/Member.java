@@ -2,6 +2,7 @@ package com.pettoyou.server.member.entity;
 
 import com.pettoyou.server.alarm.entity.Alarm;
 import com.pettoyou.server.auth.OAuthInfoResponse;
+import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
@@ -21,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "member")
-public class Member {
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -79,6 +80,18 @@ public class Member {
                 .providerId(joinParam.getId())
                 .memberStatus(MemberStatus.ACTIVATE)
                 .build();
+    }
+
+    @Builder
+    public Member(MemberStatus memberStatus, String providerId, OAuthProvider provider, String email, String phone, String nickName, String name, Long memberId) {
+        this.memberStatus = memberStatus;
+        this.providerId = providerId;
+        this.provider = provider;
+        this.email = email;
+        this.phone = phone;
+        this.nickName = nickName;
+        this.name = name;
+        this.memberId = memberId;
     }
 }
 

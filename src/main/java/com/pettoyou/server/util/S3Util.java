@@ -34,9 +34,11 @@ public class S3Util {
 
         try (InputStream is = file.getInputStream();) {
             S3Resource upload = s3Template.upload(bucket, fileName, is, metadata);
-            return PhotoData.of(upload.getLocation().getBucket(),
+            return PhotoData.of(
+                    upload.getLocation().getBucket(),
                     upload.getLocation().getObject(),
-                    upload.getURL().toString());
+                    upload.getURL().toString()
+            );
         } catch (IOException exception) {
             log.error("[S3 Upload Fail] : {}", exception.getMessage());
             throw new CustomException(CustomResponseStatus.S3_UPLOAD_FAIL);

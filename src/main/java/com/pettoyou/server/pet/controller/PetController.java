@@ -2,7 +2,7 @@ package com.pettoyou.server.pet.controller;
 
 import com.pettoyou.server.config.security.service.PrincipalDetails;
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.pet.dto.request.PetRegisterReqDto;
+import com.pettoyou.server.pet.dto.request.PetRegisterAndModifyReqDto;
 import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
@@ -25,8 +25,8 @@ public class PetController {
 
     @PostMapping("/pet")
     public ResponseEntity<ApiResponse<PetRegisterRespDto>> petRegister(
-            @RequestPart(required = false, value = "petProfileImg") List<MultipartFile> petProfileImg,
-            @RequestPart(value = "petRegisterDto") PetRegisterReqDto petRegisterDto,
+            @RequestPart(required = false, value = "petProfileImg") MultipartFile petProfileImg,
+            @RequestPart(value = "petRegisterDto") PetRegisterAndModifyReqDto petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         PetRegisterRespDto response = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
@@ -36,8 +36,8 @@ public class PetController {
     @PutMapping("/pet/{id}")
     public ResponseEntity<ApiResponse<String>> petModify(
             @PathVariable Long id,
-            @RequestPart(required = false, value = "petProfileImg") List<MultipartFile> petProfileImg,
-            @RequestPart(value = "petModifyDto") PetRegisterReqDto petRegisterDto,
+            @RequestPart(required = false, value = "petProfileImg") MultipartFile petProfileImg,
+            @RequestPart(value = "petModifyDto") PetRegisterAndModifyReqDto petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         petService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
@@ -46,9 +46,10 @@ public class PetController {
 
     @DeleteMapping("/pet/{id}")
     public ResponseEntity<ApiResponse<String>> petDelete(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        petService.petDelete(id);
+        petService.petDelete(id, principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk("반려동물 삭제 완료");
     }
 
@@ -62,9 +63,10 @@ public class PetController {
 
     @GetMapping("/pet/{id}")
     public ResponseEntity<ApiResponse<PetDetailInfoRespDto>> fetchPetDetailInfo(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PetDetailInfoRespDto response = petService.fetchPetDetailInfo(id);
+        PetDetailInfoRespDto response = petService.fetchPetDetailInfo(id, principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk(response);
     }
 }
