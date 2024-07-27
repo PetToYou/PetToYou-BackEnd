@@ -136,6 +136,19 @@ class HealthNoteCommandServiceTest {
         assertThat(originalHealthNote.getVetName()).isEqualTo(modifyReqDto.vetName());
     }
 
+    @Test
+    void 존재하지_않는_건강수첩을_수정하려할때_예외발생() {
+        // given
+        HealthNoteRegistAndModifyReqDto modiDto = createHealthNoteModifyDto();
+
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> healthNoteCommandService.modifyHealthNote(1L, modiDto, 1L))
+                .withMessage(CustomResponseStatus.HEALTH_NOTE_NOT_FOUND.getMessage());
+    }
+
     private HealthNote createHealthNote() {
         return HealthNote.builder()
                 .healthNoteId(1L)
