@@ -34,7 +34,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     public void modifyHealthNote(Long healthNoteId, HealthNoteRegistAndModifyReqDto modifyReqDto, Long authMemberId) {
         HealthNote findHealthNote = fetchHealthNoteById(healthNoteId);
 
-        checkMemberAuthorization(findHealthNote.getMemberId(), authMemberId);
+        findHealthNote.validateMemberAuthorization(authMemberId);
         checkValidHospital(modifyReqDto.hospitalId());
         checkValidPet(modifyReqDto.petId(), authMemberId);
 
@@ -44,8 +44,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     @Override
     public void deleteHealthNote(Long healthNoteId, Long authMemberId) {
         HealthNote findHealthNote = fetchHealthNoteById(healthNoteId);
-
-        checkMemberAuthorization(findHealthNote.getMemberId(), authMemberId);
+        findHealthNote.validateMemberAuthorization(authMemberId);
 
         healthNoteRepository.delete(findHealthNote);
     }
@@ -67,12 +66,5 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
         petRepository.findPetUsingPetIdAndMemberId(petId, authMemberId).orElseThrow(() ->
                 new CustomException(CustomResponseStatus.PET_NOT_FOUND)
         );
-    }
-
-    private void checkMemberAuthorization(Long healthNoteWriterId, Long authMemberId) {
-        log.info("글쓴이 : {}, 로그인한 애 : {}", healthNoteWriterId, authMemberId);
-        if (!healthNoteWriterId.equals(authMemberId)) {
-            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
-        }
     }
 }
