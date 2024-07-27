@@ -28,22 +28,27 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long memberId;
 
+    @Column(nullable = false)
     private String name; // 실명이 이어야함. -> 수정 가능하게
 
     @Size(min = 2, message = "최소 2글자 이상이어야 합니다.")
     private String nickName; // 따로 받아야됨
 
+    @Column(nullable = false)
     private String phone; // 따로 받아야됨
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email; // 따로 받아야됨
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OAuthProvider provider;
 
+    @Column(nullable = false)
     private String providerId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MemberStatus memberStatus;
 
     @Builder.Default
