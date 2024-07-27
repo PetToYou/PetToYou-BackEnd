@@ -109,7 +109,44 @@ class HealthNoteCommandServiceTest {
                 .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
     }
 
+    /***
+     * 건강수첩 수정 테스트
+     */
 
+    @Test
+    void 건강수첩_정상_수정() {
+        // given
+        Member member = createMember();
+        Hospital hospital = createHospital();
+        Pet pet = createPet();
+        HealthNote originalHealthNote = createHealthNote();
+
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.of(originalHealthNote));
+        when(petRepository.findPetUsingPetIdAndMemberId(any(Long.class), any(Long.class))).thenReturn(Optional.of(pet));
+        when(hospitalRepository.findById(any(Long.class))).thenReturn(Optional.of(hospital));
+
+        HealthNoteRegistAndModifyReqDto modifyReqDto = createHealthNoteModifyDto();
+
+        // when
+        healthNoteCommandService.modifyHealthNote(originalHealthNote.getHealthNoteId(), modifyReqDto, member.getMemberId());
+
+        // then
+        assertThat(originalHealthNote.getCaution()).isEqualTo(modifyReqDto.caution());
+        assertThat(originalHealthNote.getMedicalRecord()).isEqualTo(modifyReqDto.medicalRecord());
+        assertThat(originalHealthNote.getVetName()).isEqualTo(modifyReqDto.vetName());
+    }
+
+    private HealthNote createHealthNote() {
+        return HealthNote.builder()
+                .healthNoteId(1L)
+                .storeId(1L)
+                .petId(1L)
+                .memberId(1L)
+                .visitDate(LocalDate.of(2023, 7, 24))
+                .caution("first Caution")
+                .medicalRecord("first mr")
+                .build();
+    }
 
     private HealthNoteRegistAndModifyReqDto createHealthNoteRegistAndOrModifyDto() {
         return HealthNoteRegistAndModifyReqDto.builder()
@@ -119,6 +156,17 @@ class HealthNoteCommandServiceTest {
                 .medicalRecord("testRecord")
                 .caution("testCaution")
                 .vetName("testVet")
+                .build();
+    }
+
+    private HealthNoteRegistAndModifyReqDto createHealthNoteModifyDto() {
+        return HealthNoteRegistAndModifyReqDto.builder()
+                .hospitalId(1L)
+                .petId(1L)
+                .visitDate(LocalDate.of(2024, 7, 27))
+                .medicalRecord("second mr")
+                .caution("second caution")
+                .vetName("second vet")
                 .build();
     }
 
