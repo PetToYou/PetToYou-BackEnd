@@ -1,5 +1,7 @@
 package com.pettoyou.server.healthNote.service;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import com.pettoyou.server.healthNote.entity.HealthNote;
 import com.pettoyou.server.healthNote.repository.HealthNoteRepository;
@@ -69,6 +71,21 @@ class HealthNoteCommandServiceTest {
         assertThat(savedHealthNote.getStoreId()).isEqualTo(registerDto.hospitalId());
         assertThat(savedHealthNote.getPetId()).isEqualTo(registerDto.petId());
         assertThat(savedHealthNote.getMemberId()).isEqualTo(member.getMemberId());
+    }
+
+    @Test
+    void 존재하지않는_병원_id로_건강수첩_등록하려는_경우_예외발생() {
+        // given
+        Hospital hospital = createHospital();
+        Pet pet = createPet();
+        Member member = createMember();
+        HealthNoteRegistAndModifyReqDto registerDto = createHealthNoteRegistAndOrModifyDto();
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> healthNoteCommandService.registHealthNote(registerDto, member.getMemberId()))
+                .withMessage(CustomResponseStatus.HOSPITAL_NOT_FOUND.getMessage());
     }
 
 
