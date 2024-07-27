@@ -145,8 +145,23 @@ class HealthNoteCommandServiceTest {
 
         // then
         assertThatExceptionOfType(CustomException.class)
+                // when
                 .isThrownBy(() -> healthNoteCommandService.modifyHealthNote(1L, modiDto, 1L))
                 .withMessage(CustomResponseStatus.HEALTH_NOTE_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    void 다른_유저의_건강수첩을_수정하려할때_예외발생() {
+        // given
+        HealthNote originalHealthNote = createHealthNote();
+        HealthNoteRegistAndModifyReqDto modiDto = createHealthNoteModifyDto();
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(originalHealthNote));
+
+        // when
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> healthNoteCommandService.modifyHealthNote(originalHealthNote.getHealthNoteId(), modiDto, originalHealthNote.getMemberId() + 1))
+                .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
     private HealthNote createHealthNote() {
