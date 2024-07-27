@@ -2,21 +2,22 @@ package com.pettoyou.server.hospital.service;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
+import com.pettoyou.server.hospital.dto.HospitalTagDto;
 import com.pettoyou.server.hospital.dto.request.HospitalDto;
-import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
+import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.entity.Hospital;
+import com.pettoyou.server.hospital.entity.HospitalTag;
+import com.pettoyou.server.hospital.entity.TagMapper;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
-import com.pettoyou.server.hospital.dto.HospitalTagDto;
-import com.pettoyou.server.hospital.entity.*;
 import com.pettoyou.server.hospital.repository.HospitalTagRepository;
 import com.pettoyou.server.hospital.repository.TagMapperRepository;
-import com.pettoyou.server.photo.converter.PhotoConverter;
 import com.pettoyou.server.photo.entity.PhotoData;
+import com.pettoyou.server.photo.service.PhotoService;
 import com.pettoyou.server.store.entity.StorePhoto;
 import com.pettoyou.server.store.repository.StorePhotoRepository;
 import jakarta.transaction.Transactional;
@@ -29,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,7 +41,7 @@ public class HospitalServiceImpl implements HospitalService {
     private final HospitalTagRepository hospitalTagRepository;
     private final HospitalRepository hospitalRepository;
     private final StorePhotoRepository storePhotoRepository;
-    private final PhotoConverter photoConverter;
+    private final PhotoService photoService;
 
     @Override
     public Page<HospitalDtoWithDistance> getHospitalsTest(Pageable pageable, HospitalQueryAddressInfo queryInfo, HospitalQueryCond queryCond) {
@@ -73,53 +73,38 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public String registerHospital(List<MultipartFile> hospitalImgs, MultipartFile storeInfoImg, MultipartFile thumbnailImg, HospitalDto hospitalDto) {
+    public String registerHospital(List<MultipartFile> hospitalImg, MultipartFile storeInfoImg, MultipartFile thumbnailImg, HospitalDto hospitalDto) {
+        PhotoData thumbnail = photoService.handleThumbnail(thumbnailImg);
 
-        Hospital hospital;
-        PhotoData thumbnail;
-        List<StorePhoto> storePhotoList = new ArrayList<>();
+        Hospital hospital = handleStoreInfoImg(storeInfoImg, hospitalDto, thumbnail);
+        List<StorePhoto> storePhotoList = photoService.handleHospitalImgs(hospitalImg, hospital);
+        hospital.getStorePhotos().addAll(storePhotoList);
 
-        //thumbnail 저장
-        if ((thumbnailImg != null) && (!thumbnailImg.isEmpty())) {
-            thumbnail = photoConverter.ImgUpload(thumbnailImg);
-        } else {
-            thumbnail = new PhotoData(null, null, null);
-            //기본값 처리하기!!!
-            //thumbnailUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHQQdAY4HvcdOtRxApXStj7oRvUNKlATHpWA&s";
-        }
+        List<TagMapper> tagMapperList = handleTags(hospital, hospitalDto);
 
-        //병원 저장
-        if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
-            PhotoData photoData = photoConverter.ImgUpload(storeInfoImg);
-            hospital = HospitalDto.toHospitalEntity(hospitalDto, thumbnail, photoData);
-        } else {
-            hospital = HospitalDto.toHospitalEntity(hospitalDto, thumbnail);
-        }
-
-        //Store 사진 저장 - 메소드 분리
-        if ((hospitalImgs != null) && (!hospitalImgs.isEmpty())) {
-            storePhotoList = photoConverter.StoreImgsToEntity(hospitalImgs, hospital);
-            hospital.getStorePhotos().addAll(storePhotoList);
-            //병원 객체에 양방향 매핑
-
-            // cascade.all 옵션
-        }
-        //Tag 저장
-        List<HospitalTag> tags = hospitalTagRepository.findAllById(hospitalDto.tagIdList());
-        List<TagMapper> tagMapperList = HospitalTagDto.toEntity(hospital, tags);
-
-        hospital.getTags().addAll(tagMapperList);
-        //hospital 객체에 tagMapper 매핑
-
-        //반드시 Tag 저장 후, StorePhoto 저장 후.  병원 저장
         hospitalRepository.save(hospital);
         if (!storePhotoList.isEmpty()) {
+            hospital.getStorePhotos().addAll(storePhotoList);
             storePhotoRepository.saveAll(storePhotoList);
         }
-        //cascade.all 옵션으로 자동으로 날아가면 각가의 photo에 대해 모두 날아가버림. repository.save 옵션으로 저장되기 때문. saveAll을 해줘야 쿼리가 한번만 나간다.
         tagMapperRepository.saveAll(tagMapperList);
         return hospital.getStoreId().toString();
     }
+
+    private Hospital handleStoreInfoImg(MultipartFile storeInfoImg, HospitalDto hospitalDto, PhotoData thumbnail) {
+        if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
+            PhotoData photoData = photoService.uploadImage(storeInfoImg);
+            return HospitalDto.toHospitalEntity(hospitalDto, thumbnail, photoData);
+        } else {
+            return HospitalDto.toHospitalEntity(hospitalDto, thumbnail);
+        }
+    }
+
+    private List<TagMapper> handleTags(Hospital hospital, HospitalDto hospitalDto) {
+        List<HospitalTag> tags = hospitalTagRepository.findAllById(hospitalDto.tagIdList());
+        return HospitalTagDto.toEntity(hospital, tags);
+    }
+
 
     // Get 요일 숫자 데이터 1~7
     private Integer getDayOfWeekNum() {

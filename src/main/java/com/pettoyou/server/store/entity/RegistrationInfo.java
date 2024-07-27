@@ -18,7 +18,7 @@ public class RegistrationInfo extends BaseEntity {
     @Column(name = "registration_info_id")
     private Long registrationInfoId;
 
-    @OneToOne(mappedBy = "registrationInfo")
+    @OneToOne(mappedBy = "registrationInfo", fetch = FetchType.LAZY)
     @JsonIgnore
     private Store store;
 

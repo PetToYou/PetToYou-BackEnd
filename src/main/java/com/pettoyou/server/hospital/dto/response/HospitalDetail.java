@@ -5,6 +5,7 @@ import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.hospital.dto.HospitalTagDto;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.HospitalTag;
+import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import com.pettoyou.server.store.dto.response.BusinessHourDto;
 import com.pettoyou.server.store.dto.response.StorePhotoDto;
 import com.pettoyou.server.store.entity.Address;
@@ -31,7 +32,7 @@ public record HospitalDetail(
         String storeInfoPhoto,
         Address address,
         List<Times> businessHours,
-        RegistrationInfo registrationInfo,
+        RegistrationInfoDto.Response registrationInfo,
         HospitalTagDto hospitalTags
 ) {
     public static HospitalDetail from(Hospital hospital, List<HospitalTag> tagList) {
@@ -52,7 +53,7 @@ public record HospitalDetail(
                 .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? null : hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
                 .businessHours(businessHours)
-                .registrationInfo(hospital.getRegistrationInfo())
+                .registrationInfo(RegistrationInfoDto.Response.toDto(hospital.getRegistrationInfo()))
                 .hospitalTags(HospitalTagDto.toDtoFromTags(tagList))
                 .build();
     }
@@ -69,7 +70,7 @@ public record HospitalDetail(
                 .storeInfo(hospital.getStoreInfo())
                 .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? null : hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
-                .registrationInfo(hospital.getRegistrationInfo())
+                .registrationInfo(RegistrationInfoDto.Response.toDto(hospital.getRegistrationInfo()))
                 .hospitalTags(HospitalTagDto.toDto(hospital.getTags()))
                 .build();
     }

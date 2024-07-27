@@ -19,7 +19,7 @@ public interface HospitalService {
             List<MultipartFile> hospitalImg,
             MultipartFile storeInfoImg,
             MultipartFile thumbnailImg,
-            HospitalDto hospital);
+            HospitalDto hospitalDto);
 
     Page<HospitalDtoWithDistance> getHospitalsTest(
             Pageable pageable,

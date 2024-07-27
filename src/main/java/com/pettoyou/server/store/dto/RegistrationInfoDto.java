@@ -54,7 +54,7 @@ public class RegistrationInfoDto{
         @Enumerated
         StoreType storeType;
 
-        public static RegistrationInfoDto.Response toRegistrationInfoDto (RegistrationInfo reg){
+        public static RegistrationInfoDto.Response toDto (RegistrationInfo reg){
             return RegistrationInfoDto.Response.builder()
                     .ceoName(reg.getCeoName())
                     .ceoPhone(reg.getCeoPhone())
