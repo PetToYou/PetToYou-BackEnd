@@ -42,6 +42,10 @@ class HealthNoteCommandServiceTest {
     @InjectMocks
     private HealthNoteCommandServiceImpl healthNoteCommandService;
 
+    /***
+     * 건강수첩 등록 테스트
+     */
+
     @Test
     void 건강수첩_정상_등록() {
         // given
@@ -76,16 +80,33 @@ class HealthNoteCommandServiceTest {
     @Test
     void 존재하지않는_병원_id로_건강수첩_등록하려는_경우_예외발생() {
         // given
-        Hospital hospital = createHospital();
-        Pet pet = createPet();
         Member member = createMember();
         HealthNoteRegistAndModifyReqDto registerDto = createHealthNoteRegistAndOrModifyDto();
+
+        when(hospitalRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         // then
         assertThatExceptionOfType(CustomException.class)
                 // when
                 .isThrownBy(() -> healthNoteCommandService.registHealthNote(registerDto, member.getMemberId()))
                 .withMessage(CustomResponseStatus.HOSPITAL_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    void 존재하지않는_반려동물_id로_건강수첩_등록하려는_경우_예외발생() {
+        // given
+        Member member = createMember();
+        Hospital hospital = createHospital();
+        HealthNoteRegistAndModifyReqDto registerDto = createHealthNoteRegistAndOrModifyDto();
+
+        when(hospitalRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(hospital));
+        when(petRepository.findPetUsingPetIdAndMemberId(any(Long.class), any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> healthNoteCommandService.registHealthNote(registerDto, member.getMemberId()))
+                .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
     }
 
 
