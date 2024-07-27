@@ -5,6 +5,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import com.pettoyou.server.healthNote.entity.HealthNote;
 import com.pettoyou.server.healthNote.repository.HealthNoteRepository;
+import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.pet.repository.PetRepository;
 import com.pettoyou.server.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     private final HealthNoteRepository healthNoteRepository;
     private final StoreRepository storeRepository;
     private final PetRepository petRepository;
+    private final HospitalRepository hospitalRepository;
 
     @Override
     @Transactional
@@ -56,8 +58,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     }
 
     private void checkValidHospital(Long hospitalId) {
-        // Todo : 준혁이거 pull받아오면 store type 비교해서 진짜 병원인지 따져보기
-        storeRepository.findById(hospitalId).orElseThrow(() ->
+        hospitalRepository.findById(hospitalId).orElseThrow(() ->
                 new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND)
         );
     }
