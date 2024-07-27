@@ -53,25 +53,10 @@ public record HospitalDetail(
                 .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? null : hospital.getStoreInfoPhoto().getPhotoUrl())
                 .address(hospital.getAddress())
                 .businessHours(businessHours)
-                .registrationInfo(RegistrationInfoDto.Response.toDto(hospital.getRegistrationInfo()))
+                .registrationInfo(hospital.getRegistrationInfo() == null ? null :RegistrationInfoDto.Response.toDto(hospital.getRegistrationInfo()))
                 .hospitalTags(HospitalTagDto.toDtoFromTags(tagList))
                 .build();
     }
 
-    public static HospitalDetail from(Hospital hospital) {
-        return HospitalDetail.builder()
-                .hospitalId(hospital.getStoreId())
-                .hospitalName(hospital.getStoreName())
-                .thumbnailUrl(hospital.getThumbnail() ==null ? "default_url" : hospital.getThumbnail().getPhotoUrl())
-                .storePhone(hospital.getStorePhone())
-                .notice(hospital.getNotice())
-                .websiteLink(hospital.getWebsiteLink())
-                .additionalServiceTag(hospital.getAdditionalServiceTag())
-                .storeInfo(hospital.getStoreInfo())
-                .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? null : hospital.getStoreInfoPhoto().getPhotoUrl())
-                .address(hospital.getAddress())
-                .registrationInfo(RegistrationInfoDto.Response.toDto(hospital.getRegistrationInfo()))
-                .hospitalTags(HospitalTagDto.toDto(hospital.getTags()))
-                .build();
-    }
+
 }

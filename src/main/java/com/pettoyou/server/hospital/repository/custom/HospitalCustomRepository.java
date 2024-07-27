@@ -23,7 +23,6 @@ public interface HospitalCustomRepository {
 
     Page<HospitalDtoWithAddress> findHospitalBySearch(Pageable pageable, HosptialSearchQueryInfo queryInfo, Integer dayOfWeek);
 
-    HospitalDetail findHospitalDetailById(Long hospitalId);
 
     List<HospitalTag> findTagList(Long hospitalId);
 }

@@ -173,19 +173,6 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    @Override
-    public HospitalDetail findHospitalDetailById(Long hospitalId) {
-        Hospital hospitalDetail = jpaQueryFactory
-                .selectFrom(hospital)
-                .where(hospital.storeId.eq(hospitalId))
-                .fetchOne();
-
-        if (hospitalDetail == null){
-            throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
-        }
-        return HospitalDetail.from(hospitalDetail);
-
-    }
 
     @Override
     public List<HospitalTag> findTagList(Long hospitalId){
