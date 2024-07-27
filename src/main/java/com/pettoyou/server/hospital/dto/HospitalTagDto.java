@@ -22,8 +22,8 @@ public record HospitalTagDto(
         List<String> businessHours,
         List<String> specialities,
         List<String> emergency) {
-    public static HospitalTagDto toDto(List<TagMapper> TagMappers) {
-        Map<HospitalTagType, List<String>> result = TagMappers.stream()
+    public static HospitalTagDto toDto(List<TagMapper> tagMappers) {
+        Map<HospitalTagType, List<String>> result = tagMappers.stream()
                 .collect(Collectors.groupingBy(mapper -> mapper.getHospitalTag().getTagType()
                         , Collectors.mapping(mapper -> mapper.getHospitalTag().getTagContent(), Collectors.toList())
 
@@ -69,7 +69,7 @@ public record HospitalTagDto(
                         .hospitalTag(tag)
                         .hospital(hospital)
                         .build()
-                ).collect(Collectors.toList());
+                ).toList();
 
 
         hospital.getTags().addAll(tagMapperList);

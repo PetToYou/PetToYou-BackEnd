@@ -1,8 +1,7 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pettoyou.server.hospital.controller.HospitalControllerAdmin;
-import com.pettoyou.server.hospital.dto.HospitalDto;
+import com.pettoyou.server.hospital.dto.request.HospitalDto;
 import com.pettoyou.server.hospital.service.HospitalService;
-import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.dto.BusinessHourDto;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
 import com.pettoyou.server.store.dto.request.AddressDto;
@@ -72,7 +71,7 @@ public class HospitalControllerAdminTest {
             .businessNumber("123-45-67890")
             .build();
 
-    HospitalDto.Request hospitalDto = HospitalDto.Request.builder()
+    HospitalDto hospitalDto = HospitalDto.builder()
             .hospitalName("Good Hospital")
             .hospitalPhone("010-1234-5678")
             .address(addressDto)
@@ -101,7 +100,7 @@ public class HospitalControllerAdminTest {
     @Test
     public void registerHospital_success() throws Exception {
         String hospitalId = "1";
-        when(hospitalService.registerHospital(any(List.class), any(MultipartFile.class), any(MultipartFile.class), any(HospitalDto.Request.class)))
+        when(hospitalService.registerHospital(any(List.class), any(MultipartFile.class), any(MultipartFile.class), any(HospitalDto.class)))
                 .thenReturn(hospitalId);
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/hospital/admin")
                         .file(hospitalImg)

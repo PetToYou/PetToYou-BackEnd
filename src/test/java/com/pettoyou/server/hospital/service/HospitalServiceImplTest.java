@@ -164,12 +164,29 @@ class HospitalServiceImplTest {
 
     @Test
     void getHospitalDetial_사업자없는경우() {
-        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.ofNullable(hospitalSuccess));
+        when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.ofNullable(noRegInfo));
         HospitalDetail hospitalDetail = hospitalServiceImpl.getHospitalDetail(hospitalId);
 
         assertThat(hospitalDetail).isNotNull();
-        assertThat(hospitalDetail.registrationInfo()).isNull();
-        assertThat(hospitalDetail.hospitalName()).isEqualTo("hospital2");
+        // Then
+        assertThat(noRegInfo.getStoreId()).isEqualTo(2L);
+        assertThat(noRegInfo.getStoreName()).isEqualTo("hospital2");
+        assertThat(noRegInfo.getThumbnail()).usingRecursiveComparison().isEqualTo(new PhotoData("bucket", "object", "photoUrl"));
+        assertThat(noRegInfo.getStorePhone()).isEqualTo("010-1234-1234");
+        assertThat(noRegInfo.getNotice()).isEqualTo("notice");
+        assertThat(noRegInfo.getWebsiteLink()).isEqualTo("website");
+        assertThat(noRegInfo.getStoreInfo()).isEqualTo("storeInfo");
+        assertThat(noRegInfo.getStoreInfoPhoto()).usingRecursiveComparison().isEqualTo(new PhotoData("bucket", "object", "photoUrl"));
+        assertThat(noRegInfo.getAddress()).usingRecursiveComparison().isEqualTo(new Address("zipCode", "addressDetail", "sido", "sigungu", "eupmyun", "doro", null));
+
+        List<BusinessHour> businessHours = noRegInfo.getBusinessHours();
+        assertThat(businessHours).hasSize(1);
+        BusinessHour businessHour = businessHours.get(0);
+        assertThat(businessHour.getBusinessHourId()).isEqualTo(1L);
+        assertThat(businessHour.getDayOfWeek()).isEqualTo(1);
+        assertThat(businessHour.getStartTime()).isEqualTo(Time.valueOf("09:00:00"));
+        assertThat(businessHour.getEndTime()).isEqualTo(Time.valueOf("18:00:00"));
+        assertThat(businessHour.isOpenSt()).isTrue();
     }
 
     @Test
@@ -203,6 +220,7 @@ class HospitalServiceImplTest {
     }
 
     @Test
-    void registerHospital() {
+    void registerHospital_성공() {
+
     }
 }

@@ -1,5 +1,6 @@
 package com.pettoyou.server.hospital.service;
 
+import com.pettoyou.server.hospital.dto.request.HospitalDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
 import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
@@ -18,7 +19,7 @@ public interface HospitalService {
             List<MultipartFile> hospitalImg,
             MultipartFile storeInfoImg,
             MultipartFile thumbnailImg,
-            com.pettoyou.server.hospital.dto.HospitalDto.Request hospital);
+            HospitalDto hospital);
 
     Page<HospitalDtoWithDistance> getHospitalsTest(
             Pageable pageable,

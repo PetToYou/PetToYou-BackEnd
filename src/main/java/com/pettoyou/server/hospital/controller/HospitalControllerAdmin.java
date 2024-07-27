@@ -1,7 +1,7 @@
 package com.pettoyou.server.hospital.controller;
 
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.hospital.dto.HospitalDto;
+import com.pettoyou.server.hospital.dto.request.HospitalDto;
 import com.pettoyou.server.hospital.service.HospitalService;
 
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class HospitalControllerAdmin {
             @RequestPart(required = false, value = "hospitalImg") List<MultipartFile> hospitalImg,
             @RequestPart(required = false, value = "storeInfoImg") MultipartFile storeInfoImg,
             @RequestPart(required = false, value = "thumbnailImg") MultipartFile thumbnailImg,
-            @RequestPart(value = "hospitalDto") @Valid HospitalDto.Request hospitalDto
+            @RequestPart(value = "hospitalDto") @Valid HospitalDto hospitalDto
     ) {
         String hospitalId = hospitalService.registerHospital(hospitalImg, storeInfoImg, thumbnailImg, hospitalDto);
 

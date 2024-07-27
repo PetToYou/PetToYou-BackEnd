@@ -2,6 +2,7 @@ package com.pettoyou.server.hospital.service;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
+import com.pettoyou.server.hospital.dto.request.HospitalDto;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryCond;
 import com.pettoyou.server.hospital.dto.request.HospitalQueryAddressInfo;
 import com.pettoyou.server.hospital.dto.request.HosptialSearchQueryInfo;
@@ -72,7 +73,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public String registerHospital(List<MultipartFile> hospitalImgs, MultipartFile storeInfoImg, MultipartFile thumbnailImg, com.pettoyou.server.hospital.dto.HospitalDto.Request hospitalDto) {
+    public String registerHospital(List<MultipartFile> hospitalImgs, MultipartFile storeInfoImg, MultipartFile thumbnailImg, HospitalDto hospitalDto) {
 
         Hospital hospital;
         PhotoData thumbnail;
@@ -90,9 +91,9 @@ public class HospitalServiceImpl implements HospitalService {
         //병원 저장
         if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
             PhotoData photoData = photoConverter.ImgUpload(storeInfoImg);
-            hospital = com.pettoyou.server.hospital.dto.HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail, photoData);
+            hospital = HospitalDto.toHospitalEntity(hospitalDto, thumbnail, photoData);
         } else {
-            hospital = com.pettoyou.server.hospital.dto.HospitalDto.Request.toHospitalEntity(hospitalDto, thumbnail);
+            hospital = HospitalDto.toHospitalEntity(hospitalDto, thumbnail);
         }
 
         //Store 사진 저장 - 메소드 분리
@@ -104,7 +105,7 @@ public class HospitalServiceImpl implements HospitalService {
             // cascade.all 옵션
         }
         //Tag 저장
-        List<HospitalTag> tags = hospitalTagRepository.findAllById(hospitalDto.getTagIdList());
+        List<HospitalTag> tags = hospitalTagRepository.findAllById(hospitalDto.tagIdList());
         List<TagMapper> tagMapperList = HospitalTagDto.toEntity(hospital, tags);
 
         hospital.getTags().addAll(tagMapperList);
