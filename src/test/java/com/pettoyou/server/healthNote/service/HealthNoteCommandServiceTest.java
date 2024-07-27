@@ -164,6 +164,23 @@ class HealthNoteCommandServiceTest {
                 .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
+    @Test
+    void 반려동물의_id값이_유효하지_않을때_예외발생() {
+        // given
+        HealthNote originalHealthNote = createHealthNote();
+        Hospital hospital = createHospital();
+        HealthNoteRegistAndModifyReqDto modiDto = createHealthNoteModifyDto();
+
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(originalHealthNote));
+        when(hospitalRepository.findById(any(Long.class))).thenReturn(Optional.of(hospital));
+        when(petRepository.findPetUsingPetIdAndMemberId(any(Long.class), any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> healthNoteCommandService.modifyHealthNote(originalHealthNote.getHealthNoteId(), modiDto, 1L))
+                .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
+    }
+
     private HealthNote createHealthNote() {
         return HealthNote.builder()
                 .healthNoteId(1L)
