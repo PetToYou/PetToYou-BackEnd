@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public record HospitalDetail(
         @NotNull Long hospitalId,
         @NotNull String hospitalName,
@@ -51,7 +50,6 @@ public record HospitalDetail(
                 .additionalServiceTag(hospital.getAdditionalServiceTag())
                 .storeInfo(hospital.getStoreInfo())
                 .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? null : hospital.getStoreInfoPhoto().getPhotoUrl())
-                //아예 제외 처리 하고 싶은데
                 .address(hospital.getAddress())
                 .businessHours(businessHours)
                 .registrationInfo(hospital.getRegistrationInfo())
@@ -70,7 +68,6 @@ public record HospitalDetail(
                 .additionalServiceTag(hospital.getAdditionalServiceTag())
                 .storeInfo(hospital.getStoreInfo())
                 .storeInfoPhoto(hospital.getStoreInfoPhoto() == null ? null : hospital.getStoreInfoPhoto().getPhotoUrl())
-                //storeInfoPhoto가 nul인데 getPhotoUrl을 하면 에러가 발생하므로 null이라고 미리 걸러준다. -> jsonInclude.nonNull을 통해 null 걸러줌.
                 .address(hospital.getAddress())
                 .registrationInfo(hospital.getRegistrationInfo())
                 .hospitalTags(HospitalTagDto.toDto(hospital.getTags()))
