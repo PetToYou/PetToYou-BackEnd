@@ -3,6 +3,7 @@ package com.pettoyou.server.healthNote.service.query;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
+import com.pettoyou.server.healthNote.dto.response.HealthNoteDetailInfoDto;
 import com.pettoyou.server.healthNote.dto.response.HealthNoteSimpleInfoDto;
 import com.pettoyou.server.healthNote.entity.HealthNote;
 import com.pettoyou.server.healthNote.repository.HealthNoteRepository;
@@ -44,6 +45,10 @@ class HealthNoteQueryServiceTest {
 
     @InjectMocks
     private HealthNoteQueryServiceImpl healthNoteQueryService;
+
+    /***
+     * 건강수첩 리스트 조회
+     */
 
     @Test
     void 반려동물별_건강수첩_정상_조회() {
@@ -94,6 +99,34 @@ class HealthNoteQueryServiceTest {
                 .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
+    /***
+     * 건강수첩 상세 조회
+     */
+
+    @Test
+    void 건강수첩_정상_상세_조회() {
+        // given
+        HealthNote healthNote = createHealthNote();
+        Member member = createMember();
+        Hospital hospital = createHospital();
+        Pet pet = createPet(member);
+
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.of(healthNote));
+        when(hospitalRepository.getHospitalNameNameByStoreId(any(Long.class))).thenReturn(hospital.getStoreName());
+        when(petRepository.getPetNameByPetId(any(Long.class))).thenReturn(pet.getPetName());
+
+        // when
+        HealthNoteDetailInfoDto result = healthNoteQueryService.fetchHealthNoteDetailInfo(hospital.getStoreId(), member.getMemberId());
+
+        // then
+        assertThat(result.hospitalName()).isEqualTo(hospital.getStoreName());
+        assertThat(result.petName()).isEqualTo(pet.getPetName());
+        assertThat(result.visitDate()).isEqualTo(healthNote.getVisitDate());
+        assertThat(result.caution()).isEqualTo(healthNote.getCaution());
+        assertThat(result.vetName()).isEqualTo(healthNote.getVetName());
+        assertThat(result.medicalRecord()).isEqualTo(healthNote.getMedicalRecord());
+    }
+
     private List<HealthNoteSimpleInfoDto> createHealthNoteSimpleDtoList() {
         List<HealthNoteSimpleInfoDto> list = new ArrayList<>();
 
@@ -120,28 +153,6 @@ class HealthNoteQueryServiceTest {
                 .visitDate(LocalDate.of(2023, 7, 24))
                 .caution("first Caution")
                 .medicalRecord("first mr")
-                .build();
-    }
-
-    private HealthNoteRegistAndModifyReqDto createHealthNoteRegistAndOrModifyDto() {
-        return HealthNoteRegistAndModifyReqDto.builder()
-                .hospitalId(1L)
-                .petId(1L)
-                .visitDate(LocalDate.of(2024, 7, 27))
-                .medicalRecord("testRecord")
-                .caution("testCaution")
-                .vetName("testVet")
-                .build();
-    }
-
-    private HealthNoteRegistAndModifyReqDto createHealthNoteModifyDto() {
-        return HealthNoteRegistAndModifyReqDto.builder()
-                .hospitalId(1L)
-                .petId(1L)
-                .visitDate(LocalDate.of(2024, 7, 27))
-                .medicalRecord("second mr")
-                .caution("second caution")
-                .vetName("second vet")
                 .build();
     }
 
