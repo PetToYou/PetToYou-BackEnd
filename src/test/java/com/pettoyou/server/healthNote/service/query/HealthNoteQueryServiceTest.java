@@ -15,6 +15,7 @@ import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
 import com.pettoyou.server.pet.repository.PetRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -77,6 +78,20 @@ class HealthNoteQueryServiceTest {
         assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> healthNoteQueryService.fetchHealthNotesByPetId(1L, 1L))
                 .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    void 유효하지않은_유저가_접근할때_예외발생() {
+        // given
+        Member member = createMember();
+        Pet pet = createPet(member);
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> healthNoteQueryService.fetchHealthNotesByPetId(pet.getPetId(), member.getMemberId() + 1))
+                .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
     private List<HealthNoteSimpleInfoDto> createHealthNoteSimpleDtoList() {
