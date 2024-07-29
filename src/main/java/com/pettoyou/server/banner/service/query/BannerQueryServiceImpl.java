@@ -12,8 +12,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BannerQueryServiceImpl implements BannerQueryService {
     private final BannerRepository bannerRepository;
+
     @Override
-    public List<BannerQueryRespDto> queryBannersByType() {
+    public List<BannerQueryRespDto> queryBanners() {
         List<Banner> banners = bannerRepository.findAll();
         return banners.stream().map(BannerQueryRespDto::from).toList();
     }
