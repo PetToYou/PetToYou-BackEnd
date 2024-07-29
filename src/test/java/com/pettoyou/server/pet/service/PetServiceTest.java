@@ -53,8 +53,6 @@ class PetServiceTest {
 
     @MockBean
     private S3Util s3Util;
-//    @Autowired
-//    private SizeValidatorForArray sizeValidatorForArray;
 
     /***
      * 반려동물 등록 테스트

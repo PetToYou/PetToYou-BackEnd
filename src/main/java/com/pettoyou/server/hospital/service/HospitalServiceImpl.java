@@ -110,6 +110,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     // Get 요일 숫자 데이터 1~7
+    // Todo : UTC 타임존으로 바꾸기
     private Integer getDayOfWeekNum() {
         return LocalDate.now().getDayOfWeek().getValue();
     }
