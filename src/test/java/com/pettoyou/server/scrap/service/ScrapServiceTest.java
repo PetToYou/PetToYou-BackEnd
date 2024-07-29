@@ -8,16 +8,19 @@ import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.member.repository.MemberRepository;
+import com.pettoyou.server.scrap.dto.response.ScrapQueryRespDto;
 import com.pettoyou.server.scrap.dto.response.ScrapRegistRespDto;
 import com.pettoyou.server.scrap.entity.Scrap;
 import com.pettoyou.server.scrap.repository.ScrapRepository;
-import com.pettoyou.server.store.entity.Store;
+import com.pettoyou.server.store.entity.Address;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -136,6 +139,30 @@ class ScrapServiceTest {
                 .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
+    /***
+     * 스크랩 조회
+     */
+
+    @Test
+    void 스크랩_목록_정상_조회() {
+        // given
+        List<ScrapQueryRespDto> scrapList = createScrapList();
+
+        when(scrapRepository.findScrapListByMemberId(any(Long.class))).thenReturn(scrapList);
+
+        // when
+        List<ScrapQueryRespDto> result = scrapService.fetchScrapStore(1L);
+
+        // then
+        assertThat(result.size()).isEqualTo(scrapList.size());
+        for (int i = 0; i < scrapList.size(); i++) {
+            assertThat(result.get(i).scrapId()).isEqualTo(scrapList.get(i).scrapId());
+            assertThat(result.get(i).address()).isEqualTo(scrapList.get(i).address());
+            assertThat(result.get(i).thumbnailUrl()).isEqualTo(scrapList.get(i).thumbnailUrl());
+            assertThat(result.get(i).storeName()).isEqualTo(scrapList.get(i).storeName());
+        }
+    }
+
     private Member createMember() {
         return Member.builder()
                 .memberId(1L)
@@ -154,6 +181,25 @@ class ScrapServiceTest {
                 .storeId(1L)
                 .storeName("testHospital")
                 .build();
+    }
+
+    private List<ScrapQueryRespDto> createScrapList() {
+        List<ScrapQueryRespDto> list = new ArrayList<>();
+
+        for (long i = 0; i < 5; i++) {
+            list.add(new ScrapQueryRespDto(
+                    i,
+                    "test" + i + ".com",
+                    "hospital" + i,
+                    Address.builder()
+                            .sido("sido" + i)
+                            .sigungu("sigungu" + i)
+                            .doro("doro" + i)
+                            .build()
+            ));
+        }
+
+        return list;
     }
 
     private Scrap createScrap(Member member, Hospital hospital) {
