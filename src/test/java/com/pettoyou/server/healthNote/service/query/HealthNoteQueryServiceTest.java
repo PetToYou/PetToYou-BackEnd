@@ -127,6 +127,18 @@ class HealthNoteQueryServiceTest {
         assertThat(result.medicalRecord()).isEqualTo(healthNote.getMedicalRecord());
     }
 
+    @Test
+    void 유효하지않은_건강수첩_id로_상세조회시_예외발생() {
+        // given
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> healthNoteQueryService.fetchHealthNoteDetailInfo(1L, 1L))
+                .withMessage(CustomResponseStatus.HEALTH_NOTE_NOT_FOUND.getMessage());
+    }
+
     private List<HealthNoteSimpleInfoDto> createHealthNoteSimpleDtoList() {
         List<HealthNoteSimpleInfoDto> list = new ArrayList<>();
 
