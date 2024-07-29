@@ -106,6 +106,18 @@ class ScrapServiceTest {
         verify(scrapRepository, times(1)).delete(scrap);
     }
 
+    @Test
+    void 존재하지않는_스크랩_해제_요청시_예외발생() {
+        // given
+        when(scrapRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> scrapService.scrapCancel(1L, 1L))
+                .withMessage(CustomResponseStatus.SCRAP_NOT_FOUND.getMessage());
+    }
+
     private Member createMember() {
         return Member.builder()
                 .memberId(1L)
