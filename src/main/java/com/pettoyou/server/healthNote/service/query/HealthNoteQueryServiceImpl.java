@@ -30,7 +30,6 @@ public class HealthNoteQueryServiceImpl implements HealthNoteQueryService {
         );
 
         checkMemberAuthorization(findPet.getMember().getMemberId(), authMemberId);
-
         return healthNoteRepository.findHealthNotesByPetId(petId);
     }
 

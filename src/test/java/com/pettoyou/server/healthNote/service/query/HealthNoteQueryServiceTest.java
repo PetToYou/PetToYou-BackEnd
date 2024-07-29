@@ -139,6 +139,19 @@ class HealthNoteQueryServiceTest {
                 .withMessage(CustomResponseStatus.HEALTH_NOTE_NOT_FOUND.getMessage());
     }
 
+    @Test
+    void 다른_유저의_건강수첩에_접근한_경우_예외발생() {
+        // given
+        HealthNote healthNote = createHealthNote();
+
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(healthNote));
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> healthNoteQueryService.fetchHealthNoteDetailInfo(healthNote.getHealthNoteId(), healthNote.getMemberId() + 1))
+                .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
+    }
+
     private List<HealthNoteSimpleInfoDto> createHealthNoteSimpleDtoList() {
         List<HealthNoteSimpleInfoDto> list = new ArrayList<>();
 
