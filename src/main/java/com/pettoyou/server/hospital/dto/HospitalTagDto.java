@@ -64,17 +64,14 @@ public record HospitalTagDto(
         if (tags.isEmpty()) {
             throw new IllegalArgumentException("No tags");
         }
-        List<TagMapper> tagMapperList =
-                tags.stream().map(tag -> TagMapper.builder()
+        return tags.stream().map(tag -> TagMapper.builder()
                         .hospitalTag(tag)
                         .hospital(hospital)
                         .build()
                 ).toList();
+        //collect.toList와 차이점은 null 일 경우 throw exception?
 
 
-        hospital.getTags().addAll(tagMapperList);
-        //병원 객체에 저장
-        return tagMapperList;
 
     }
 

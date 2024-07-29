@@ -44,9 +44,8 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public List<StorePhoto> handleHospitalImgs(List<MultipartFile> storeImgs, Store store) {
         if ((storeImgs != null) && (!storeImgs.isEmpty())) {
-            List<StorePhoto> storePhotoList = photoConverter.StoreImgsToEntity(storeImgs, store);
 
-            return storePhotoList;
+            return  photoConverter.StoreImgsToEntity(storeImgs, store);
         } else {
             return new ArrayList<>();
         }

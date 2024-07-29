@@ -1,33 +1,52 @@
 package com.pettoyou.server.hospital.service;
 
+import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
+import com.pettoyou.server.hospital.dto.request.HospitalDto;
 import com.pettoyou.server.hospital.dto.response.HospitalDetail;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.HospitalTag;
+import com.pettoyou.server.hospital.entity.TagMapper;
 import com.pettoyou.server.hospital.entity.enums.HospitalTagType;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
+import com.pettoyou.server.hospital.repository.HospitalTagRepository;
+import com.pettoyou.server.hospital.repository.TagMapperRepository;
 import com.pettoyou.server.photo.entity.PhotoData;
+import com.pettoyou.server.photo.service.PhotoService;
+import com.pettoyou.server.store.dto.BusinessHourDto;
+import com.pettoyou.server.store.dto.RegistrationInfoDto;
+import com.pettoyou.server.store.dto.request.AddressDto;
 import com.pettoyou.server.store.entity.Address;
 import com.pettoyou.server.store.entity.BusinessHour;
 import com.pettoyou.server.store.entity.RegistrationInfo;
+import com.pettoyou.server.store.entity.StorePhoto;
 import com.pettoyou.server.store.entity.enums.StoreType;
+import com.pettoyou.server.store.repository.StorePhotoRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Time;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -36,12 +55,22 @@ class HospitalServiceImplTest {
     @Mock
     private HospitalRepository hospitalRepository;
 
+    @Mock
+    private TagMapperRepository tagMapperRepository;
+
+    @Mock
+    private StorePhotoRepository storePhotoRepository;
+
+    @Mock
+    private HospitalTagRepository hospitalTagRepository;
+
     @InjectMocks
     private HospitalServiceImpl hospitalServiceImpl;
 
-    private static final Logger logger = LoggerFactory.getLogger(HospitalServiceImplTest.class);
+    @Mock
+    private PhotoService photoService;
 
-    Long hospitalId =1L;
+    Long hospitalId = 1L;
 
     HospitalTag tag1 = HospitalTag.builder()
             .tagType(HospitalTagType.SERVICE)
@@ -95,7 +124,31 @@ class HospitalServiceImplTest {
                     .ceoEmail("ceoEmail")
                     .businessNumber("number").build())
             .build();
+    RegistrationInfoDto.Request mockRegistrationInfo = mock(RegistrationInfoDto.Request.class);
+    AddressDto addressDto = AddressDto.builder()
+            .zipCode("123-45")
+            .sido("서울특별시")
+            .sigungu("강남구")
+            .eupmyun("청담동")
+            .doro("도산대로")
+            .addressDetail("123-45번지")
+            .latitude(37.523425)
+            .longitude(127.045581)
+            .build();
 
+    HospitalDto hospitalDto = HospitalDto.builder()
+            .hospitalName("hospitalName")
+            .hospitalPhone("hospitalPhone")
+            .businessHours(Arrays.asList(new BusinessHourDto.Request()))
+            .registrationInfo(mockRegistrationInfo)
+            .storeInfo("storeInfo")
+            .tagIdList(new ArrayList<>())
+            .additionalServiceTag("additionalServiceTag")
+            .address(addressDto)
+            .notice("notice")
+            .websiteLink("websiteLink")
+            .tagIdList(List.of(1L, 2L))
+            .build();
 
     @Test
     void getHospitalsTest() {
@@ -147,7 +200,7 @@ class HospitalServiceImplTest {
     }
 
     @Test
-    void getHospitalDetail_태그없는경우(){
+    void getHospitalDetail_태그없는경우() {
         when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.ofNullable(hospital));
         when(hospitalRepository.findTagList(hospitalId)).thenReturn(null);
         HospitalDetail hospitalDetail = hospitalServiceImpl.getHospitalDetail(hospitalId);
@@ -159,8 +212,6 @@ class HospitalServiceImplTest {
         assertThat(hospitalDetail.hospitalTags().businessHours()).isEqualTo(null);
         assertThat(hospitalDetail.hospitalTags().emergency()).isEqualTo(null);
     }
-
-
 
     @Test
     void getHospitalDetial_사업자없는경우() {
@@ -202,7 +253,7 @@ class HospitalServiceImplTest {
     }
 
     @Test
-    void getHospitalDetail_thumbnail없는경우(){
+    void getHospitalDetail_thumbnail없는경우() {
         when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.ofNullable(hospital));
         HospitalDetail hospitalDetail = hospitalServiceImpl.getHospitalDetail(hospitalId);
 
@@ -212,7 +263,7 @@ class HospitalServiceImplTest {
     }
 
     @Test
-    void getHospitalDetail_병원없는경우(){
+    void getHospitalDetail_병원없는경우() {
         when(hospitalRepository.findById(hospitalId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> hospitalServiceImpl.getHospitalDetail(hospitalId))
                 .isInstanceOf(CustomException.class)
@@ -220,7 +271,117 @@ class HospitalServiceImplTest {
     }
 
     @Test
+    void handleStoreInfoImg() throws Exception {
+        //given
+        MultipartFile storeInfoImg = mock(MultipartFile.class);
+        PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
+        PhotoData storeInfoPhoto = new PhotoData("bucket", "object", "photoUrl");
+        //when
+        when(photoService.uploadImage(any(MultipartFile.class))).thenReturn(storeInfoPhoto);
+        Hospital hospital1 = hospitalServiceImpl.handleStoreInfoImg(storeInfoImg, hospitalDto, thumbnail);
+
+        //then
+        assertThat(hospital1.getAdditionalServiceTag()).isEqualTo("additionalServiceTag");
+        // then
+        assertThat(hospital1.getStoreName()).isEqualTo("hospitalName");
+        assertThat(hospital1.getStorePhone()).isEqualTo("hospitalPhone");
+        assertThat(hospital1.getBusinessHours()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getRegistrationInfo()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getStoreInfo()).isEqualTo("storeInfo");
+        assertThat(hospital1.getTags()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getAdditionalServiceTag()).isEqualTo("additionalServiceTag");
+        assertThat(hospital1.getAddress()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getNotice()).isEqualTo("notice");
+        assertThat(hospital1.getWebsiteLink()).isEqualTo("websiteLink");
+        assertThat(hospital1.getStoreInfoPhoto()).usingRecursiveComparison().isEqualTo(storeInfoPhoto); // Assuming handleStoreInfoImg sets this
+        assertThat(hospital1.getThumbnail()).usingRecursiveComparison().isEqualTo(thumbnail); //
+    }
+
+    @Test
+    @DisplayName("StoreInfo사진 null 테스트")
+    void handleStoreInfoImg_storeInfoPhotoIsNull() throws Exception {
+        //given
+
+        MultipartFile storeInfoImg = mock(MultipartFile.class);
+        PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
+        PhotoData storeInfoPhoto = null;
+
+        //when
+        when(photoService.uploadImage(any(MultipartFile.class))).thenReturn(null);
+        Hospital hospital1 = hospitalServiceImpl.handleStoreInfoImg(storeInfoImg, hospitalDto, thumbnail);
+
+        //then
+        assertThat(hospital1.getAdditionalServiceTag()).isEqualTo("additionalServiceTag");
+        assertThat(hospital1.getStoreName()).isEqualTo("hospitalName");
+        assertThat(hospital1.getStorePhone()).isEqualTo("hospitalPhone");
+        assertThat(hospital1.getBusinessHours()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getRegistrationInfo()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getStoreInfo()).isEqualTo("storeInfo");
+        assertThat(hospital1.getTags()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getAdditionalServiceTag()).isEqualTo("additionalServiceTag");
+        assertThat(hospital1.getAddress()).isNotNull(); // Adjust according to the expected value
+        assertThat(hospital1.getNotice()).isEqualTo("notice");
+        assertThat(hospital1.getWebsiteLink()).isEqualTo("websiteLink");
+        assertThat(hospital1.getStoreInfoPhoto()).isNull(); // Should be null as storeInfoPhoto is null
+        assertThat(hospital1.getThumbnail()).usingRecursiveComparison().isEqualTo(thumbnail); //
+    }
+
+
+    @Test
     void registerHospital_성공() {
+        MultipartFile hospitalImg = new MockMultipartFile("hospitalImg", "hospital.jpg", "image/jpeg", new byte[]{});
+        List<MultipartFile> hospitalImgList = Collections.singletonList(hospitalImg);
+        MultipartFile storeInfoImg = new MockMultipartFile("storeInfoImg", "storeInfo.jpg", "image/jpeg", new byte[]{});
+        MultipartFile thumbnailImg = new MockMultipartFile("thumbnailImg", "thumbnail.jpg", "image/jpeg", new byte[]{});
+
+
+        // Set other necessary fields for hospitalDto
+
+        PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
+        PhotoData storeInfoPhoto = new PhotoData("bucket", "object", "photoUrl");
+
+        List<StorePhoto> storePhotoList = new ArrayList<>();
+        StorePhoto storePhoto = StorePhoto.builder()
+                .photoOrder(1)
+                .storePhoto(storeInfoPhoto)
+                .storePhotoId(1L)
+                .photoStatus(BaseStatus.ACTIVATE)
+                .storeType(StoreType.HOSPITAL)
+                .store(hospitalSuccess).build();
+
+        storePhotoList.add(storePhoto);
+
+        List<TagMapper> tagMapperList = new ArrayList<>();
+        TagMapper tagMapper = TagMapper.builder()
+                .tagMapperId(1L)
+                .hospitalTag(tag1)
+                .hospital(hospitalSuccess)
+                .build();
+        tagMapperList.add(tagMapper);
+
+        // When
+        when(photoService.handleThumbnail(thumbnailImg)).thenReturn(thumbnail);
+        when(photoService.handleHospitalImgs(anyList(), any(Hospital.class))).thenReturn(storePhotoList);
+        when(hospitalRepository.save(any(Hospital.class))).thenReturn(hospitalSuccess);
+        when(hospitalTagRepository.findAllById(anyList())).thenReturn(tagList);
+//        when(hospitalServiceImpl.handleTags(any(), anyList())).thenReturn(tagMapperList);
+
+    // Then
+        String result = hospitalServiceImpl.registerHospital(hospitalImgList, storeInfoImg, thumbnailImg, hospitalDto);
+
+        //확인하고 싶은데 save 이후 영속성 컨텍스트에 객체의 아이디가 관리되는데 여기서 실제로 저장하지 않아서 테스트 불가... 추후 진행
+        assertThat(result).isEqualTo(hospitalSuccess.getStoreId().toString());
+
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+        verify(storePhotoRepository, times(1)).saveAll(storePhotoList);
+        verify(tagMapperRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    void registerHospital_성공_Thumbnail_NULL() {
 
     }
+
+
+
 }

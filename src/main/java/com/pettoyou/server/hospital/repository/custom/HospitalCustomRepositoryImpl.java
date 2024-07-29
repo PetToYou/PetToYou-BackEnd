@@ -113,7 +113,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 );
 
 
-        if (countQuery == null) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
+        if (countQuery == null ) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
 
         List<HospitalDtoWithDistance> result = hospitals.stream()
                 .map(t -> {

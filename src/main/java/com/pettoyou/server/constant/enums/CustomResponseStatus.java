@@ -49,7 +49,8 @@ public enum CustomResponseStatus {
      */
     INTERNAL_SERVER_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6000", "내부 서버 오류입니다."),
     S3_UPLOAD_FAIL(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6001", "S3에 파일을 업로드하지 못했습니다."),
-    POINT_PARSING_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6002", "POINT Parsing FAIL");
+    POINT_PARSING_ERROR(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6002", "POINT Parsing FAIL"),
+    STORE_SAVE_FAIL(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), "6003","STORE를 저장하는데 실패했습니다.");
 
     private final HttpStatusCode httpStatusCode;
     private final String code;

@@ -33,11 +33,12 @@ public record HospitalDto(
         if (hospitalDto == null) {
             throw new IllegalArgumentException("HospitalDto is null");
         }
-        if (thumbnail == null) {
-            throw new IllegalArgumentException("Thumbnail is null");
-        }
+//        if (thumbnail == null) {
+//            throw new IllegalArgumentException("Thumbnail is null");
+//        }
 
-        Hospital hospital = Hospital.builder()
+
+            Hospital hospital = Hospital.builder()
                 .additionalServiceTag(hospitalDto.additionalServiceTag())
                 .storeName(hospitalDto.hospitalName())
                 .storePhone(hospitalDto.hospitalPhone())
@@ -64,9 +65,9 @@ public record HospitalDto(
         if (hospitalDto == null) {
             throw new IllegalArgumentException("HospitalDto is null");
         }
-        if (thumbnail == null) {
-            throw new IllegalArgumentException("Thumbnail is null");
-        }
+//        if (thumbnail == null) {
+//            throw new IllegalArgumentException("Thumbnail is null");
+//        }
 
         Hospital hospital = Hospital.builder()
                 .additionalServiceTag(hospitalDto.additionalServiceTag())

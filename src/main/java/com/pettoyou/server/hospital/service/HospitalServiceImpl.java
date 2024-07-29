@@ -55,7 +55,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public Page<HospitalDtoWithAddress> getHospitalSearch(Pageable pageable, HosptialSearchQueryInfo queryInfo){
+    public Page<HospitalDtoWithAddress> getHospitalSearch(Pageable pageable, HosptialSearchQueryInfo queryInfo) {
         return hospitalRepository.findHospitalBySearch(pageable, queryInfo, getDayOfWeekNum());
     }
 
@@ -64,7 +64,7 @@ public class HospitalServiceImpl implements HospitalService {
     public HospitalDetail getHospitalDetail(Long hospitalId) {
 //        return hospitalRepository.findHospitalDetailById(hospitalId);
         Hospital hospital = hospitalRepository.findById(hospitalId)
-                .orElseThrow(()-> new CustomException(CustomResponseStatus.STORE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(CustomResponseStatus.STORE_NOT_FOUND));
 
         List<HospitalTag> tagList = hospitalRepository.findTagList(hospitalId);
 
@@ -74,34 +74,46 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     public String registerHospital(List<MultipartFile> hospitalImg, MultipartFile storeInfoImg, MultipartFile thumbnailImg, HospitalDto hospitalDto) {
+
         PhotoData thumbnail = photoService.handleThumbnail(thumbnailImg);
-
         Hospital hospital = handleStoreInfoImg(storeInfoImg, hospitalDto, thumbnail);
-        List<StorePhoto> storePhotoList = photoService.handleHospitalImgs(hospitalImg, hospital);
-        hospital.getStorePhotos().addAll(storePhotoList);
-
-        List<TagMapper> tagMapperList = handleTags(hospital, hospitalDto);
-
+        // 테스트 코드용.
+        //        Long id = hospitalRepository.save(hospital).getStoreId();
         hospitalRepository.save(hospital);
-        if (!storePhotoList.isEmpty()) {
+        if (hospitalImg != null && !hospitalImg.isEmpty()) {
+            List<StorePhoto> storePhotoList = photoService.handleHospitalImgs(hospitalImg, hospital);
             hospital.getStorePhotos().addAll(storePhotoList);
             storePhotoRepository.saveAll(storePhotoList);
         }
-        tagMapperRepository.saveAll(tagMapperList);
-        return hospital.getStoreId().toString();
+
+        if (hospitalDto.tagIdList() != null && !hospitalDto.tagIdList().isEmpty()) {
+            List<TagMapper> tagMapperList = handleTags(hospital, hospitalDto.tagIdList());
+            hospital.getTags().addAll(tagMapperList);
+            //병원 객체에 저장
+            tagMapperRepository.saveAll(tagMapperList);
+
+        }
+
+        if(hospital.getStoreId() == null){
+            throw new CustomException(CustomResponseStatus.STORE_SAVE_FAIL);
+        }
+
+//        return id.toString();
+        return  hospital.getStoreId().toString();
     }
 
-    private Hospital handleStoreInfoImg(MultipartFile storeInfoImg, HospitalDto hospitalDto, PhotoData thumbnail) {
+    public Hospital handleStoreInfoImg(MultipartFile storeInfoImg, HospitalDto hospitalDto, PhotoData thumbnail) {
         if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
             PhotoData photoData = photoService.uploadImage(storeInfoImg);
+            //thumbnail은 null일 수 있다.
             return HospitalDto.toHospitalEntity(hospitalDto, thumbnail, photoData);
         } else {
             return HospitalDto.toHospitalEntity(hospitalDto, thumbnail);
         }
     }
 
-    private List<TagMapper> handleTags(Hospital hospital, HospitalDto hospitalDto) {
-        List<HospitalTag> tags = hospitalTagRepository.findAllById(hospitalDto.tagIdList());
+    public List<TagMapper> handleTags(Hospital hospital, List<Long> tagIds) {
+        List<HospitalTag> tags = hospitalTagRepository.findAllById(tagIds);
         return HospitalTagDto.toEntity(hospital, tags);
     }
 
