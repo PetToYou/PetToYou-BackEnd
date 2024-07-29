@@ -41,19 +41,15 @@ public class ScrapServiceImpl implements ScrapService {
     }
 
     @Override
-    public void scrapCancel(Long scrapId, Long memberId) {
+    public void scrapCancel(Long scrapId, Long authMemberId) {
         Scrap findScrap = scrapRepository.findById(scrapId).orElseThrow(() ->
                 new CustomException(CustomResponseStatus.SCRAP_NOT_FOUND)
         );
 
-        Member findMember = memberRepository.findById(memberId).orElseThrow(() ->
+        Member findMember = memberRepository.findById(authMemberId).orElseThrow(() ->
                 new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND)
         );
-
-        // 이건 엔티티에 넣어도 될듯?
-        if (!Objects.equals(findMember.getMemberId(), findScrap.getMember().getMemberId())) {
-            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
-        }
+        findMember.validateMemberAuthorization(authMemberId);
 
         scrapRepository.delete(findScrap);
     }

@@ -118,6 +118,24 @@ class ScrapServiceTest {
                 .withMessage(CustomResponseStatus.SCRAP_NOT_FOUND.getMessage());
     }
 
+    @Test
+    void 다른_유저의_스크랩을_해제하려고_하는_경우_예외발생() {
+        // given
+        Member member = createMember();
+        Hospital hospital = createHospital();
+        Scrap scrap = createScrap(member, hospital);
+        long wrongMemberId = member.getMemberId() + 1;
+
+        when(scrapRepository.findById(any(Long.class))).thenReturn(Optional.of(scrap));
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> scrapService.scrapCancel(scrap.getScrapId(), wrongMemberId))
+                .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
+    }
+
     private Member createMember() {
         return Member.builder()
                 .memberId(1L)

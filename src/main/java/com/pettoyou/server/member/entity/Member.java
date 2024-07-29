@@ -3,6 +3,8 @@ package com.pettoyou.server.member.entity;
 import com.pettoyou.server.alarm.entity.Alarm;
 import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.constant.entity.BaseEntity;
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
@@ -97,6 +99,12 @@ public class Member extends BaseEntity {
         this.nickName = nickName;
         this.name = name;
         this.memberId = memberId;
+    }
+
+    public void validateMemberAuthorization(Long authMemberId) {
+        if (!this.memberId.equals(authMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
+        }
     }
 }
 
