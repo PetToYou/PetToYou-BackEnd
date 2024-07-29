@@ -67,6 +67,20 @@ class ScrapServiceTest {
                 .withMessage(CustomResponseStatus.MEMBER_NOT_FOUND.getMessage());
     }
 
+    @Test
+    void 존재하지_않는_병원의_경우_예외_발생() {
+        /// given
+        Member member = createMember();
+
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+        when(hospitalRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> scrapService.scrapRegist(1L, 1L))
+                .withMessage(CustomResponseStatus.HOSPITAL_NOT_FOUND.getMessage());
+    }
+
     private Member createMember() {
         return Member.builder()
                 .memberId(1L)
