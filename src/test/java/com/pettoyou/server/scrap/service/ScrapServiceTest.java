@@ -1,5 +1,7 @@
 package com.pettoyou.server.scrap.service;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.member.entity.Member;
@@ -52,6 +54,17 @@ class ScrapServiceTest {
 
         // then
         assertThat(result.storeName()).isEqualTo(hospital.getStoreName());
+    }
+
+    @Test
+    void 존재하지_않는_유저의_경우_예외_발생() {
+        // given
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> scrapService.scrapRegist(1L, 1L))
+                .withMessage(CustomResponseStatus.MEMBER_NOT_FOUND.getMessage());
     }
 
     private Member createMember() {
