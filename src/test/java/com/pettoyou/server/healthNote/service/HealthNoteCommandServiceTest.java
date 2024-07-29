@@ -214,6 +214,17 @@ class HealthNoteCommandServiceTest {
         verify(healthNoteRepository, times(1)).delete(healthNote);
     }
 
+    @Test
+    void 존재하지않는_건강수첩을_삭제하려는_경우_예외발생() {
+        // given
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> healthNoteCommandService.deleteHealthNote(1L, 1L))
+                .withMessage(CustomResponseStatus.HEALTH_NOTE_NOT_FOUND.getMessage());
+    }
 
     @Test
     void 유효하지_않은_사람이_건강수첩을_삭제하려_하는_경우_예외발생() {
