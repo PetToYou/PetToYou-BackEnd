@@ -1,5 +1,7 @@
 package com.pettoyou.server.healthNote.service.query;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import com.pettoyou.server.healthNote.dto.response.HealthNoteSimpleInfoDto;
 import com.pettoyou.server.healthNote.entity.HealthNote;
@@ -64,6 +66,17 @@ class HealthNoteQueryServiceTest {
             assertThat(result.caution()).isEqualTo(healthNoteSimpleDtoList.get(index).caution());
             assertThat(result.visitDate()).isEqualTo(healthNoteSimpleDtoList.get(index++).visitDate());
         }
+    }
+
+    @Test
+    void 반려동물의_id가_잘못되었을때_예외발생() {
+        // given
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> healthNoteQueryService.fetchHealthNotesByPetId(1L, 1L))
+                .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
     }
 
     private List<HealthNoteSimpleInfoDto> createHealthNoteSimpleDtoList() {
