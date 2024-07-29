@@ -2,7 +2,6 @@ package com.pettoyou.server.healthNote.service.query;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
-import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import com.pettoyou.server.healthNote.dto.response.HealthNoteDetailInfoDto;
 import com.pettoyou.server.healthNote.dto.response.HealthNoteSimpleInfoDto;
 import com.pettoyou.server.healthNote.entity.HealthNote;
@@ -16,7 +15,6 @@ import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
 import com.pettoyou.server.pet.repository.PetRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
