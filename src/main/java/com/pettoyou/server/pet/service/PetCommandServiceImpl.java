@@ -5,9 +5,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.pet.dto.request.PetRegisterAndModifyReqDto;
-import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
-import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.repository.PetRepository;
 import com.pettoyou.server.photo.entity.PhotoData;
@@ -17,13 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Objects;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PetServiceImpl implements PetService {
+public class PetCommandServiceImpl implements PetCommandService {
     private final S3Util s3Util;
     private final PetRepository petRepository;
     private final MemberRepository memberRepository;
@@ -32,11 +27,9 @@ public class PetServiceImpl implements PetService {
     public PetRegisterRespDto petRegister(
             MultipartFile petProfileImg,
             PetRegisterAndModifyReqDto petRegisterDto,
-            Long loginMemberId
+            Long authMemberId
     ) {
-        Member member = memberRepository.findByMemberId(loginMemberId).orElseThrow(
-                () -> new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND)
-        );
+        Member member = findMemberById(authMemberId);
 
         PhotoData photoData;
         if (petProfileImg != null) {
@@ -56,15 +49,10 @@ public class PetServiceImpl implements PetService {
             Long petId,
             MultipartFile petProfileImg,
             PetRegisterAndModifyReqDto petModifyDto,
-            Long loginMemberId
+            Long authMemberId
     ) {
-        Pet pet = petRepository.findById(petId).orElseThrow(
-                () -> new CustomException(CustomResponseStatus.PET_NOT_FOUND)
-        );
-
-        if (!Objects.equals(pet.getMember().getMemberId(), loginMemberId)) {
-            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
-        }
+        Pet pet = findPetById(petId);
+        pet.validateOwnerAuthorization(authMemberId);
 
         PhotoData newPhotoData;
         if (petProfileImg != null) {
@@ -80,36 +68,23 @@ public class PetServiceImpl implements PetService {
     @Override
     public void petDelete(
             Long petId,
-            Long loginMemberId
+            Long authMemberId
     ) {
-        Pet pet = petRepository.findById(petId).orElseThrow(
-                () -> new CustomException(CustomResponseStatus.PET_NOT_FOUND)
-        );
-
-        if (!Objects.equals(pet.getMember().getMemberId(), loginMemberId)) {
-            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
-        }
+        Pet pet = findPetById(petId);
+        pet.validateOwnerAuthorization(authMemberId);
 
         petRepository.delete(pet);
     }
 
-    @Override
-    public List<PetSimpleInfoDto> queryPetList(Long userId) {
-        return petRepository.findAllPetsByMemberId(userId);
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findByMemberId(memberId).orElseThrow(
+                () -> new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND)
+        );
     }
 
-    @Override
-    public PetDetailInfoRespDto fetchPetDetailInfo(
-            Long petId,
-            Long loginMemberId
-
-    ) {
-        Pet pet = petRepository.findById(petId).orElseThrow(() -> new CustomException(CustomResponseStatus.PET_NOT_FOUND));
-
-        if (!Objects.equals(pet.getMember().getMemberId(), loginMemberId)) {
-            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
-        }
-
-        return PetDetailInfoRespDto.from(pet);
+    private Pet findPetById(Long petId) {
+        return petRepository.findById(petId).orElseThrow(
+                () -> new CustomException(CustomResponseStatus.PET_NOT_FOUND)
+        );
     }
 }

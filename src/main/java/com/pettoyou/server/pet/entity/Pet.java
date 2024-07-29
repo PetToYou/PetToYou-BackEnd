@@ -2,6 +2,8 @@ package com.pettoyou.server.pet.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.pet.dto.request.PetRegisterAndModifyReqDto;
 import com.pettoyou.server.pet.entity.enums.Gender;
@@ -106,6 +108,12 @@ public class Pet extends BaseEntity {
             return months + "개월";
         } else {
             return years + "살";
+        }
+    }
+
+    public void validateOwnerAuthorization(Long authMemberId) {
+        if (!this.member.getMemberId().equals(authMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
         }
     }
 }

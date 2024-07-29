@@ -4,7 +4,6 @@ import com.pettoyou.server.healthNote.entity.HealthNote;
 import lombok.Builder;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Builder
 public record HealthNoteDetailInfoDto(

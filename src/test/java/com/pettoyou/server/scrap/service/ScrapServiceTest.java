@@ -100,7 +100,6 @@ class ScrapServiceTest {
         Scrap scrap = createScrap(member, hospital);
 
         when(scrapRepository.findById(any(Long.class))).thenReturn(Optional.of(scrap));
-        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
         // when
         scrapService.scrapCancel(scrap.getScrapId(), member.getMemberId());
@@ -130,7 +129,6 @@ class ScrapServiceTest {
         long wrongMemberId = member.getMemberId() + 1;
 
         when(scrapRepository.findById(any(Long.class))).thenReturn(Optional.of(scrap));
-        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
         // then
         assertThatExceptionOfType(CustomException.class)

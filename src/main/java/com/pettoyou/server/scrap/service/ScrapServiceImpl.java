@@ -37,9 +37,7 @@ public class ScrapServiceImpl implements ScrapService {
     @Override
     public void scrapCancel(Long scrapId, Long authMemberId) {
         Scrap findScrap = findScrapById(scrapId);
-        Member findMember = findMemberById(authMemberId);
-
-        findMember.validateMemberAuthorization(authMemberId);
+        findScrap.validateOwnerAuthorization(authMemberId);
 
         scrapRepository.delete(findScrap);
     }

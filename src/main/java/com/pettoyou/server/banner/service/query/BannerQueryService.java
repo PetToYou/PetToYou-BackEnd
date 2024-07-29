@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface BannerQueryService {
 
-    List<BannerQueryRespDto> queryBannersByType();
+    List<BannerQueryRespDto> queryBanners();
 }
