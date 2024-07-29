@@ -196,7 +196,23 @@ class HealthNoteCommandServiceTest {
                 .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
     }
 
+    /***
+     * 건강수첩 정상 삭제
+     */
 
+    @Test
+    void 건강수첩_정상_삭제() {
+        // given
+        HealthNote healthNote = createHealthNote();
+
+        when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(healthNote));
+
+        // when
+        healthNoteCommandService.deleteHealthNote(healthNote.getHealthNoteId(), healthNote.getMemberId());
+
+        // then
+        verify(healthNoteRepository, times(1)).delete(healthNote);
+    }
 
     private HealthNote createHealthNote() {
         return HealthNote.builder()
