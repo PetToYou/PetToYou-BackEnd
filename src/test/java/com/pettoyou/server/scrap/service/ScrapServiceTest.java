@@ -38,6 +38,10 @@ class ScrapServiceTest {
     @InjectMocks
     private ScrapServiceImpl scrapService;
 
+    /***
+     * 스크랩 등록
+     */
+
     @Test
     void 스크랩_정상_등록() {
         // given
@@ -81,6 +85,27 @@ class ScrapServiceTest {
                 .withMessage(CustomResponseStatus.HOSPITAL_NOT_FOUND.getMessage());
     }
 
+    /***
+     * 스크랩 해제
+     */
+
+    @Test
+    void 스크랩_정상_해제() {
+        // given
+        Member member = createMember();
+        Hospital hospital = createHospital();
+        Scrap scrap = createScrap(member, hospital);
+
+        when(scrapRepository.findById(any(Long.class))).thenReturn(Optional.of(scrap));
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        // when
+        scrapService.scrapCancel(scrap.getScrapId(), member.getMemberId());
+
+        // then
+        verify(scrapRepository, times(1)).delete(scrap);
+    }
+
     private Member createMember() {
         return Member.builder()
                 .memberId(1L)
@@ -101,7 +126,11 @@ class ScrapServiceTest {
                 .build();
     }
 
-    private Scrap createScrap(Member member, Store store) {
-        return Scrap.of(member, store);
+    private Scrap createScrap(Member member, Hospital hospital) {
+        return Scrap.builder()
+                .scrapId(1L)
+                .member(member)
+                .store(hospital)
+                .build();
     }
 }
