@@ -29,7 +29,7 @@ public record PetDetailInfoRespDto(
                 .petType(pet.getPetType())
                 .adoptionDate(pet.getAdoptionDate())
                 .petMedicalInfo(pet.getPetMedicalInfo())
-                .profileImgUrl(pet.getProfilePhotoData().getPhotoUrl())
+                .profileImgUrl(pet.getProfilePhotoData() == null ? "test.url" : pet.getProfilePhotoData().getPhotoUrl())
                 .build();
     }
 }

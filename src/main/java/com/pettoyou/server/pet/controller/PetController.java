@@ -6,7 +6,8 @@ import com.pettoyou.server.pet.dto.request.PetRegisterAndModifyReqDto;
 import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
-import com.pettoyou.server.pet.service.PetService;
+import com.pettoyou.server.pet.service.PetCommandService;
+import com.pettoyou.server.pet.service.query.PetQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ import java.util.List;
 @RequestMapping("/api/v1/member")
 @RequiredArgsConstructor
 public class PetController {
-    private final PetService petService;
+    private final PetCommandService petCommandService;
+    private final PetQueryService petQueryService;
 
     @PostMapping("/pet")
     public ResponseEntity<ApiResponse<PetRegisterRespDto>> petRegister(
@@ -29,7 +31,7 @@ public class PetController {
             @RequestPart(value = "petRegisterDto") PetRegisterAndModifyReqDto petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PetRegisterRespDto response = petService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
+        PetRegisterRespDto response = petCommandService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk(response);
     }
 
@@ -40,7 +42,7 @@ public class PetController {
             @RequestPart(value = "petModifyDto") PetRegisterAndModifyReqDto petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        petService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
+        petCommandService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk("반려동물 정보 수정 완료");
     }
 
@@ -49,7 +51,7 @@ public class PetController {
             @PathVariable Long id,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        petService.petDelete(id, principalDetails.getUserId());
+        petCommandService.petDelete(id, principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk("반려동물 삭제 완료");
     }
 
@@ -57,7 +59,7 @@ public class PetController {
     public ResponseEntity<ApiResponse<List<PetSimpleInfoDto>>> petsQuery(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        List<PetSimpleInfoDto> response = petService.queryPetList(principalDetails.getUserId());
+        List<PetSimpleInfoDto> response = petQueryService.queryPetList(principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk(response);
     }
 
@@ -66,7 +68,7 @@ public class PetController {
             @PathVariable Long id,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PetDetailInfoRespDto response = petService.fetchPetDetailInfo(id, principalDetails.getUserId());
+        PetDetailInfoRespDto response = petQueryService.fetchPetDetailInfo(id, principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk(response);
     }
 }

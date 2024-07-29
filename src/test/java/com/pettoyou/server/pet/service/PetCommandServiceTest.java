@@ -8,51 +8,41 @@ import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.pet.dto.request.PetMedicalInfoDto;
 import com.pettoyou.server.pet.dto.request.PetRegisterAndModifyReqDto;
-import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.enums.*;
 import com.pettoyou.server.pet.repository.PetRepository;
 import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.util.S3Util;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
-class PetServiceTest {
-    @Autowired
+@ExtendWith(MockitoExtension.class)
+class PetCommandServiceTest {
+    @Mock
     private PetRepository petRepository;
 
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
 
-    @Autowired
-    private PetService petService;
-
-    @Autowired
-    private EntityManager em;
-
-    @MockBean
+    @Mock
     private S3Util s3Util;
+
+    @InjectMocks
+    private PetCommandServiceImpl petService;
+
 
     /***
      * 반려동물 등록 테스트
@@ -62,8 +52,8 @@ class PetServiceTest {
     void 프로필이미지와_반려동물의_정보를_입력한_경우_정상적으로_등록된다() {
         // given
         PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
-        Pet pet = createPet(petRegisterAndModifyReqDto, savedMember);
+        Member member = createMember();
+        Pet pet = createPet(petRegisterAndModifyReqDto, member);
 
         MockMultipartFile mockProfilePhoto = new MockMultipartFile(
                 "file",
@@ -72,37 +62,81 @@ class PetServiceTest {
                 "Test Image Content".getBytes()
         );
 
+        when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
+
         // when
-        PetRegisterRespDto response = petService.petRegister(mockProfilePhoto, petRegisterAndModifyReqDto, savedMember.getMemberId());
+        PetRegisterRespDto result = petService.petRegister(mockProfilePhoto, petRegisterAndModifyReqDto, member.getMemberId());
 
         // then
-        assertThat(response.petName()).isEqualTo(pet.getPetName());
+        assertThat(result.petName()).isEqualTo(pet.getPetName());
+    }
+
+    @Test
+    void 이미지가_있다면_uploadFile_메서드가_실행된다() {
+        // given
+        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
+        Member member = createMember();
+
+        MockMultipartFile mockProfilePhoto = new MockMultipartFile(
+                "file",
+                "test.jpg",
+                "image/jpeg",
+                "Test Image Content".getBytes()
+        );
+
+        when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
+
+        // when
+        petService.petRegister(mockProfilePhoto, petRegisterAndModifyReqDto, member.getMemberId());
+
+        // then
+        verify(s3Util, times(1)).uploadFile(mockProfilePhoto);
     }
 
     @Test
     void 프로필이미지_없이_반려동물의_정보를_입력한_경우_정상적으로_등록된다() {
         // given
         PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
-        Pet savedPet = createPet(petRegisterAndModifyReqDto, savedMember);
+        Member member = createMember();
+        Pet pet = createPet(petRegisterAndModifyReqDto, member);
+
+        when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
 
         // when
-        PetRegisterRespDto response = petService.petRegister(null, petRegisterAndModifyReqDto, savedMember.getMemberId());
+        PetRegisterRespDto response = petService.petRegister(null, petRegisterAndModifyReqDto, member.getMemberId());
 
         // then
-        assertThat(response.petName()).isEqualTo(savedPet.getPetName());
+        assertThat(response.petName()).isEqualTo(pet.getPetName());
+    }
+
+    @Test
+    void 이미지가_없다면_uploadFile_메서드가_실행되지_않는다() {
+        // given
+        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
+        Member member = createMember();
+
+        when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
+
+        // when
+        petService.petRegister(null, petRegisterAndModifyReqDto, member.getMemberId());
+
+        // then
+        verify(s3Util, times(0)).uploadFile(null);
     }
 
     @Test
     void 잘못된_유저_ID_로_반려동물_등록_요청을하면_실패한다() {
         // given
         PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
+        Member member = createMember();
+        long wrongMemberId = member.getMemberId() + 1;
+
+        when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.empty());
 
         // then
         assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> {
-                    petService.petRegister(null, petRegisterAndModifyReqDto, savedMember.getMemberId() + 1L);
+                    petService.petRegister(null, petRegisterAndModifyReqDto, wrongMemberId);
                 })
                 .withMessage(CustomResponseStatus.MEMBER_NOT_FOUND.getMessage());
     }
@@ -112,29 +146,15 @@ class PetServiceTest {
         // given
         PetRegisterAndModifyReqDto petNoAdoptionDateDto = createPetNoAdoptionDateDto();
         Member savedMember = createMember();
-        Pet pet = createPet(petNoAdoptionDateDto, savedMember);
 
         // when
-        LocalDate adoptionDate = pet.getAdoptionDate();
+        LocalDate adoptionDate = createPet(petNoAdoptionDateDto, savedMember).getAdoptionDate();
 
         // then
         assertThat(adoptionDate).isEqualTo(LocalDate.of(2023, 7, 24));
     }
 
-    @Test
-    void 이미지가_없다면_uploadFile_메서드가_실행되지_않는다() {
-        // given
-        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        PetRegisterAndModifyReqDto modifyReqDto = createModifyReqDto();
-        Member member = createMember();
-        Pet pet = createPet(petRegisterAndModifyReqDto, member);
 
-        // when
-        petService.petModify(pet.getPetId(), null, modifyReqDto, member.getMemberId());
-
-        // then
-        verify(s3Util, times(0)).uploadFile(any());
-    }
 
     /***
      * 반려동물 수정 테스트
@@ -146,46 +166,56 @@ class PetServiceTest {
         PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
         PetRegisterAndModifyReqDto modifyReqDto = createModifyReqDto();
         Member member = createMember();
-        Pet pet = createPet(petRegisterAndModifyReqDto, member);
+        Pet pet = createPet(member);
+
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
 
         // when
         petService.petModify(pet.getPetId(), null, modifyReqDto, member.getMemberId());
-        em.persist(pet);
-        em.flush();
-
-        Pet checkPet = petRepository.findById(pet.getPetId()).get();
 
         // then
-        assertThat(checkPet.getPetName()).isEqualTo(modifyReqDto.petName());
+        assertThat(pet.getPetName()).isEqualTo(modifyReqDto.petName());
+        assertThat(pet.getSpecies()).isEqualTo(modifyReqDto.species());
+        assertThat(pet.getBirth()).isEqualTo(modifyReqDto.birth());
+        assertThat(pet.getPetType()).isEqualTo(modifyReqDto.petType());
+        assertThat(pet.getGender()).isEqualTo(modifyReqDto.gender());
+        assertThat(pet.getAdoptionDate()).isEqualTo(modifyReqDto.adoptionDate());
+        assertThat(pet.getPetMedicalInfo().getWeight()).isEqualTo(modifyReqDto.petMedicalInfoDto().weight());
     }
 
     @Test
     void 반려동물_id가_올바르지_않을때_예외발생() {
         // given
-        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
-        Pet savedPet = createPet(petRegisterAndModifyReqDto, savedMember);
+        Member member = createMember();
+        Pet pet = createPet(member);
         PetRegisterAndModifyReqDto modifyReqDto = createModifyReqDto();
+
+        long wrongPetId = pet.getPetId() + 1;
+
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         // then
         assertThatExceptionOfType(CustomException.class)
                 // when
-                .isThrownBy(() -> petService.petModify(savedPet.getPetId() + 1, null, modifyReqDto, savedMember.getMemberId()))
+                .isThrownBy(() -> petService.petModify(wrongPetId, null, modifyReqDto, member.getMemberId()))
                 .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
     }
 
     @Test
     void 수정_요청_유저_id와_반려동물_주인_id가_다를경우_예외발생() {
         // given
-        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
-        Pet savedPet = createPet(petRegisterAndModifyReqDto, savedMember);
         PetRegisterAndModifyReqDto modifyReqDto = createModifyReqDto();
+        Member member = createMember();
+        Pet pet = createPet(member);
+
+        long wrongMemberId = member.getMemberId() + 1;
+
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
 
         // then
         assertThatExceptionOfType(CustomException.class)
                 // when
-                .isThrownBy(() -> petService.petModify(savedPet.getPetId(), null, modifyReqDto, savedMember.getMemberId() + 1))
+                .isThrownBy(() -> petService.petModify(pet.getPetId(), null, modifyReqDto, wrongMemberId))
                 .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
@@ -196,105 +226,46 @@ class PetServiceTest {
     @Test
     void 반려동물_정상_삭제() {
         // given
-        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
-        Pet savedPet = createPet(petRegisterAndModifyReqDto, savedMember);
+        Member member = createMember();
+        Pet pet = createPet(member);
+
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
 
         // when
-        petService.petDelete(savedPet.getPetId(), savedMember.getMemberId());
-        em.flush();
-        Optional<Pet> fetchPet = petRepository.findById(savedPet.getPetId());
+        petService.petDelete(pet.getPetId(), member.getMemberId());
 
         // then
-        assertThat(fetchPet).isEqualTo(Optional.empty());
+        verify(petRepository, times(1)).delete(pet);
     }
 
     @Test
     void 반려동물_id가_올바르지_않을때_예외가_발생한다() {
         // given
-        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
-        Pet savedPet = createPet(petRegisterAndModifyReqDto, savedMember);
+        Member member = createMember();
+        Pet pet = createPet(member);
+
+        long wrongPetId = pet.getPetId() + 1;
 
         // then
         assertThatExceptionOfType(CustomException.class)
-                .isThrownBy(() -> petService.petDelete(savedPet.getPetId() + 1, savedMember.getMemberId()))
+                .isThrownBy(() -> petService.petDelete(wrongPetId, member.getMemberId()))
                 .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
     }
 
     @Test
     void 삭제_요청_유저_id와_반려동물_주인_id가_다를경우_예외발생() {
         // given
-        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
-        Member savedMember = createMember();
-        Pet savedPet = createPet(petRegisterAndModifyReqDto, savedMember);
+        Member member = createMember();
+        Pet pet = createPet(member);
+
+        long wrongMemberId = member.getMemberId() + 1;
+
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
 
         // then
-        assertThatExceptionOfType(CustomException.class)
-                .isThrownBy(() -> petService.petDelete(savedPet.getPetId(), savedMember.getMemberId() + 1))
-                .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
-    }
-
-    /***
-     * 반려동물 조회 테스트
-     */
-
-    @Test
-    void 반려동물_정상_조회() {
-        // given
-        List<PetRegisterAndModifyReqDto> petFullyDtoList = createPetFullyDtoList(5);
-        Member savedMember = createMember();
-        petFullyDtoList.forEach(p -> createPet(p, savedMember));
-
-        // when
-        em.flush();
-        em.clear();
-        int petSize = petRepository.findAllPetsByMemberId(savedMember.getMemberId()).size();
-
-        // then
-        assertThat(petSize).isEqualTo(5);
-    }
-
-    @Test
-    void 반려동물_정상_상세_조회() {
-        // given
-        Pet savedPet = createPet(createPetFullyDto(), createMember());
-
-        // when
-        em.flush();
-        em.clear();
-        PetDetailInfoRespDto petDetailInfoRespDto = petService.fetchPetDetailInfo(savedPet.getPetId(), savedPet.getMember().getMemberId());
-
-        // then
-        assertThat(savedPet.getPetId()).isEqualTo(petDetailInfoRespDto.petId());
-    }
-
-    @Test
-    void 반려동물_상세조회시_반려동물의_id_값이_잘못된_경우_예외발생() {
-        // given
-        Pet savedPet = createPet(createPetFullyDto(), createMember());
-
-        em.flush();
-        em.clear();
-
-        //then
         assertThatExceptionOfType(CustomException.class)
                 // when
-                .isThrownBy(() -> petService.fetchPetDetailInfo(savedPet.getPetId() + 1, savedPet.getMember().getMemberId()))
-                .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
-    }
-
-    @Test
-    void 반려동물_상세조회시_요청_유저의_id와_반려동물의_주인_id값이_다른_경우_예외발생() {
-        // given
-        Pet savedPet = createPet(createPetFullyDto(), createMember());
-        em.flush();
-        em.clear();
-
-        //then
-        assertThatExceptionOfType(CustomException.class)
-                // when
-                .isThrownBy(() -> petService.fetchPetDetailInfo(savedPet.getPetId(), savedPet.getMember().getMemberId() + 1))
+                .isThrownBy(() -> petService.petDelete(pet.getPetId(), wrongMemberId))
                 .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
@@ -318,15 +289,6 @@ class PetServiceTest {
                                 .medicalHistory("수술한적 없음")
                                 .build())
                 .build();
-    }
-
-    private List<PetRegisterAndModifyReqDto> createPetFullyDtoList(int petSize) {
-        List<PetRegisterAndModifyReqDto> list = new ArrayList<>(petSize);
-        for (int i = 0; i < petSize; i++) {
-            list.add(createPetFullyDto());
-        }
-
-        return list;
     }
 
     private PetRegisterAndModifyReqDto createPetNoAdoptionDateDto() {
@@ -372,8 +334,8 @@ class PetServiceTest {
     }
 
     private Member createMember() {
-        return memberRepository.save(Member.builder()
-                .memberId(4L)
+        return Member.builder()
+                .memberId(1L)
                 .name("성춘")
                 .nickName("choon")
                 .phone("010-7592-0693")
@@ -381,7 +343,7 @@ class PetServiceTest {
                 .provider(OAuthProvider.KAKAO)
                 .providerId("3535")
                 .memberStatus(MemberStatus.ACTIVATE)
-                .build());
+                .build();
     }
 
     private PhotoData createPhotoData() {
@@ -393,7 +355,18 @@ class PetServiceTest {
     }
 
     private Pet createPet(PetRegisterAndModifyReqDto petRegisterAndModifyReqDto, Member member) {
-        return petRepository.save(Pet.of(petRegisterAndModifyReqDto, createPhotoData(), member));
+        return Pet.of(petRegisterAndModifyReqDto, createPhotoData(), member);
+    }
+
+    private Pet createPet(Member member) {
+        return Pet.builder()
+                .petId(1L)
+                .petName("testPet")
+                .member(member)
+                .birth(LocalDate.of(2023, 7, 27))
+                .petType(PetType.DOG)
+                .gender(Gender.MALE)
+                .build();
     }
 
 }
