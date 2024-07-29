@@ -11,6 +11,7 @@ import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
@@ -40,6 +41,9 @@ class HealthNoteQueryServiceTest {
 
     @Mock
     private HospitalRepository hospitalRepository;
+
+    @Mock
+    private MemberRepository memberRepository;
 
     @InjectMocks
     private HealthNoteQueryServiceImpl healthNoteQueryService;
@@ -111,6 +115,7 @@ class HealthNoteQueryServiceTest {
 
         when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.of(healthNote));
         when(hospitalRepository.getHospitalNameNameByStoreId(any(Long.class))).thenReturn(hospital.getStoreName());
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
         when(petRepository.getPetNameByPetId(any(Long.class))).thenReturn(pet.getPetName());
 
         // when
@@ -141,8 +146,10 @@ class HealthNoteQueryServiceTest {
     void 다른_유저의_건강수첩에_접근한_경우_예외발생() {
         // given
         HealthNote healthNote = createHealthNote();
+        Member member = createMember();
 
         when(healthNoteRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(healthNote));
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
         // then
         assertThatExceptionOfType(CustomException.class)
