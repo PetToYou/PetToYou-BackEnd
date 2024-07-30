@@ -1,7 +1,7 @@
 package com.pettoyou.server.hospital.controller;
 
 import com.pettoyou.server.constant.dto.ApiResponse;
-import com.pettoyou.server.hospital.dto.HospitalDto;
+import com.pettoyou.server.hospital.dto.request.HospitalDto;
 import com.pettoyou.server.hospital.service.HospitalService;
 
 import jakarta.validation.Valid;
@@ -17,20 +17,20 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/hospital/admin")
+@RequestMapping("/api/v1/admin/hospital")
 @Slf4j
 public class HospitalControllerAdmin {
 
     private final HospitalService hospitalService;
 
-    // 모든 병원 조회 + 필터링 가능
     @PostMapping()
     public ResponseEntity<ApiResponse<String>> registerHospital(
             @RequestPart(required = false, value = "hospitalImg") List<MultipartFile> hospitalImg,
             @RequestPart(required = false, value = "storeInfoImg") MultipartFile storeInfoImg,
             @RequestPart(required = false, value = "thumbnailImg") MultipartFile thumbnailImg,
-            @RequestPart(value = "hospitalDto") @Valid HospitalDto.Request hospitalDto
+            @RequestPart(value = "hospitalDto") @Valid HospitalDto hospitalDto
     ) {
+
         String hospitalId = hospitalService.registerHospital(hospitalImg, storeInfoImg, thumbnailImg, hospitalDto);
 
         // 현재 요청 URI에서 path 부분만 가져오기

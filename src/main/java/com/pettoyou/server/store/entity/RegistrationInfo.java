@@ -18,9 +18,6 @@ public class RegistrationInfo extends BaseEntity {
     @Column(name = "registration_info_id")
     private Long registrationInfoId;
 
-    @OneToOne(mappedBy = "registrationInfo")
-    @JsonIgnore
-    private Store store;
 
     @Enumerated(EnumType.STRING)
     private StoreType storeType;

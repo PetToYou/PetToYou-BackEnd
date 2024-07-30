@@ -26,6 +26,7 @@ public enum CustomResponseStatus {
     /***
      * 4000: NOT_FOUND
      */
+
     NULL_JWT(HttpStatus.NO_CONTENT.value(), "4000", "토큰이 공백입니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4001", "해당 유저를 찾을 수 없습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4002", "리프레시 토큰을 찾을 수 없습니다."),
@@ -36,6 +37,7 @@ public enum CustomResponseStatus {
     SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4007", "해당 스크랩을 찾을 수 없습니다."),
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4008", "해당 매장을 찾을 수 없습니다."),
     HEALTH_NOTE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4009", "해당 건강수첩을 찾을 수 없습니다."),
+    STOREPHOTO_NOT_FOUND(HttpStatus.NO_CONTENT.value(), "4010", "해당 병원의 사진을 찾을 수 없습니다."),
 
     /***
      * 5000: NOT_MATCH
@@ -46,9 +48,13 @@ public enum CustomResponseStatus {
     /***
      * 6000: Internal_Server_Error
      */
+
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "6000", "내부 서버 오류입니다."),
     S3_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "6001", "S3에 파일을 업로드하지 못했습니다."),
     POINT_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "6002", "POINT Parsing FAIL"),
+    STORE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "6003","STORE를 저장하는데 실패했습니다."),
+  
+
 
     /***
      * 7000: InValid

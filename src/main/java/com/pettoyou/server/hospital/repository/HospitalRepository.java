@@ -9,12 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface HospitalRepository extends JpaRepository<Hospital, Long>, HospitalCustomRepository {
-    @EntityGraph(
-            attributePaths = {"storePhotos"},
-            type = EntityGraph.EntityGraphType.LOAD
-    )
-    Optional<Hospital> findDistinctHospitalByStoreId(Long hospitalId);
+
 
     @Query("SELECT h.storeName FROM Hospital h WHERE h.storeId = :hospitalId")
     String getHospitalNameNameByStoreId(Long hospitalId);
+
 }

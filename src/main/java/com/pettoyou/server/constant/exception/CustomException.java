@@ -7,8 +7,12 @@ import lombok.Getter;
 public class CustomException extends RuntimeException {
     private final CustomResponseStatus customResponseStatus;
 
+
     public CustomException(CustomResponseStatus customResponseStatus) {
+
         super(customResponseStatus.getMessage());
         this.customResponseStatus = customResponseStatus;
     }
 }
+
+
