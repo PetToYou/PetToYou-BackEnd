@@ -106,17 +106,9 @@ public class Pet extends BaseEntity {
         return profilePhotoData.getPhotoUrl();
     }
 
-    public String petAgeCalculate(LocalDate currentLocalDate) {
-        Period age = Period.between(this.birth, currentLocalDate);
-
-        int years = age.getYears();
-        int months = age.getMonths();
-
-        if (years == 0) {
-            return months + "개월";
-        } else {
-            return years + "살";
-        }
+    public int petAgeCalculate(LocalDate currentLocalDate) {
+        Period period = Period.between(this.birth, currentLocalDate);
+        return period.getYears() * 12 + period.getMonths();
     }
 
     public String getGenderLabel() {
@@ -137,5 +129,9 @@ public class Pet extends BaseEntity {
 
     public String getPetWeight() {
         return petMedicalInfo.getFormatWeight();
+    }
+
+    public String getKoreanSpeciesName() {
+        return species.getKoreanName();
     }
 }

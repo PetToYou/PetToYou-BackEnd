@@ -132,7 +132,7 @@ class PetQueryServiceTest {
                             .petId(i)
                             .petName("pet"+i)
                             .gender("남아")
-                            .age(String.valueOf(i))
+                            .age((int)i)
                             .build()
             );
         }
@@ -148,7 +148,7 @@ class PetQueryServiceTest {
         return PetDetailInfoRespDto.builder()
                 .petId(1L)
                 .petName("testName")
-                .species(Species.MUNCHKIN)
+                .species(Species.MUNCHKIN.getKoreanName())
                 .petType(PetType.CAT)
                 .build();
     }
@@ -158,8 +158,9 @@ class PetQueryServiceTest {
                 .petId(1L)
                 .petName("testPet")
                 .member(member)
+                .species(Species.MUNCHKIN)
                 .birth(LocalDate.of(2023, 7, 27))
-                .petType(PetType.DOG)
+                .petType(PetType.CAT)
                 .gender(Gender.MALE)
                 .profilePhotoData(
                         PhotoData.generateDefaultPetProfilePhotoData()

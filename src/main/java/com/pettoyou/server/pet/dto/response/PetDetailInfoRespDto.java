@@ -3,18 +3,17 @@ package com.pettoyou.server.pet.dto.response;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.PetMedicalInfo;
 import com.pettoyou.server.pet.entity.enums.PetType;
-import com.pettoyou.server.pet.entity.enums.Species;
 import lombok.Builder;
 
 import java.time.LocalDate;
 
 @Builder
 public record PetDetailInfoRespDto(
-        //Todo : 추후에 펫 상세 화면 나오면 수정해야함.
         Long petId,
         String petName,
-        Species species,
+        String species,
         LocalDate birth,
+        String caution,
         PetType petType,
         LocalDate adoptionDate,
         PetMedicalInfo petMedicalInfo,
@@ -24,8 +23,9 @@ public record PetDetailInfoRespDto(
         return PetDetailInfoRespDto.builder()
                 .petId(pet.getPetId())
                 .petName(pet.getPetName())
-                .species(pet.getSpecies())
+                .species(pet.getKoreanSpeciesName())
                 .birth(pet.getBirth())
+                .caution(pet.getCaution())
                 .petType(pet.getPetType())
                 .adoptionDate(pet.getAdoptionDate())
                 .petMedicalInfo(pet.getPetMedicalInfo())

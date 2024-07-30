@@ -1,7 +1,6 @@
 package com.pettoyou.server.pet.dto.response;
 
 import com.pettoyou.server.pet.entity.Pet;
-import com.pettoyou.server.pet.entity.enums.Species;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -11,9 +10,9 @@ public record PetSimpleInfoDto(
         Long petId,
         String profileImgUrl,
         String petName,
-        Species species,
+        String species,
         String gender,
-        String age,
+        int age,
         String weight
 ) {
     public static PetSimpleInfoDto of(Pet pet) {
@@ -21,7 +20,7 @@ public record PetSimpleInfoDto(
                 .petId(pet.getPetId())
                 .profileImgUrl(pet.getProfileImgUrl())
                 .petName(pet.getPetName())
-                .species(pet.getSpecies())
+                .species(pet.getKoreanSpeciesName())
                 .gender(pet.getGenderLabel())
                 .age(pet.petAgeCalculate(LocalDate.now()))
                 .weight(pet.getPetWeight())
