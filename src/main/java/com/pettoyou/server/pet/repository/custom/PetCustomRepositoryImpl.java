@@ -1,5 +1,6 @@
 package com.pettoyou.server.pet.repository.custom;
 
+import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -20,14 +21,14 @@ public class PetCustomRepositoryImpl implements PetCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PetSimpleInfoDto> findAllPetsByMemberId(Long memberId) {
+    public List<PetDetailInfoRespDto> findAllPetsByMemberId(Long memberId) {
         List<Pet> allPets = jpaQueryFactory
                 .selectFrom(pet)
                 .where(pet.member.memberId.eq(memberId))
                 .orderBy(pet.petId.asc())
                 .fetch();
 
-        return allPets.stream().map(PetSimpleInfoDto::of).toList();
+        return allPets.stream().map(PetDetailInfoRespDto::from).toList();
     }
 
     @Override

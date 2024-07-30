@@ -6,7 +6,6 @@ import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
-import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
@@ -45,12 +44,12 @@ class PetQueryServiceTest {
     void 반려동물_정상_조회() {
         // given
         Member member = createMember();
-        List<PetSimpleInfoDto> petList = createPetSimpleDtoList();
+        List<PetDetailInfoRespDto> petList = createPetDetailInfoDtoList();
 
         when(petRepository.findAllPetsByMemberId(any(Long.class))).thenReturn(petList);
 
         // when
-        List<PetSimpleInfoDto> result = petQueryService.queryPetList(member.getMemberId());
+        List<PetDetailInfoRespDto> result = petQueryService.queryPetList(member.getMemberId());
 
         // then
         assertThat(result.size()).isEqualTo(petList.size());
@@ -65,12 +64,12 @@ class PetQueryServiceTest {
     @Test
     void 반려동물이_없는_경우_빈_리스트_반환() {
         // given
-        List<PetSimpleInfoDto> emptyList = createEmptyPetSimpleDtoList();
+        List<PetDetailInfoRespDto> emptyList = createEmptyPetDetailInfoDtoList();
 
         when(petRepository.findAllPetsByMemberId(any(Long.class))).thenReturn(emptyList);
 
         // when
-        List<PetSimpleInfoDto> result = petQueryService.queryPetList(1L);
+        List<PetDetailInfoRespDto> result = petQueryService.queryPetList(1L);
 
         // then
         assertThat(result).isNotNull().isEmpty();
@@ -123,16 +122,17 @@ class PetQueryServiceTest {
                 .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
-    private List<PetSimpleInfoDto> createPetSimpleDtoList() {
-        List<PetSimpleInfoDto> list = new ArrayList<>();
+    private List<PetDetailInfoRespDto> createPetDetailInfoDtoList() {
+        List<PetDetailInfoRespDto> list = new ArrayList<>();
 
         for(long i=0; i<5; i++) {
             list.add(
-                    PetSimpleInfoDto.builder()
+                    PetDetailInfoRespDto.builder()
                             .petId(i)
                             .petName("pet"+i)
                             .gender("남아")
-                            .age((int)i)
+                            .species("시츄")
+                            .age(15)
                             .build()
             );
         }
@@ -140,7 +140,7 @@ class PetQueryServiceTest {
         return list;
     }
 
-    private List<PetSimpleInfoDto> createEmptyPetSimpleDtoList() {
+    private List<PetDetailInfoRespDto> createEmptyPetDetailInfoDtoList() {
         return new ArrayList<>();
     }
 

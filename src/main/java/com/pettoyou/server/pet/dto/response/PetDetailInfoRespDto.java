@@ -13,6 +13,8 @@ public record PetDetailInfoRespDto(
         String petName,
         String species,
         LocalDate birth,
+        int age,
+        String gender,
         String caution,
         PetType petType,
         LocalDate adoptionDate,
@@ -25,6 +27,8 @@ public record PetDetailInfoRespDto(
                 .petName(pet.getPetName())
                 .species(pet.getKoreanSpeciesName())
                 .birth(pet.getBirth())
+                .age(pet.petAgeCalculate(LocalDate.now()))
+                .gender(pet.getGenderLabel())
                 .caution(pet.getCaution())
                 .petType(pet.getPetType())
                 .adoptionDate(pet.getAdoptionDate())

@@ -6,7 +6,7 @@ import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import java.util.List;
 
 public interface PetQueryService {
-    List<PetSimpleInfoDto> queryPetList(
+    List<PetDetailInfoRespDto> queryPetList(
             Long userId
     );
 

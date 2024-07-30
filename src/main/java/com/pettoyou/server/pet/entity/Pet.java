@@ -70,9 +70,11 @@ public class Pet extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Reserve> reserves = new ArrayList<>();
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
     public static Pet of(PetRegisterAndModifyReqDto registerDto, PhotoData profilePhotoData, Member member) {
