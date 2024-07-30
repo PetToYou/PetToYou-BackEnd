@@ -26,8 +26,8 @@ public class StoreServiceImpl implements StoreService{
 
 
     //store photo
-    public List<StorePhotoDto> getAllStorePhoto(Long StoreId){
-        List<StorePhoto> photos =  storePhotoRepository.findStorePhotosByStoreStoreId(StoreId);
+    public List<StorePhotoDto> getAllStorePhoto(Long storeId){
+        List<StorePhoto> photos =  storePhotoRepository.findStorePhotosByStoreStoreId(storeId);
         if(photos.isEmpty()){
             throw new CustomException(CustomResponseStatus.STOREPHOTO_NOT_FOUND);
         }

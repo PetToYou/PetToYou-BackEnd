@@ -44,7 +44,7 @@ public record HospitalDetail(
         return HospitalDetail.builder()
                 .hospitalId(hospital.getStoreId())
                 .hospitalName(hospital.getStoreName())
-                .thumbnailUrl(hospital.getThumbnail() ==null ? "default_url" : hospital.getThumbnail().getPhotoUrl())
+                .thumbnailUrl(hospital.getThumbnail() == null ? "default_url" : hospital.getThumbnail().getPhotoUrl())
                 .storePhone(hospital.getStorePhone())
                 .notice(hospital.getNotice())
                 .websiteLink(hospital.getWebsiteLink())

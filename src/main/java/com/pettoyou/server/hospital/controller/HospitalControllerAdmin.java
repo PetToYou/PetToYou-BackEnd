@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/hospital/admin")
+@RequestMapping("/api/v1/admin/hospital")
 @Slf4j
 public class HospitalControllerAdmin {
 
