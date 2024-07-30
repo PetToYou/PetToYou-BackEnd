@@ -43,7 +43,6 @@ class PetCommandServiceTest {
     @InjectMocks
     private PetCommandServiceImpl petService;
 
-
     /***
      * 반려동물 등록 테스트
      */
@@ -63,6 +62,7 @@ class PetCommandServiceTest {
         );
 
         when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
+        when(petRepository.save(any(Pet.class))).thenReturn(pet);
 
         // when
         PetRegisterRespDto result = petService.petRegister(mockProfilePhoto, petRegisterAndModifyReqDto, member.getMemberId());
@@ -76,6 +76,7 @@ class PetCommandServiceTest {
         // given
         PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
         Member member = createMember();
+        Pet pet = createPet(petRegisterAndModifyReqDto, member);
 
         MockMultipartFile mockProfilePhoto = new MockMultipartFile(
                 "file",
@@ -85,6 +86,7 @@ class PetCommandServiceTest {
         );
 
         when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
+        when(petRepository.save(any(Pet.class))).thenReturn(pet);
 
         // when
         petService.petRegister(mockProfilePhoto, petRegisterAndModifyReqDto, member.getMemberId());
@@ -101,6 +103,7 @@ class PetCommandServiceTest {
         Pet pet = createPet(petRegisterAndModifyReqDto, member);
 
         when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
+        when(petRepository.save(any(Pet.class))).thenReturn(pet);
 
         // when
         PetRegisterRespDto response = petService.petRegister(null, petRegisterAndModifyReqDto, member.getMemberId());
@@ -114,8 +117,10 @@ class PetCommandServiceTest {
         // given
         PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
         Member member = createMember();
+        Pet pet = createPet(petRegisterAndModifyReqDto, member);
 
         when(memberRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(member));
+        when(petRepository.save(any(Pet.class))).thenReturn(pet);
 
         // when
         petService.petRegister(null, petRegisterAndModifyReqDto, member.getMemberId());
