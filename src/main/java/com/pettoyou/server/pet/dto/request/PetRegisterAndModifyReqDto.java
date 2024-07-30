@@ -21,6 +21,7 @@ public record PetRegisterAndModifyReqDto(
         Gender gender,
         @NotNull(message = "반려동물의 품종을 선택해주세요.")
         Species species,
+        String caution,
         PetMedicalInfoDto petMedicalInfoDto
 ) {
         public PetRegisterAndModifyReqDto {

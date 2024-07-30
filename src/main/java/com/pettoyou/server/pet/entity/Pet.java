@@ -54,6 +54,8 @@ public class Pet extends BaseEntity {
 
     private LocalDate adoptionDate;
 
+    private String caution;
+
     @Enumerated(EnumType.STRING)
     private BaseStatus petStatus;
 
@@ -68,9 +70,11 @@ public class Pet extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Reserve> reserves = new ArrayList<>();
 
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
     public static Pet of(PetRegisterAndModifyReqDto registerDto, PhotoData profilePhotoData, Member member) {
@@ -84,6 +88,7 @@ public class Pet extends BaseEntity {
                 .petMedicalInfo(PetMedicalInfo.from(registerDto.petMedicalInfoDto()))
                 .member(member)
                 .petStatus(BaseStatus.ACTIVATE)
+                .caution(registerDto.caution())
                 .profilePhotoData(profilePhotoData)
                 .build();
     }
@@ -94,6 +99,7 @@ public class Pet extends BaseEntity {
         this.birth = modifyDto.birth();
         this.petType = modifyDto.petType();
         this.adoptionDate = modifyDto.adoptionDate();
+        this.caution = modifyDto.caution();
         this.petMedicalInfo = PetMedicalInfo.from(modifyDto.petMedicalInfoDto());
         this.profilePhotoData = newPhoto;
     }
@@ -102,17 +108,9 @@ public class Pet extends BaseEntity {
         return profilePhotoData.getPhotoUrl();
     }
 
-    public String petAgeCalculate(LocalDate currentLocalDate) {
-        Period age = Period.between(this.birth, currentLocalDate);
-
-        int years = age.getYears();
-        int months = age.getMonths();
-
-        if (years == 0) {
-            return months + "개월";
-        } else {
-            return years + "살";
-        }
+    public int petAgeCalculate(LocalDate currentLocalDate) {
+        Period period = Period.between(this.birth, currentLocalDate);
+        return period.getYears() * 12 + period.getMonths();
     }
 
     public String getGenderLabel() {
@@ -133,5 +131,9 @@ public class Pet extends BaseEntity {
 
     public String getPetWeight() {
         return petMedicalInfo.getFormatWeight();
+    }
+
+    public String getKoreanSpeciesName() {
+        return species.getKoreanName();
     }
 }

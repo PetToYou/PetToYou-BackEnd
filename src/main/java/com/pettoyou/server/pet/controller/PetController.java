@@ -57,10 +57,10 @@ public class PetController {
     }
 
     @GetMapping("/pets")
-    public ResponseEntity<ApiResponse<List<PetSimpleInfoDto>>> petsQuery(
+    public ResponseEntity<ApiResponse<List<PetDetailInfoRespDto>>> petsQuery(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        List<PetSimpleInfoDto> response = petQueryService.queryPetList(principalDetails.getUserId());
+        List<PetDetailInfoRespDto> response = petQueryService.queryPetList(principalDetails.getUserId());
         return ApiResponse.createSuccessWithOk(response);
     }
 

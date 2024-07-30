@@ -22,5 +22,6 @@ public class Role {
     private RoleType roleType;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<MemberRole> members = new ArrayList<>();
 }

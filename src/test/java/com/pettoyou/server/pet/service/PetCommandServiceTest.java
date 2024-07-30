@@ -181,6 +181,7 @@ class PetCommandServiceTest {
         assertThat(pet.getBirth()).isEqualTo(modifyReqDto.birth());
         assertThat(pet.getPetType()).isEqualTo(modifyReqDto.petType());
         assertThat(pet.getGender()).isEqualTo(modifyReqDto.gender());
+        assertThat(pet.getCaution()).isEqualTo(modifyReqDto.caution());
         assertThat(pet.getAdoptionDate()).isEqualTo(modifyReqDto.adoptionDate());
         assertThat(pet.getPetMedicalInfo().getWeight()).isEqualTo(modifyReqDto.petMedicalInfoDto().weight());
     }
@@ -279,6 +280,7 @@ class PetCommandServiceTest {
                 .adoptionDate(LocalDate.of(2023, 6, 24))
                 .gender(Gender.MALE)
                 .species(Species.MUNCHKIN)
+                .caution("caution")
                 .petMedicalInfoDto(
                         PetMedicalInfoDto.builder()
                                 .weight(4.5)
@@ -300,6 +302,7 @@ class PetCommandServiceTest {
                 .birth(LocalDate.of(2023, 7, 24))
                 .gender(Gender.MALE)
                 .species(Species.MUNCHKIN)
+                .caution("caution")
                 .petMedicalInfoDto(
                         PetMedicalInfoDto.builder()
                                 .weight(4.5)
@@ -321,6 +324,7 @@ class PetCommandServiceTest {
                 .birth(LocalDate.of(2023, 7, 24))
                 .gender(Gender.MALE)
                 .species(Species.MUNCHKIN)
+                .caution("caution")
                 .petMedicalInfoDto(
                         PetMedicalInfoDto.builder()
                                 .weight(4.5)
@@ -365,6 +369,7 @@ class PetCommandServiceTest {
                 .petId(1L)
                 .petName("testPet")
                 .member(member)
+                .caution("caution")
                 .birth(LocalDate.of(2023, 7, 27))
                 .petType(PetType.DOG)
                 .gender(Gender.MALE)
