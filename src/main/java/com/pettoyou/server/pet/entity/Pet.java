@@ -98,6 +98,10 @@ public class Pet extends BaseEntity {
         this.profilePhotoData = newPhoto;
     }
 
+    public String getProfileImgUrl() {
+        return profilePhotoData.getPhotoUrl();
+    }
+
     public String petAgeCalculate(LocalDate currentLocalDate) {
         Period age = Period.between(this.birth, currentLocalDate);
 
@@ -111,9 +115,23 @@ public class Pet extends BaseEntity {
         }
     }
 
+    public String getGenderLabel() {
+        if (gender == Gender.MALE) {
+            return "남아";
+        } else if (gender == Gender.FEMALE) {
+            return "여아";
+        } else {
+            return "알수없음";
+        }
+    }
+
     public void validateOwnerAuthorization(Long authMemberId) {
         if (!this.member.getMemberId().equals(authMemberId)) {
             throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
         }
+    }
+
+    public String getPetWeight() {
+        return petMedicalInfo.getFormatWeight();
     }
 }

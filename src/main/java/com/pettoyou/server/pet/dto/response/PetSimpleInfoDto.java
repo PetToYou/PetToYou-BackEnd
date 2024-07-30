@@ -1,7 +1,6 @@
 package com.pettoyou.server.pet.dto.response;
 
 import com.pettoyou.server.pet.entity.Pet;
-import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.Species;
 import lombok.Builder;
 
@@ -20,22 +19,13 @@ public record PetSimpleInfoDto(
     public static PetSimpleInfoDto of(Pet pet) {
         return PetSimpleInfoDto.builder()
                 .petId(pet.getPetId())
-                .profileImgUrl(pet.getProfilePhotoData().getPhotoUrl())
+                .profileImgUrl(pet.getProfileImgUrl())
                 .petName(pet.getPetName())
                 .species(pet.getSpecies())
-                .gender(pet.getGender() == Gender.MALE ? "남아" : "여아")
+                .gender(pet.getGenderLabel())
                 .age(pet.petAgeCalculate(LocalDate.now()))
-                .weight(formatWeight(pet.getPetMedicalInfo().getWeight()))
+                .weight(pet.getPetWeight())
                 .build();
     }
 
-    private static String formatWeight(Double weight) {
-        if (weight == null) {
-            return null;
-        }
-
-        if (weight % 1 != 0) return String.valueOf(weight);
-        return String.valueOf(weight.intValue());
-
-    }
 }
