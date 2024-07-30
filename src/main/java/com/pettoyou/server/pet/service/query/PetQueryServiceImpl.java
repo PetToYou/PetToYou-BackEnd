@@ -2,7 +2,6 @@ package com.pettoyou.server.pet.service.query;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
-import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.pet.dto.response.PetDetailInfoRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.entity.Pet;
@@ -16,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetQueryServiceImpl implements PetQueryService {
     private final PetRepository petRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     public List<PetSimpleInfoDto> queryPetList(Long userId) {
