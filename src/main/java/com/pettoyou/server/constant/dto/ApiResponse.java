@@ -20,7 +20,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 public class ApiResponse<T> {
-    private HttpStatusCode httpStatusCode;
+    private int httpStatusCode;
     private String code;
     private String message;
     private T data;
@@ -30,7 +30,7 @@ public class ApiResponse<T> {
         return ResponseEntity.ok()
                 .body(
                         new ApiResponse<>(
-                                HttpStatusCode.valueOf(HttpStatus.OK.value()),
+                                HttpStatus.OK.value(),
                                 CustomResponseStatus.SUCCESS.getCode(),
                                 CustomResponseStatus.SUCCESS.getMessage(),
                                 data)
@@ -41,7 +41,7 @@ public class ApiResponse<T> {
         return ResponseEntity.created(location)
                 .body(
                         new ApiResponse<>(
-                                HttpStatusCode.valueOf(HttpStatus.OK.value()),
+                                HttpStatus.OK.value(),
                                 CustomResponseStatus.SUCCESS.getCode(),
                                 CustomResponseStatus.SUCCESS.getMessage(),
                                 data)
@@ -52,7 +52,7 @@ public class ApiResponse<T> {
      * @param bindingResult : @Valid 의 유효성 검사를 실패한 값(필드)들
      * @return : HttpStatus 와 Code, Message, 오류 데이터를 반환한다.
      */
-    public static ApiResponse<Map<String, String>> createNotValid(BindingResult bindingResult) {
+    public static ApiResponse<Map<String, String>> createInValid(BindingResult bindingResult) {
         Map<String, String> errors = new HashMap<>();
 
         List<ObjectError> allErrors = bindingResult.getAllErrors();
@@ -65,9 +65,9 @@ public class ApiResponse<T> {
         }
 
         return new ApiResponse<>(
-                HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()),
-                "NOT_VALID",
-                "유효하지 않은 데이터입니다.",
+                HttpStatus.BAD_REQUEST.value(),
+                CustomResponseStatus.INVALID_ERROR.getCode(),
+                CustomResponseStatus.INVALID_ERROR.getMessage(),
                 errors
         );
     }
@@ -78,6 +78,6 @@ public class ApiResponse<T> {
      * @return : data 없이 ApiResponse 를 반환한다.
      */
     public static ApiResponse<String> createError(CustomResponseStatus status) {
-        return new ApiResponse<>(status.getHttpStatusCode(), status.getMessage(), status.getCode(), null);
+        return new ApiResponse<>(status.getHttpStatusCode(), status.getCode(), status.getMessage(), null);
     }
 }

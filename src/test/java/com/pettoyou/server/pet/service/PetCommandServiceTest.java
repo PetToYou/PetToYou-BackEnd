@@ -159,8 +159,6 @@ class PetCommandServiceTest {
         assertThat(adoptionDate).isEqualTo(LocalDate.of(2023, 7, 24));
     }
 
-
-
     /***
      * 반려동물 수정 테스트
      */
@@ -168,7 +166,6 @@ class PetCommandServiceTest {
     @Test
     void 정상적인_반려동물_수정요청() {
         // given
-        PetRegisterAndModifyReqDto petRegisterAndModifyReqDto = createPetFullyDto();
         PetRegisterAndModifyReqDto modifyReqDto = createModifyReqDto();
         Member member = createMember();
         Pet pet = createPet(member);
