@@ -28,8 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.List;
 
 @Service
@@ -77,9 +76,9 @@ public class HospitalServiceImpl implements HospitalService {
 
         PhotoData thumbnail = photoService.handleThumbnail(thumbnailImg);
         Hospital hospital = hospitalWithStoreInfoImg
-(storeInfoImg, hospitalDto, thumbnail);
+                (storeInfoImg, hospitalDto, thumbnail);
         // 테스트 코드용.
-          Long savedHospitalId = hospitalRepository.save(hospital).getStoreId();
+        Long savedHospitalId = hospitalRepository.save(hospital).getStoreId();
 //         hospitalRepository.save(hospital);
 
         if (hospitalImg != null && !hospitalImg.isEmpty()) {
@@ -96,7 +95,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         }
 
-        if(savedHospitalId == null){
+        if (savedHospitalId == null) {
             throw new CustomException(CustomResponseStatus.STORE_SAVE_FAIL);
         }
 
@@ -105,7 +104,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     public Hospital hospitalWithStoreInfoImg
-(MultipartFile storeInfoImg, HospitalDto hospitalDto, PhotoData thumbnail) {
+            (MultipartFile storeInfoImg, HospitalDto hospitalDto, PhotoData thumbnail) {
         if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
             PhotoData photoData = photoService.uploadImage(storeInfoImg);
             //thumbnail은 null일 수 있다.
@@ -120,11 +119,9 @@ public class HospitalServiceImpl implements HospitalService {
         return HospitalTagDto.toEntity(hospital, tags);
     }
 
-
     // Get 요일 숫자 데이터 1~7
-    // Todo : UTC 타임존으로 바꾸기
-    private Integer getDayOfWeekNum() {
-        return LocalDate.now().getDayOfWeek().getValue();
+    public Integer getDayOfWeekNum() {
+        // UTC 타임존으로 현재 날짜를 가져옵니다.
+        return ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate().getDayOfWeek().getValue();
     }
-
 }
