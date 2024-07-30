@@ -76,10 +76,12 @@ public class HospitalServiceImpl implements HospitalService {
     public String registerHospital(List<MultipartFile> hospitalImg, MultipartFile storeInfoImg, MultipartFile thumbnailImg, HospitalDto hospitalDto) {
 
         PhotoData thumbnail = photoService.handleThumbnail(thumbnailImg);
-        Hospital hospital = handleStoreInfoImg(storeInfoImg, hospitalDto, thumbnail);
+        Hospital hospital = hospitalWithStoreInfoImg
+(storeInfoImg, hospitalDto, thumbnail);
         // 테스트 코드용.
-        //        Long id = hospitalRepository.save(hospital).getStoreId();
-        hospitalRepository.save(hospital);
+          Long savedHospitalId = hospitalRepository.save(hospital).getStoreId();
+//         hospitalRepository.save(hospital);
+
         if (hospitalImg != null && !hospitalImg.isEmpty()) {
             List<StorePhoto> storePhotoList = photoService.handleHospitalImgs(hospitalImg, hospital);
             hospital.getStorePhotos().addAll(storePhotoList);
@@ -94,15 +96,16 @@ public class HospitalServiceImpl implements HospitalService {
 
         }
 
-        if(hospital.getStoreId() == null){
+        if(savedHospitalId == null){
             throw new CustomException(CustomResponseStatus.STORE_SAVE_FAIL);
         }
 
-//        return id.toString();
-        return  hospital.getStoreId().toString();
+        return savedHospitalId.toString();
+//        return  hospital.getStoreId().toString();
     }
 
-    public Hospital handleStoreInfoImg(MultipartFile storeInfoImg, HospitalDto hospitalDto, PhotoData thumbnail) {
+    public Hospital hospitalWithStoreInfoImg
+(MultipartFile storeInfoImg, HospitalDto hospitalDto, PhotoData thumbnail) {
         if ((storeInfoImg != null) && (!storeInfoImg.isEmpty())) {
             PhotoData photoData = photoService.uploadImage(storeInfoImg);
             //thumbnail은 null일 수 있다.

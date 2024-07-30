@@ -271,14 +271,16 @@ class HospitalServiceImplTest {
     }
 
     @Test
-    void handleStoreInfoImg() throws Exception {
+    void hospitalWithStoreInfoImg
+() throws Exception {
         //given
         MultipartFile storeInfoImg = mock(MultipartFile.class);
         PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
         PhotoData storeInfoPhoto = new PhotoData("bucket", "object", "photoUrl");
         //when
         when(photoService.uploadImage(any(MultipartFile.class))).thenReturn(storeInfoPhoto);
-        Hospital hospital1 = hospitalServiceImpl.handleStoreInfoImg(storeInfoImg, hospitalDto, thumbnail);
+        Hospital hospital1 = hospitalServiceImpl.hospitalWithStoreInfoImg
+(storeInfoImg, hospitalDto, thumbnail);
 
         //then
         assertThat(hospital1.getAdditionalServiceTag()).isEqualTo("additionalServiceTag");
@@ -293,13 +295,15 @@ class HospitalServiceImplTest {
         assertThat(hospital1.getAddress()).isNotNull(); // Adjust according to the expected value
         assertThat(hospital1.getNotice()).isEqualTo("notice");
         assertThat(hospital1.getWebsiteLink()).isEqualTo("websiteLink");
-        assertThat(hospital1.getStoreInfoPhoto()).usingRecursiveComparison().isEqualTo(storeInfoPhoto); // Assuming handleStoreInfoImg sets this
+        assertThat(hospital1.getStoreInfoPhoto()).usingRecursiveComparison().isEqualTo(storeInfoPhoto); // Assuming hospitalWithStoreInfoImg
+ sets this
         assertThat(hospital1.getThumbnail()).usingRecursiveComparison().isEqualTo(thumbnail); //
     }
 
     @Test
     @DisplayName("StoreInfo사진 null 테스트")
-    void handleStoreInfoImg_storeInfoPhotoIsNull() throws Exception {
+    void hospitalWithStoreInfoImg
+_storeInfoPhotoIsNull() throws Exception {
         //given
 
         MultipartFile storeInfoImg = mock(MultipartFile.class);
@@ -308,7 +312,8 @@ class HospitalServiceImplTest {
 
         //when
         when(photoService.uploadImage(any(MultipartFile.class))).thenReturn(null);
-        Hospital hospital1 = hospitalServiceImpl.handleStoreInfoImg(storeInfoImg, hospitalDto, thumbnail);
+        Hospital hospital1 = hospitalServiceImpl.hospitalWithStoreInfoImg
+(storeInfoImg, hospitalDto, thumbnail);
 
         //then
         assertThat(hospital1.getAdditionalServiceTag()).isEqualTo("additionalServiceTag");
@@ -379,7 +384,149 @@ class HospitalServiceImplTest {
 
     @Test
     void registerHospital_성공_Thumbnail_NULL() {
+        MultipartFile hospitalImg = new MockMultipartFile("hospitalImg", "hospital.jpg", "image/jpeg", new byte[]{});
+        List<MultipartFile> hospitalImgList = Collections.singletonList(hospitalImg);
+        MultipartFile storeInfoImg = new MockMultipartFile("storeInfoImg", "storeInfo.jpg", "image/jpeg", new byte[]{});
+        MultipartFile thumbnailImg = null;
 
+        // Set other necessary fields for hospitalDto
+
+        PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
+        PhotoData storeInfoPhoto = new PhotoData("bucket", "object", "photoUrl");
+
+        List<StorePhoto> storePhotoList = new ArrayList<>();
+        StorePhoto storePhoto = StorePhoto.builder()
+                .photoOrder(1)
+                .storePhoto(storeInfoPhoto)
+                .storePhotoId(1L)
+                .photoStatus(BaseStatus.ACTIVATE)
+                .storeType(StoreType.HOSPITAL)
+                .store(hospitalSuccess).build();
+
+        storePhotoList.add(storePhoto);
+
+        List<TagMapper> tagMapperList = new ArrayList<>();
+        TagMapper tagMapper = TagMapper.builder()
+                .tagMapperId(1L)
+                .hospitalTag(tag1)
+                .hospital(hospitalSuccess)
+                .build();
+        tagMapperList.add(tagMapper);
+
+        // When
+        when(photoService.handleThumbnail(thumbnailImg)).thenReturn(thumbnail);
+        when(photoService.handleHospitalImgs(anyList(), any(Hospital.class))).thenReturn(storePhotoList);
+        when(hospitalRepository.save(any(Hospital.class))).thenReturn(hospitalSuccess);
+        when(hospitalTagRepository.findAllById(anyList())).thenReturn(tagList);
+//        when(hospitalServiceImpl.handleTags(any(), anyList())).thenReturn(tagMapperList);
+
+        // Then
+        String result = hospitalServiceImpl.registerHospital(hospitalImgList, storeInfoImg, thumbnailImg, hospitalDto);
+
+        //확인하고 싶은데 save 이후 영속성 컨텍스트에 객체의 아이디가 관리되는데 여기서 실제로 저장하지 않아서 테스트 불가... 추후 진행
+        assertThat(result).isEqualTo(hospitalSuccess.getStoreId().toString());
+
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+        verify(storePhotoRepository, times(1)).saveAll(storePhotoList);
+        verify(tagMapperRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    void registerHospital_성공_StoreImags_NULL(){
+        MultipartFile hospitalImg = new MockMultipartFile("hospitalImg", "hospital.jpg", "image/jpeg", new byte[]{});
+        List<MultipartFile> hospitalImgList = null;
+        MultipartFile storeInfoImg = new MockMultipartFile("storeInfoImg", "storeInfo.jpg", "image/jpeg", new byte[]{});
+        MultipartFile thumbnailImg = new MockMultipartFile("thumbnailImg", "thumbnail.jpg", "image/jpeg", new byte[]{});
+
+
+        // Set other necessary fields for hospitalDto
+
+        PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
+        PhotoData storeInfoPhoto = new PhotoData("bucket", "object", "photoUrl");
+
+        List<StorePhoto> storePhotoList = new ArrayList<>();
+        StorePhoto storePhoto = StorePhoto.builder()
+                .photoOrder(1)
+                .storePhoto(storeInfoPhoto)
+                .storePhotoId(1L)
+                .photoStatus(BaseStatus.ACTIVATE)
+                .storeType(StoreType.HOSPITAL)
+                .store(hospitalSuccess).build();
+
+        storePhotoList.add(storePhoto);
+
+        List<TagMapper> tagMapperList = new ArrayList<>();
+        TagMapper tagMapper = TagMapper.builder()
+                .tagMapperId(1L)
+                .hospitalTag(tag1)
+                .hospital(hospitalSuccess)
+                .build();
+        tagMapperList.add(tagMapper);
+
+        // When
+        when(photoService.handleThumbnail(thumbnailImg)).thenReturn(thumbnail);
+        when(hospitalRepository.save(any(Hospital.class))).thenReturn(hospitalSuccess);
+        when(hospitalTagRepository.findAllById(anyList())).thenReturn(tagList);
+//        when(hospitalServiceImpl.handleTags(any(), anyList())).thenReturn(tagMapperList);
+
+        // Then
+        String result = hospitalServiceImpl.registerHospital(hospitalImgList, storeInfoImg, thumbnailImg, hospitalDto);
+
+        //확인하고 싶은데 save 이후 영속성 컨텍스트에 객체의 아이디가 관리되는데 여기서 실제로 저장하지 않아서 테스트 불가... 추후 진행
+        assertThat(result).isEqualTo(hospitalSuccess.getStoreId().toString());
+
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+        verify(storePhotoRepository, times(0)).saveAll(storePhotoList);
+        verify(tagMapperRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    void registerHospital_성공_StoreInfoPhoto_NULL(){
+        MultipartFile hospitalImg = new MockMultipartFile("hospitalImg", "hospital.jpg", "image/jpeg", new byte[]{});
+        List<MultipartFile> hospitalImgList = Collections.singletonList(hospitalImg);
+        MultipartFile storeInfoImg = null;
+        MultipartFile thumbnailImg = new MockMultipartFile("thumbnailImg", "thumbnail.jpg", "image/jpeg", new byte[]{});
+
+
+        // Set other necessary fields for hospitalDto
+
+        PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
+        PhotoData storeInfoPhoto = new PhotoData("bucket", "object", "photoUrl");
+
+        List<StorePhoto> storePhotoList = new ArrayList<>();
+        StorePhoto storePhoto = StorePhoto.builder()
+                .photoOrder(1)
+                .storePhoto(storeInfoPhoto)
+                .storePhotoId(1L)
+                .photoStatus(BaseStatus.ACTIVATE)
+                .storeType(StoreType.HOSPITAL)
+                .store(hospitalSuccess).build();
+
+        storePhotoList.add(storePhoto);
+
+        List<TagMapper> tagMapperList = new ArrayList<>();
+        TagMapper tagMapper = TagMapper.builder()
+                .tagMapperId(1L)
+                .hospitalTag(tag1)
+                .hospital(hospitalSuccess)
+                .build();
+        tagMapperList.add(tagMapper);
+
+        // When
+        when(photoService.handleThumbnail(thumbnailImg)).thenReturn(thumbnail);
+        when(photoService.handleHospitalImgs(anyList(), any(Hospital.class))).thenReturn(storePhotoList);
+        when(hospitalRepository.save(any(Hospital.class))).thenReturn(hospitalSuccess);
+        when(hospitalTagRepository.findAllById(anyList())).thenReturn(tagList);
+//        when(hospitalServiceImpl.handleTags(any(), anyList())).thenReturn(tagMapperList);
+
+        // Then
+        String result = hospitalServiceImpl.registerHospital(hospitalImgList, storeInfoImg, thumbnailImg, hospitalDto);
+
+        //확인하고 싶은데 save 이후 영속성 컨텍스트에 객체의 아이디가 관리되는데 여기서 실제로 저장하지 않아서 테스트 불가... 추후 진행
+        assertThat(result).isEqualTo(hospitalSuccess.getStoreId().toString());
+        verify(hospitalRepository, times(1)).save(any(Hospital.class));
+        verify(storePhotoRepository, times(1)).saveAll(storePhotoList);
+        verify(tagMapperRepository, times(1)).saveAll(anyList());
     }
 
 

@@ -65,9 +65,7 @@ public record HospitalDto(
         if (hospitalDto == null) {
             throw new IllegalArgumentException("HospitalDto is null");
         }
-//        if (thumbnail == null) {
-//            throw new IllegalArgumentException("Thumbnail is null");
-//        }
+//thumbnail is Nullable
 
         Hospital hospital = Hospital.builder()
                 .additionalServiceTag(hospitalDto.additionalServiceTag())
