@@ -55,4 +55,8 @@ public class Banner extends BaseEntity {
     public String getImgKey() {
         return bannerImg.getObject();
     }
+
+    public String getImgUrl() {
+        return bannerImg.getPhotoUrl();
+    }
 }
