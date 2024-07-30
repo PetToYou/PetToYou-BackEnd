@@ -1,6 +1,8 @@
 package com.pettoyou.server.scrap.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
@@ -33,5 +35,11 @@ public class Scrap extends BaseEntity {
 
     public static Scrap of(Member member, Store store) {
         return new Scrap(member, store);
+    }
+
+    public void validateOwnerAuthorization(Long authMemberId) {
+        if (!this.member.getMemberId().equals(authMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
+        }
     }
 }

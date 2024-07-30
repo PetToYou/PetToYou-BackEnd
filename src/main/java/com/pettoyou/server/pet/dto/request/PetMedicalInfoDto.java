@@ -4,7 +4,9 @@ import com.pettoyou.server.pet.entity.enums.Bmi;
 import com.pettoyou.server.pet.entity.enums.NeuteringStatus;
 import com.pettoyou.server.pet.entity.enums.VaccinationStatus;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
+@Builder
 public record PetMedicalInfoDto(
         Double weight,
         Bmi bmi,

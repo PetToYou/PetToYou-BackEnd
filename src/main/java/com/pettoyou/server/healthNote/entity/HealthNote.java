@@ -1,6 +1,8 @@
 package com.pettoyou.server.healthNote.entity;
 
 import com.pettoyou.server.constant.entity.BaseEntity;
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -56,5 +58,11 @@ public class HealthNote extends BaseEntity {
         this.vetName = modifyReqDto.vetName();
         this.storeId = modifyReqDto.hospitalId();
         this.petId = modifyReqDto.petId();
+    }
+
+    public void validateMemberAuthorization(Long authMemberId) {
+        if (!this.memberId.equals(authMemberId)) {
+            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
+        }
     }
 }

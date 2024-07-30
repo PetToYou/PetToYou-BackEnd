@@ -46,4 +46,13 @@ public class PetMedicalInfo {
                 .medicalHistory(petMedicalInfoDto.medicalHistory())
                 .build();
     }
+
+    public String getFormatWeight() {
+        if (this.weight == null) {
+            return null;
+        }
+
+        if (this.weight % 1 != 0) return String.valueOf(this.weight);
+        return String.valueOf(this.weight.intValue());
+    }
 }

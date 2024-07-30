@@ -10,12 +10,11 @@ public record BannerQueryRespDto(
     String bannerImgUrl,
     String bannerLink
 ) {
-
     public static BannerQueryRespDto from(Banner banner) {
         return new BannerQueryRespDto(
                 banner.getBannerId(),
                 banner.getBannerName(),
-                banner.getBannerImg().getPhotoUrl(),
+                banner.getBannerImg() == null ? "empty" : banner.getImgUrl(),
                 banner.getBannerLink());
     }
 }

@@ -4,7 +4,6 @@ import com.pettoyou.server.healthNote.entity.HealthNote;
 import lombok.Builder;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Builder
 public record HealthNoteDetailInfoDto(
@@ -15,10 +14,6 @@ public record HealthNoteDetailInfoDto(
         String caution,
         String vetName
 ) {
-    public HealthNoteDetailInfoDto{
-        if (Objects.isNull(vetName)) vetName = "empty";
-    }
-
     public static HealthNoteDetailInfoDto of(
             HealthNote healthNote,
             String petName,

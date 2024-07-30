@@ -5,6 +5,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import com.pettoyou.server.healthNote.entity.HealthNote;
 import com.pettoyou.server.healthNote.repository.HealthNoteRepository;
+import com.pettoyou.server.hospital.repository.HospitalRepository;
 import com.pettoyou.server.pet.repository.PetRepository;
 import com.pettoyou.server.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     private final HealthNoteRepository healthNoteRepository;
     private final StoreRepository storeRepository;
     private final PetRepository petRepository;
+    private final HospitalRepository hospitalRepository;
 
     @Override
     @Transactional
@@ -34,7 +36,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     public void modifyHealthNote(Long healthNoteId, HealthNoteRegistAndModifyReqDto modifyReqDto, Long authMemberId) {
         HealthNote findHealthNote = fetchHealthNoteById(healthNoteId);
 
-        checkMemberAuthorization(findHealthNote.getMemberId(), authMemberId);
+        findHealthNote.validateMemberAuthorization(authMemberId);
         checkValidHospital(modifyReqDto.hospitalId());
         checkValidPet(modifyReqDto.petId(), authMemberId);
 
@@ -44,8 +46,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     @Override
     public void deleteHealthNote(Long healthNoteId, Long authMemberId) {
         HealthNote findHealthNote = fetchHealthNoteById(healthNoteId);
-
-        checkMemberAuthorization(findHealthNote.getMemberId(), authMemberId);
+        findHealthNote.validateMemberAuthorization(authMemberId);
 
         healthNoteRepository.delete(findHealthNote);
     }
@@ -57,8 +58,7 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
     }
 
     private void checkValidHospital(Long hospitalId) {
-        // Todo : 준혁이거 pull받아오면 store type 비교해서 진짜 병원인지 따져보기
-        storeRepository.findById(hospitalId).orElseThrow(() ->
+        hospitalRepository.findById(hospitalId).orElseThrow(() ->
                 new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND)
         );
     }
@@ -67,12 +67,5 @@ public class HealthNoteCommandServiceImpl implements HealthNoteCommandService {
         petRepository.findPetUsingPetIdAndMemberId(petId, authMemberId).orElseThrow(() ->
                 new CustomException(CustomResponseStatus.PET_NOT_FOUND)
         );
-    }
-
-    private void checkMemberAuthorization(Long healthNoteWriterId, Long authMemberId) {
-        log.info("글쓴이 : {}, 로그인한 애 : {}", healthNoteWriterId, authMemberId);
-        if (!healthNoteWriterId.equals(authMemberId)) {
-            throw new CustomException(CustomResponseStatus.MEMBER_NOT_MATCH);
-        }
     }
 }
