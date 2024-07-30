@@ -21,12 +21,13 @@ public class MemberAuthController {
     private final AuthService authService;
 
     // 로그인 및 강제 회원가입
-    @PostMapping("/kakao")
+    @GetMapping("/kakao/callback")
     public ResponseEntity<ApiResponse<LoginAndReissueRespDto>> loginKakao(
-            @RequestBody KakaoLoginParam kakaoLoginParam,
+            @RequestParam String code,
             HttpServletResponse response
     ) {
-        AuthTokens authTokens = authService.signIn(kakaoLoginParam);
+        AuthTokens authTokens = authService.signIn(KakaoLoginParam.from(code));
+        log.info("code : {}", code);
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
@@ -37,13 +38,13 @@ public class MemberAuthController {
         return ApiResponse.createSuccessWithOk(LoginAndReissueRespDto.from(authTokens));
     }
 
-    @PostMapping("/naver")
+    @GetMapping("/naver/callback")
     public ResponseEntity<ApiResponse<LoginAndReissueRespDto>> loginNaver(
-            @RequestBody NaverLoginParam naverLoginParam,
+            @RequestParam String code,
+            @RequestParam String state,
             HttpServletResponse response
     ) {
-        AuthTokens authTokens = authService.signIn(naverLoginParam);
-
+        AuthTokens authTokens = authService.signIn(NaverLoginParam.of(code, state));
         Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
