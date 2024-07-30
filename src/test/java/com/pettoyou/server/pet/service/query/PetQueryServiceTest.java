@@ -12,6 +12,7 @@ import com.pettoyou.server.pet.entity.enums.Gender;
 import com.pettoyou.server.pet.entity.enums.PetType;
 import com.pettoyou.server.pet.entity.enums.Species;
 import com.pettoyou.server.pet.repository.PetRepository;
+import com.pettoyou.server.photo.entity.PhotoData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,7 +45,7 @@ class PetQueryServiceTest {
     void 반려동물_정상_조회() {
         // given
         Member member = createMember();
-        List<PetSimpleInfoDto> petList = createPetSimpleDtoList(member);
+        List<PetSimpleInfoDto> petList = createPetSimpleDtoList();
 
         when(petRepository.findAllPetsByMemberId(any(Long.class))).thenReturn(petList);
 
@@ -57,7 +58,22 @@ class PetQueryServiceTest {
             assertThat(result.get(i).petId()).isEqualTo(petList.get(i).petId());
             assertThat(result.get(i).petName()).isEqualTo(petList.get(i).petName());
             assertThat(result.get(i).age()).isEqualTo(petList.get(i).age());
+            assertThat(result.get(i).gender()).isIn("남아", "여아", "알수없음");
         }
+    }
+
+    @Test
+    void 반려동물이_없는_경우_빈_리스트_반환() {
+        // given
+        List<PetSimpleInfoDto> emptyList = createEmptyPetSimpleDtoList();
+
+        when(petRepository.findAllPetsByMemberId(any(Long.class))).thenReturn(emptyList);
+
+        // when
+        List<PetSimpleInfoDto> result = petQueryService.queryPetList(1L);
+
+        // then
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -81,13 +97,13 @@ class PetQueryServiceTest {
         // given
         Member member = createMember();
         Pet pet = createPet(member);
+        long wrongPetId = pet.getPetId() + 1;
 
         when(petRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
-        //then
+        // then
         assertThatExceptionOfType(CustomException.class)
-                // when
-                .isThrownBy(() -> petQueryService.fetchPetDetailInfo(pet.getPetId() + 1, member.getMemberId()))
+                .isThrownBy(() -> petQueryService.fetchPetDetailInfo(wrongPetId, member.getMemberId()))
                 .withMessage(CustomResponseStatus.PET_NOT_FOUND.getMessage());
     }
 
@@ -96,17 +112,18 @@ class PetQueryServiceTest {
         // given
         Member member = createMember();
         Pet pet = createPet(member);
+        long wrongMemberId = member.getMemberId() + 1;
 
         when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
 
         //then
         assertThatExceptionOfType(CustomException.class)
                 // when
-                .isThrownBy(() -> petQueryService.fetchPetDetailInfo(pet.getPetId(), member.getMemberId() + 1))
+                .isThrownBy(() -> petQueryService.fetchPetDetailInfo(pet.getPetId(), wrongMemberId))
                 .withMessage(CustomResponseStatus.MEMBER_NOT_MATCH.getMessage());
     }
 
-    private List<PetSimpleInfoDto> createPetSimpleDtoList(Member member) {
+    private List<PetSimpleInfoDto> createPetSimpleDtoList() {
         List<PetSimpleInfoDto> list = new ArrayList<>();
 
         for(long i=0; i<5; i++) {
@@ -114,12 +131,17 @@ class PetQueryServiceTest {
                     PetSimpleInfoDto.builder()
                             .petId(i)
                             .petName("pet"+i)
+                            .gender("남아")
                             .age(String.valueOf(i))
                             .build()
             );
         }
 
         return list;
+    }
+
+    private List<PetSimpleInfoDto> createEmptyPetSimpleDtoList() {
+        return new ArrayList<>();
     }
 
     private PetDetailInfoRespDto createPetDetailInfoDto() {
@@ -139,6 +161,9 @@ class PetQueryServiceTest {
                 .birth(LocalDate.of(2023, 7, 27))
                 .petType(PetType.DOG)
                 .gender(Gender.MALE)
+                .profilePhotoData(
+                        PhotoData.generateDefaultPetProfilePhotoData()
+                )
                 .build();
     }
 

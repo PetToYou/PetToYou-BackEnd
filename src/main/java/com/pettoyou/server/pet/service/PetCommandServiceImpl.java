@@ -30,18 +30,11 @@ public class PetCommandServiceImpl implements PetCommandService {
             Long authMemberId
     ) {
         Member member = findMemberById(authMemberId);
+        PhotoData photoData = processPhotoData(petProfileImg, null);
 
-        PhotoData photoData;
-        if (petProfileImg != null) {
-            photoData = s3Util.uploadFile(petProfileImg);
-        } else {
-            photoData = PhotoData.generateDefaultPetProfilePhotoData();
-        }
+        Pet registeredPet = petRepository.save(Pet.of(petRegisterDto, photoData, member));
 
-        Pet registerPet = Pet.of(petRegisterDto, photoData, member);
-        petRepository.save(registerPet);
-
-        return PetRegisterRespDto.from(registerPet.getPetName());
+        return PetRegisterRespDto.from(registeredPet.getPetName());
     }
 
     @Override
@@ -54,13 +47,7 @@ public class PetCommandServiceImpl implements PetCommandService {
         Pet pet = findPetById(petId);
         pet.validateOwnerAuthorization(authMemberId);
 
-        PhotoData newPhotoData;
-        if (petProfileImg != null) {
-            s3Util.deleteFile(pet.getProfilePhotoData().getBucket(), pet.getProfilePhotoData().getObject());
-            newPhotoData = s3Util.uploadFile(petProfileImg);
-        } else {
-            newPhotoData = PhotoData.generateDefaultPetProfilePhotoData();
-        }
+        PhotoData newPhotoData = processPhotoData(petProfileImg, pet.getProfilePhotoData());
 
         pet.modify(petModifyDto, newPhotoData);
     }
@@ -74,6 +61,16 @@ public class PetCommandServiceImpl implements PetCommandService {
         pet.validateOwnerAuthorization(authMemberId);
 
         petRepository.delete(pet);
+    }
+
+    private PhotoData processPhotoData(MultipartFile petProfileImg, PhotoData existingPhotoData) {
+        if (petProfileImg != null && !petProfileImg.isEmpty()) {
+            if (existingPhotoData != null) {
+                s3Util.deleteFile(existingPhotoData.getBucket(), existingPhotoData.getObject());
+            }
+            return s3Util.uploadFile(petProfileImg);
+        }
+        return PhotoData.generateDefaultPetProfilePhotoData();
     }
 
     private Member findMemberById(Long memberId) {

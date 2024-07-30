@@ -8,6 +8,7 @@ import com.pettoyou.server.pet.dto.response.PetRegisterRespDto;
 import com.pettoyou.server.pet.dto.response.PetSimpleInfoDto;
 import com.pettoyou.server.pet.service.PetCommandService;
 import com.pettoyou.server.pet.service.query.PetQueryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class PetController {
     @PostMapping("/pet")
     public ResponseEntity<ApiResponse<PetRegisterRespDto>> petRegister(
             @RequestPart(required = false, value = "petProfileImg") MultipartFile petProfileImg,
-            @RequestPart(value = "petRegisterDto") PetRegisterAndModifyReqDto petRegisterDto,
+            @RequestPart(value = "petRegisterDto") @Valid PetRegisterAndModifyReqDto petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         PetRegisterRespDto response = petCommandService.petRegister(petProfileImg, petRegisterDto, principalDetails.getUserId());
@@ -39,7 +40,7 @@ public class PetController {
     public ResponseEntity<ApiResponse<String>> petModify(
             @PathVariable Long id,
             @RequestPart(required = false, value = "petProfileImg") MultipartFile petProfileImg,
-            @RequestPart(value = "petModifyDto") PetRegisterAndModifyReqDto petRegisterDto,
+            @RequestPart(value = "petModifyDto") @Valid PetRegisterAndModifyReqDto petRegisterDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         petCommandService.petModify(id, petProfileImg, petRegisterDto, principalDetails.getUserId());
