@@ -54,6 +54,8 @@ public class Pet extends BaseEntity {
 
     private LocalDate adoptionDate;
 
+    private String caution;
+
     @Enumerated(EnumType.STRING)
     private BaseStatus petStatus;
 
@@ -84,6 +86,7 @@ public class Pet extends BaseEntity {
                 .petMedicalInfo(PetMedicalInfo.from(registerDto.petMedicalInfoDto()))
                 .member(member)
                 .petStatus(BaseStatus.ACTIVATE)
+                .caution(registerDto.caution())
                 .profilePhotoData(profilePhotoData)
                 .build();
     }
@@ -94,6 +97,7 @@ public class Pet extends BaseEntity {
         this.birth = modifyDto.birth();
         this.petType = modifyDto.petType();
         this.adoptionDate = modifyDto.adoptionDate();
+        this.caution = modifyDto.caution();
         this.petMedicalInfo = PetMedicalInfo.from(modifyDto.petMedicalInfoDto());
         this.profilePhotoData = newPhoto;
     }
