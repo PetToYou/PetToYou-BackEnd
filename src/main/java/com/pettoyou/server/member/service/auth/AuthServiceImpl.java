@@ -41,16 +41,23 @@ public class AuthServiceImpl implements AuthService {
     private static final String RT = "RT:";
     private static final String LOGOUT = "LOGOUT:";
 
-    @Transactional
     @Override
     public AuthTokens signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
-        Member findMember = findByEmail(oAuthInfoResponse.getEmail()).orElseGet(() -> forceJoin(oAuthInfoResponse));
+
+        Member findMember = findByPhone(oAuthInfoResponse.getPhone())
+                .orElseGet(() -> forceJoin(oAuthInfoResponse));
+
+        if (findMember.getProvider() != param.oAuthProvider()) {
+            throw new CustomException(CustomResponseStatus.ALREADY_REGISTERED_WITH_DIFFERENT_PROVIDER);
+        }
+
         String refreshToken = redisUtil.getData(RT + findMember.getEmail());
         if (refreshToken == null) {
             refreshToken = jwtUtil.createToken(findMember.getEmail(), TokenType.REFRESH_TOKEN);
             redisUtil.setData(RT + findMember.getEmail(), refreshToken, jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
         }
+
         return authTokenGenerator.generate(findMember.getEmail(), refreshToken);
     }
 
@@ -96,5 +103,9 @@ public class AuthServiceImpl implements AuthService {
 
     private Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    private Optional<Member> findByPhone(String phone) {
+        return memberRepository.findByPhone(phone);
     }
 }

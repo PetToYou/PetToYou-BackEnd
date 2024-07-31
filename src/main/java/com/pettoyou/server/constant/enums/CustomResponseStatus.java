@@ -22,6 +22,7 @@ public enum CustomResponseStatus {
      */
     ACCESS_DENIED(HttpStatus.FORBIDDEN.value(), "3000", "권한이 없습니다."),
     LOGOUT_MEMBER(HttpStatus.FORBIDDEN.value(), "3001", "로그아웃된 사용자입니다."),
+    ALREADY_REGISTERED_WITH_DIFFERENT_PROVIDER(HttpStatus.CONFLICT.value(), "3002", "다른 소셜 로그인 계정으로 가입한 사용자입니다."),
 
     /***
      * 4000: NOT_FOUND
