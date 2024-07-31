@@ -6,6 +6,8 @@ import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoInfoResponse implements OAuthInfoResponse {
@@ -30,6 +32,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
         // 예시로 닉네임이지. 추가로 프사 url 정보도 여기서 받아오면 됨
         private String nickname;
     }
+
     @Override
     public String getEmail() {
         return kakaoAccount.getEmail();
@@ -42,7 +45,10 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
 
     @Override
     public String getPhone() {
-        return kakaoAccount.getPhone_number();
+        if (Objects.isNull(kakaoAccount.getPhone_number())) {
+            return "NOT-REGIST";
+        }
+        return kakaoAccount.getPhone_number().replaceFirst("\\+82\\s?10-", "010-");
     }
 
     @Override

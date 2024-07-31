@@ -37,7 +37,7 @@ public class Member extends BaseEntity {
     private String nickName; // 따로 받아야됨
 
     @Column(nullable = false)
-    private String phone; // 따로 받아야됨
+    private String phone; // 따로 받아야됨, 전화번호를 등록안한 유저의 경우엔 날라오지 않음.
 
     @Column(unique = true, nullable = false)
     private String email; // 따로 받아야됨
@@ -107,12 +107,3 @@ public class Member extends BaseEntity {
         }
     }
 }
-
-//Member
-//-
-//MemberId PK long IDENTITY
-//Name string
-//Nickname string
-//Phone string
-//Provider string # APPLE, KAKAO, NAVER
-//MemberStatus string # ACTIVATE, DEACTIVATE, DORMANT
