@@ -2,16 +2,23 @@ package com.pettoyou.server.auth.naver;
 
 import com.pettoyou.server.auth.OAuthLoginParams;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class NaverLoginParam implements OAuthLoginParams {
     private String authorizationCode;
     private String state;
+
+    public static NaverLoginParam of(String authorizationCode, String state) {
+        return new NaverLoginParam(authorizationCode, state);
+    }
 
     @Override
     public OAuthProvider oAuthProvider() {
