@@ -23,27 +23,27 @@ import org.locationtech.jts.io.WKTReader;
 @Builder
 @Slf4j
 public class AddressDto {
-    @NotNull
+    @NotNull(message = "우편번호를 입력해주세요")
     @Pattern(regexp = "^\\d{3}-\\d{2}$")
     private String zipCode;
 
-    @NotNull
+    @NotNull(message = "주소(시도)를 입력해주세요")
     private String sido;
 
-    @NotNull
+    @NotNull(message = "주소(시군구)를 입력해주세요")
     private String sigungu;
 
     private String eupmyun;
 
-    @NotNull
+    @NotNull(message = "도로명주소를 입력해주세요")
     private String doro;
 
     private String addressDetail;
 
-    @NotNull
+    @NotNull(message = "위도를 입력해주세요")
     private double latitude;
 
-    @NotNull
+    @NotNull(message = "경도를 입력해주세요")
     private double longitude;
 
     public static Address toEntity(AddressDto addressDto) {

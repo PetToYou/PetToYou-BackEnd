@@ -5633,9 +5633,9 @@ values (1, 'Parking available, Zero - pay accepted'),
 #        (2, 'Winter Wellness', 'https://example.com/winter-wellness', 'https://example.com/winter-wellness-img.jpg', 'ACTIVATE');
 
 -- Inserting data into member
-insert into member (member_id, name, nick_name, email, phone, provider, member_status)
-values (1, 'John Doe', 'Johnny', 'email1@naver.com', '01012345678', 'KAKAO', 'ACTIVATE'),
-       (2, 'Jane Doe', 'Janey', 'email2@gmail.com', '01087654321', 'APPLE', 'DORMANT');
+insert into member (member_id, provider_id, name, nick_name, email, phone, provider, member_status)
+values (1, '1', 'John Doe', 'Johnny', 'email1@naver.com', '01012345678', 'KAKAO', 'ACTIVATE'),
+       (2, '1', 'Jane Doe', 'Janey', 'email2@gmail.com', '01087654321', 'APPLE', 'DORMANT');
 
 -- Inserting data into alarm (Assuming Member data exists)
 insert into alarm (alarm_id, member_id, alarm_title, alarm_content, alarm_type, alarm_status)

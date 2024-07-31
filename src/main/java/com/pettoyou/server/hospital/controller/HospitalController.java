@@ -9,6 +9,7 @@ import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.service.HospitalService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "Hospital", description = "Hospital 관련 API 입니다.")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/hospital")
 @Slf4j

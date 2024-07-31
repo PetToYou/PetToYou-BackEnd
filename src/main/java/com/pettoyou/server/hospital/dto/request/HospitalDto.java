@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 @Builder
 public record HospitalDto(
-        @NotNull @Size(min = 2, max = 20) String hospitalName,
-        @NotNull @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$") String hospitalPhone,
+        @NotNull(message = "병원 이름을 입력해주세요") @Size(min = 2, max = 20, message = "최소2글자, 최대20글자") String hospitalName,
+        @NotNull(message = "올바른 전화번호 형식을 지켜주세요") @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$") String hospitalPhone,
         String notice,
         String additionalServiceTag,
         String websiteLink,

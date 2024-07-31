@@ -296,21 +296,19 @@ class HospitalServiceImplTest {
         assertThat(hospital1.getNotice()).isEqualTo("notice");
         assertThat(hospital1.getWebsiteLink()).isEqualTo("websiteLink");
         assertThat(hospital1.getStoreInfoPhoto()).usingRecursiveComparison().isEqualTo(storeInfoPhoto); // Assuming hospitalWithStoreInfoImg
- sets this
         assertThat(hospital1.getThumbnail()).usingRecursiveComparison().isEqualTo(thumbnail); //
     }
 
     @Test
     @DisplayName("StoreInfo사진 null 테스트")
-    void hospitalWithStoreInfoImg
-_storeInfoPhotoIsNull() throws Exception {
+    void hospitalWithStoreInfoImg_storeInfoPhotoIsNull() throws Exception {
         //given
 
         MultipartFile storeInfoImg = mock(MultipartFile.class);
         PhotoData thumbnail = new PhotoData("thumbnail", "thumbnail", "thumbnail");
         PhotoData storeInfoPhoto = null;
 
-        //when
+        //wheng
         when(photoService.uploadImage(any(MultipartFile.class))).thenReturn(null);
         Hospital hospital1 = hospitalServiceImpl.hospitalWithStoreInfoImg
 (storeInfoImg, hospitalDto, thumbnail);
