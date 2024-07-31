@@ -5,6 +5,7 @@ import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
+import com.pettoyou.server.member.dto.request.MemberInfoModifyReqDto;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.pet.entity.Pet;
@@ -87,6 +88,10 @@ public class Member extends BaseEntity {
                 .providerId(joinParam.getId())
                 .memberStatus(MemberStatus.ACTIVATE)
                 .build();
+    }
+
+    public void modifyInfo(String newNickname) {
+        this.nickName = newNickname;
     }
 
     @Builder

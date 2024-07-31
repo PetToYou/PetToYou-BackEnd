@@ -4,15 +4,15 @@ import com.pettoyou.server.member.entity.Member;
 import lombok.Builder;
 
 @Builder
-public record MemberQueryInfoDto(
+public record MemberInfoQueryDto(
         Long memberId,
         String name,
         String nickname,
         String phone,
         String email
 ) {
-    public static MemberQueryInfoDto from(Member member) {
-        return MemberQueryInfoDto.builder()
+    public static MemberInfoQueryDto from(Member member) {
+        return MemberInfoQueryDto.builder()
                 .memberId(member.getMemberId())
                 .name(member.getName())
                 .nickname(member.getNickName())

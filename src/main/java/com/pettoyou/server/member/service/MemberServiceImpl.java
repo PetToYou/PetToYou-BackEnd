@@ -2,7 +2,8 @@ package com.pettoyou.server.member.service;
 
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
-import com.pettoyou.server.member.dto.response.MemberQueryInfoDto;
+import com.pettoyou.server.member.dto.request.MemberInfoModifyReqDto;
+import com.pettoyou.server.member.dto.response.MemberInfoQueryDto;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -16,11 +17,22 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Override
-    public MemberQueryInfoDto queryMemberInfo(Long authId) {
-        Member member = memberRepository.findById(authId).orElseThrow(() ->
+    public void modifyMemberInfo(MemberInfoModifyReqDto modifyDto, Long authMemberId) {
+        Member member = findMemberById(authMemberId);
+
+        member.modifyInfo(modifyDto.newNickname());
+    }
+
+    @Override
+    public MemberInfoQueryDto queryMemberInfo(Long authMemberId) {
+        Member member = findMemberById(authMemberId);
+
+        return MemberInfoQueryDto.from(member);
+    }
+
+    private Member findMemberById(Long authMemberId) {
+        return memberRepository.findById(authMemberId).orElseThrow(() ->
                 new CustomException(CustomResponseStatus.MEMBER_NOT_FOUND)
         );
-
-        return MemberQueryInfoDto.from(member);
     }
 }
