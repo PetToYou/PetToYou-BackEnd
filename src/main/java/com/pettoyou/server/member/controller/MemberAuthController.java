@@ -27,7 +27,6 @@ public class MemberAuthController {
             HttpServletResponse response
     ) {
         AuthTokens authTokens = authService.signIn(KakaoLoginParam.from(code));
-        log.info("code : {}", code);
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
@@ -45,6 +44,7 @@ public class MemberAuthController {
             HttpServletResponse response
     ) {
         AuthTokens authTokens = authService.signIn(NaverLoginParam.of(code, state));
+
         Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
