@@ -1,5 +1,7 @@
 package com.pettoyou.server.member.service;
 
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.dto.request.MemberInfoModifyReqDto;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
@@ -14,6 +16,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -30,13 +35,29 @@ class MemberServiceTest {
         Member member = createMember();
         MemberInfoModifyReqDto modifyReqDto = createModifyReqDto();
 
-        Mockito.when(memberRepository.findById(member.getMemberId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
         // when
         memberService.modifyMemberInfo(modifyReqDto, member.getMemberId());
 
         // then
-        Assertions.assertThat(member.getNickName()).isEqualTo(modifyReqDto.newNickname());
+        assertThat(member.getNickName()).isEqualTo(modifyReqDto.newNickname());
+    }
+
+    @Test
+    void 유저_id가_잘못된_경우_수정요청시_예외_발생() {
+        // given
+        Member member = createMember();
+        MemberInfoModifyReqDto modifyReqDto = createModifyReqDto();
+        long wrongMemberId = member.getMemberId() + 1;
+
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> memberService.modifyMemberInfo(modifyReqDto, wrongMemberId))
+                .withMessage(CustomResponseStatus.MEMBER_NOT_FOUND.getMessage());
     }
 
     private MemberInfoModifyReqDto createModifyReqDto() {
