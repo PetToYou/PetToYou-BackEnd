@@ -34,11 +34,12 @@ public enum CustomResponseStatus {
     PET_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4004", "해당 반려동물을 찾을 수 없습니다."),
     BANNER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4005", "해당 배너를 찾을 수 없습니다."),
     HOSPITAL_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4006", "해당 병원을 찾을 수 없습니다."),
+    //정상응답
     SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4007", "해당 스크랩을 찾을 수 없습니다."),
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4008", "해당 매장을 찾을 수 없습니다."),
     HEALTH_NOTE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4009", "해당 건강수첩을 찾을 수 없습니다."),
-    STOREPHOTO_NOT_FOUND(HttpStatus.NO_CONTENT.value(), "4010", "해당 병원의 사진을 찾을 수 없습니다."),
-
+    STORE_PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "4010", "해당 병원의 사진을 찾을 수 없습니다."),
+    //정상응답, no content
     /***
      * 5000: NOT_MATCH
      */
@@ -59,7 +60,9 @@ public enum CustomResponseStatus {
     /***
      * 7000: InValid
      */
-    INVALID_ERROR(HttpStatus.BAD_REQUEST.value(), "7000", "유효하지 않은 데이터입니다.");
+    INVALID_ERROR(HttpStatus.BAD_REQUEST.value(), "7000", "유효하지 않은 데이터입니다."),
+    INVALID_LATITUDE_ERROR(HttpStatus.BAD_REQUEST.value(), "7001", "위도를 정확하게 입력해주세요 : 34~44"),
+    INVALID_LONGITUDE_ERROR(HttpStatus.BAD_REQUEST.value(), "7002", "경도를 정확하게 입력해주세요 : 124~134");
 
     private final int httpStatusCode;
     private final String code;

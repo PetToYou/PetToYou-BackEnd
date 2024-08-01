@@ -23,37 +23,38 @@ import org.locationtech.jts.io.WKTReader;
 @Builder
 @Slf4j
 public class AddressDto {
-    @NotNull
+    @NotNull(message = "우편번호를 입력해주세요")
     @Pattern(regexp = "^\\d{3}-\\d{2}$")
     private String zipCode;
 
-    @NotNull
+    @NotNull(message = "주소(시도)를 입력해주세요")
     private String sido;
 
-    @NotNull
+    @NotNull(message = "주소(시군구)를 입력해주세요")
     private String sigungu;
 
     private String eupmyun;
 
-    @NotNull
+    @NotNull(message = "도로명주소를 입력해주세요")
     private String doro;
 
     private String addressDetail;
 
-    @NotNull
+    @NotNull(message = "위도를 입력해주세요")
     private double latitude;
 
-    @NotNull
+    @NotNull(message = "경도를 입력해주세요")
     private double longitude;
 
     public static Address toEntity(AddressDto addressDto) {
 
-        if (addressDto.longitude < 124 || addressDto.longitude > 134) {
-            throw new IllegalArgumentException("경도를 정확하게 입력해주세요 : 124~134");
+        if (addressDto.longitude < 124.0 || addressDto.longitude > 134.0) {
+            throw new CustomException(CustomResponseStatus.INVALID_LONGITUDE_ERROR);
         }
         if (addressDto.latitude < 34 || addressDto.latitude > 44) {
-            throw new IllegalArgumentException("위도를 정확하게 입력해주세요 34~44");
+            throw new CustomException(CustomResponseStatus.INVALID_LATITUDE_ERROR);
         }
+
 
         String pointWKT = (String.format("POINT(%s %s)", addressDto.longitude, addressDto.latitude));
         Point point = null;

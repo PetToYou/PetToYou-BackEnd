@@ -1,13 +1,16 @@
 package com.pettoyou.server.hospital.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.pettoyou.server.hospital.dto.HospitalTagDto;
+import com.pettoyou.server.hospital.entity.HospitalTag;
 import com.pettoyou.server.store.dto.response.AddressDto;
-import com.pettoyou.server.store.dto.response.TagInfo;
 import com.pettoyou.server.store.entity.Address;
 import com.pettoyou.server.store.entity.BusinessHour;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+
+import java.util.List;
 
 /**
  * DTO for {@link com.pettoyou.server.hospital.entity.Hospital}
@@ -21,14 +24,21 @@ public record HospitalDtoWithAddress(
         AddressDto addressDto,
         //response/dto
         Times time,
-        TagInfo tags) {
+        HospitalTagDto tags) {
     public HospitalDtoWithAddress(
             Long storeId,
             String storeName,
             String thumbnailUrl,
             Address address,
-            BusinessHour businessHour) {
-        this(storeId, storeName, thumbnailUrl, AddressDto.toDto(address), businessHour != null ? Times.of(businessHour) : null, null);
+            BusinessHour businessHour,
+            List<HospitalTag> tags
+    ) {
+        this(storeId,
+                storeName,
+                thumbnailUrl,
+                AddressDto.toDto(address),
+                businessHour != null ? Times.of(businessHour) : null,
+                HospitalTagDto.toDto(tags));
     }
 
     // *********null 수정 필요 {@link com.pettoyou.server.Times.java} *************//

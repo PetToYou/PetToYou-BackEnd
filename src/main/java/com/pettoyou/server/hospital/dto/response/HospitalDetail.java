@@ -1,23 +1,16 @@
 package com.pettoyou.server.hospital.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.hospital.dto.HospitalTagDto;
 import com.pettoyou.server.hospital.entity.Hospital;
 import com.pettoyou.server.hospital.entity.HospitalTag;
 import com.pettoyou.server.store.dto.RegistrationInfoDto;
-import com.pettoyou.server.store.dto.response.BusinessHourDto;
-import com.pettoyou.server.store.dto.response.StorePhotoDto;
 import com.pettoyou.server.store.entity.Address;
-import com.pettoyou.server.store.entity.BusinessHour;
-import com.pettoyou.server.store.entity.RegistrationInfo;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Builder
 public record HospitalDetail(
@@ -54,7 +47,7 @@ public record HospitalDetail(
                 .address(hospital.getAddress())
                 .businessHours(businessHours)
                 .registrationInfo(hospital.getRegistrationInfo() == null ? null :RegistrationInfoDto.Response.toDto(hospital.getRegistrationInfo()))
-                .hospitalTags(HospitalTagDto.toDtoFromTags(tagList))
+                .hospitalTags(HospitalTagDto.toDto(tagList))
                 .build();
     }
 

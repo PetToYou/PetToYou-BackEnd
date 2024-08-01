@@ -116,7 +116,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     public List<TagMapper> handleTags(Hospital hospital, List<Long> tagIds) {
         List<HospitalTag> tags = hospitalTagRepository.findAllById(tagIds);
-        return HospitalTagDto.toEntity(hospital, tags);
+        return HospitalTag.toEntity(hospital, tags);
     }
 
     // Get 요일 숫자 데이터 1~7

@@ -9,5 +9,5 @@ import java.io.Serializable;
 /**
  * DTO for {@link com.pettoyou.server.store.entity.Store}
  */
-public record HosptialSearchQueryInfo(@NotNull @Size(min = 2)  String storeName) implements Serializable {
+public record HosptialSearchQueryInfo(@NotNull @Size(min = 2, message = "최소 2글자 이상 입력해주세요")  String storeName) implements Serializable {
 }

@@ -4,6 +4,7 @@ import com.pettoyou.server.constant.dto.ApiResponse;
 import com.pettoyou.server.hospital.dto.request.HospitalDto;
 import com.pettoyou.server.hospital.service.HospitalService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Hospital", description = "Hospital 관련 API 입니다.")
 @RequestMapping("/api/v1/admin/hospital")
 @Slf4j
 public class HospitalControllerAdmin {
