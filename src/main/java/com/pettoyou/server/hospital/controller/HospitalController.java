@@ -10,6 +10,7 @@ import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.service.HospitalService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,12 +38,14 @@ public class HospitalController {
         log.info("queryInfo : {}", queryInfo);
         log.info("queryCond : {}", queryCond);
 
+
+
         Page<HospitalDtoWithDistance> response = hospitalService.getHospitalsTest(pageable, queryInfo, queryCond);
         return ApiResponse.createSuccessWithOk(response);
     }
     //병원 검색 조회
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Page<HospitalDtoWithAddress>>> getSearchHospitalList(Pageable pageable, @ModelAttribute HosptialSearchQueryInfo queryInfo){
+    public ResponseEntity<ApiResponse<Page<HospitalDtoWithAddress>>> getSearchHospitalList(Pageable pageable, @Valid @ModelAttribute HosptialSearchQueryInfo queryInfo){
         Page<HospitalDtoWithAddress> response = hospitalService.getHospitalSearch(pageable, queryInfo);
         return ApiResponse.createSuccessWithOk(response);
     }

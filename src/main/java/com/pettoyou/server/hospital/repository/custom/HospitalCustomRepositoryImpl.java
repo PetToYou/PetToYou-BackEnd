@@ -71,7 +71,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .leftJoin(hospital.reviews, review)
                 .where(
                         inDistance(point, queryCond.radius()),
-                        hospitalTagsEqSubQuery(queryCond.tagIdList()),
+                        hospitalTagsEqSubQuery(queryCond.getTagIdList()),
                         openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
                 )
                 .limit(pageable.getPageSize())
@@ -108,7 +108,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .from(hospital)
                 .where(
                         inDistance(point, queryCond.radius()),
-                        hospitalTagsEqSubQuery(queryCond.tagIdList()),
+                        hospitalTagsEqSubQuery(queryCond.getTagIdList()),
                         openHospitalSubQuery(queryCond.openCond(), Time.valueOf(now), dayOfWeek)
                 );
 
@@ -167,7 +167,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
 //                .fetchOne();
 
         if (content == null) {
-            throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
+            throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
         }
         //페이징 최적화
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);

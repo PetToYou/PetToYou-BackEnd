@@ -207,10 +207,10 @@ class HospitalServiceImplTest {
 
         assertThat(hospitalDetail).isNotNull();
         assertThat(hospitalDetail.hospitalId()).isEqualTo(hospitalId);
-        assertThat(hospitalDetail.hospitalTags().services()).isEqualTo(null);
-        assertThat(hospitalDetail.hospitalTags().specialities()).isEqualTo(null);
-        assertThat(hospitalDetail.hospitalTags().businessHours()).isEqualTo(null);
-        assertThat(hospitalDetail.hospitalTags().emergency()).isEqualTo(null);
+        assertThat(hospitalDetail.hospitalTags().services()).isEmpty();
+        assertThat(hospitalDetail.hospitalTags().specialities()).isEmpty();
+        assertThat(hospitalDetail.hospitalTags().businessHours()).isEmpty();
+        assertThat(hospitalDetail.hospitalTags().emergency()).isEmpty();
     }
 
     @Test
