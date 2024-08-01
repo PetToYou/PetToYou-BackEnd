@@ -3,6 +3,7 @@ package com.pettoyou.server.member.service;
 import com.pettoyou.server.constant.enums.CustomResponseStatus;
 import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.dto.request.MemberInfoModifyReqDto;
+import com.pettoyou.server.member.dto.response.MemberInfoQueryDto;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
@@ -28,6 +29,10 @@ class MemberServiceTest {
 
     @InjectMocks
     private MemberServiceImpl memberService;
+
+    /***
+     * 유저 정보 수정
+     */
 
     @Test
     void 유저_정보_정상수정() {
@@ -58,6 +63,28 @@ class MemberServiceTest {
                 // when
                 .isThrownBy(() -> memberService.modifyMemberInfo(modifyReqDto, wrongMemberId))
                 .withMessage(CustomResponseStatus.MEMBER_NOT_FOUND.getMessage());
+    }
+
+    /***
+     * 유저 정보 조회
+     */
+
+    @Test
+    void 유저_정보_정상조회() {
+        // given
+        Member member = createMember();
+
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(member));
+
+        // when
+        MemberInfoQueryDto result = memberService.queryMemberInfo(member.getMemberId());
+
+        // then
+        assertThat(result.memberId()).isEqualTo(member.getMemberId());
+        assertThat(result.name()).isEqualTo(member.getName());
+        assertThat(result.nickname()).isEqualTo(member.getNickName());
+        assertThat(result.phone()).isEqualTo(member.getPhone());
+        assertThat(result.email()).isEqualTo(member.getEmail());
     }
 
     private MemberInfoModifyReqDto createModifyReqDto() {
