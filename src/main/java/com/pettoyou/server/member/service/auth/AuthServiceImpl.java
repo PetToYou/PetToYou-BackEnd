@@ -13,6 +13,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.MemberRole;
 import com.pettoyou.server.member.entity.Role;
+import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.member.entity.enums.RoleType;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.member.repository.MemberRoleRepository;
@@ -45,12 +46,10 @@ public class AuthServiceImpl implements AuthService {
     public AuthTokens signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
 
-        Member findMember = findByPhone(oAuthInfoResponse.getPhone())
-                .orElseGet(() -> forceJoin(oAuthInfoResponse));
-
-        if (findMember.getProvider() != param.oAuthProvider()) {
-            throw new CustomException(CustomResponseStatus.ALREADY_REGISTERED_WITH_DIFFERENT_PROVIDER);
-        }
+        Member findMember = findMemberByOauthProviderAndProviderId(
+                oAuthInfoResponse.getOAuthProvider(),
+                oAuthInfoResponse.getId()
+        ).orElseGet(() -> forceJoin(oAuthInfoResponse));
 
         String refreshToken = redisUtil.getData(RT + findMember.getEmail());
         if (refreshToken == null) {
@@ -107,5 +106,9 @@ public class AuthServiceImpl implements AuthService {
 
     private Optional<Member> findByPhone(String phone) {
         return memberRepository.findByPhone(phone);
+    }
+
+    private Optional<Member> findMemberByOauthProviderAndProviderId(OAuthProvider provider, String providerId) {
+        return memberRepository.findByProviderAndProviderId(provider, providerId);
     }
 }

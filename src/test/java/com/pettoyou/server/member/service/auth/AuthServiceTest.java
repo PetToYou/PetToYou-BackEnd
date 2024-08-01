@@ -1,0 +1,166 @@
+package com.pettoyou.server.member.service.auth;
+
+import com.pettoyou.server.auth.AuthTokenGenerator;
+import com.pettoyou.server.auth.OAuthLoginParams;
+import com.pettoyou.server.auth.RequestOAuthInfoService;
+import com.pettoyou.server.auth.kakao.KakaoInfoResponse;
+import com.pettoyou.server.auth.kakao.KakaoLoginParam;
+import com.pettoyou.server.auth.naver.NaverInfoResponse;
+import com.pettoyou.server.auth.naver.NaverLoginParam;
+import com.pettoyou.server.config.jwt.util.JwtUtil;
+import com.pettoyou.server.config.redis.util.RedisUtil;
+import com.pettoyou.server.constant.entity.AuthTokens;
+import com.pettoyou.server.member.entity.Member;
+import com.pettoyou.server.member.entity.enums.MemberStatus;
+import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import com.pettoyou.server.member.repository.MemberRepository;
+import com.pettoyou.server.member.repository.MemberRoleRepository;
+import com.pettoyou.server.member.repository.RoleRepository;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class AuthServiceTest {
+
+    @Mock
+    private MemberRepository memberRepository;
+
+    @Mock
+    private MemberRoleRepository memberRoleRepository;
+
+    @Mock
+    private RoleRepository roleRepository;
+
+    @Mock
+    private RequestOAuthInfoService requestOAuthInfoService;
+
+    @Mock
+    private JwtUtil jwtUtil;
+
+    @Mock
+    private RedisUtil redisUtil;
+
+    @Mock
+    private AuthTokenGenerator authTokenGenerator;
+
+    @InjectMocks
+    private AuthServiceImpl authService;
+
+    @Test
+    void 기존_회원_정상_카카오_로그인() {
+        // given
+        Member member = createMember();
+        KakaoInfoResponse kakaoInfoResponse = createKakaoInfoResponse();
+        AuthTokens authTokens = createAuthTokens();
+        KakaoLoginParam kakaoLoginParam = createKakaoLoginParam();
+
+        when(memberRepository.findByProviderAndProviderId(any(OAuthProvider.class), anyString()))
+                .thenReturn(Optional.ofNullable(member));
+        when(redisUtil.getData(anyString())).thenReturn("baseRT");
+        when(authTokenGenerator.generate(anyString(), anyString())).thenReturn(authTokens);
+        when(requestOAuthInfoService.request(any(OAuthLoginParams.class))).thenReturn(kakaoInfoResponse);
+
+        // when
+        AuthTokens resultToken = authService.signIn(kakaoLoginParam);
+
+        // then
+        assertThat(resultToken.accessToken()).isEqualTo(authTokens.accessToken());
+        assertThat(resultToken.refreshToken()).isEqualTo(authTokens.refreshToken());
+        assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
+    }
+
+    @Test
+    void 기존_회원_정상_네이버_로그인() {
+        // given
+        Member member = createMember();
+        NaverInfoResponse naverInfoResponse = createNaverInfoResponse();
+        AuthTokens authTokens = createAuthTokens();
+        NaverLoginParam naverLoginParam = createNaverLoginParam();
+
+        when(memberRepository.findByProviderAndProviderId(any(OAuthProvider.class), anyString()))
+                .thenReturn(Optional.ofNullable(member));
+        when(redisUtil.getData(anyString())).thenReturn("baseRT");
+        when(authTokenGenerator.generate(anyString(), anyString())).thenReturn(authTokens);
+        when(requestOAuthInfoService.request(any(OAuthLoginParams.class))).thenReturn(naverInfoResponse);
+
+        // when
+        AuthTokens resultToken = authService.signIn(naverLoginParam);
+
+        // then
+        assertThat(resultToken.accessToken()).isEqualTo(authTokens.accessToken());
+        assertThat(resultToken.refreshToken()).isEqualTo(authTokens.refreshToken());
+        assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
+    }
+
+    private KakaoLoginParam createKakaoLoginParam() {
+        return KakaoLoginParam.from("authorizationCode");
+    }
+
+    private NaverLoginParam createNaverLoginParam() {
+        return NaverLoginParam.of("authorizationCode", "state");
+    }
+
+    private AuthTokens createAuthTokens() {
+        return AuthTokens.builder()
+                .accessToken("accessToken")
+                .refreshToken("refreshToken")
+                .exprTime(3000L)
+                .build();
+    }
+
+
+    private Member createMember() {
+        return Member.builder()
+                .memberId(1L)
+                .name("성춘")
+                .nickName("choon")
+                .phone("010-7592-0693")
+                .email("test@naver.com")
+                .provider(OAuthProvider.KAKAO)
+                .providerId("3535")
+                .memberStatus(MemberStatus.ACTIVATE)
+                .build();
+    }
+
+    private KakaoInfoResponse createKakaoInfoResponse() {
+        return KakaoInfoResponse.builder()
+                .id("123")
+                .kakaoAccount(
+                        KakaoInfoResponse.KakaoAccount.builder()
+                                .profile(
+                                        KakaoInfoResponse.KakaoProfile.builder()
+                                                .nickname("choon")
+                                                .build()
+                                )
+                                .email("test@naver.com")
+                                .name("홍길동")
+                                .phone_number("+82 10-2222-2222")
+                                .build()
+                )
+                .build();
+    }
+
+    private NaverInfoResponse createNaverInfoResponse() {
+        return NaverInfoResponse.builder()
+                .response(
+                        NaverInfoResponse.Response.builder()
+                                .id("123")
+                                .name("홍길동")
+                                .nickname("홍길동")
+                                .email("test@naver.com")
+                                .mobile("010-1111-1111")
+                                .build()
+                )
+                .build();
+    }
+}

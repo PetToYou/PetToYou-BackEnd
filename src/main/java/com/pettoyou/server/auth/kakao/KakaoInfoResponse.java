@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Objects;
 
+@Builder
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoInfoResponse implements OAuthInfoResponse {
@@ -17,18 +19,20 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
 
+    @Builder
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class KakaoAccount {
+    public static class KakaoAccount {
         private KakaoProfile profile;
         private String email;
         private String name;
         private String phone_number;
     }
 
+    @Builder
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class KakaoProfile {
+    public static class KakaoProfile {
         // 예시로 닉네임이지. 추가로 프사 url 정보도 여기서 받아오면 됨
         private String nickname;
     }

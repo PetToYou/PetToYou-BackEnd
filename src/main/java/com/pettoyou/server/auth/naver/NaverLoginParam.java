@@ -2,13 +2,11 @@ package com.pettoyou.server.auth.naver;
 
 import com.pettoyou.server.auth.OAuthLoginParams;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

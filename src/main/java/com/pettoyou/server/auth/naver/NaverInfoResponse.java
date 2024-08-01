@@ -4,17 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NaverInfoResponse implements OAuthInfoResponse {
     @JsonProperty("response")
     private Response response;
 
     @Getter
+    @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class Response {
+    public static class Response {
         private String id;
         private String email;
         private String nickname;
