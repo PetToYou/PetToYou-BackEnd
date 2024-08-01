@@ -8,6 +8,7 @@ import com.pettoyou.server.auth.kakao.KakaoLoginParam;
 import com.pettoyou.server.auth.naver.NaverInfoResponse;
 import com.pettoyou.server.auth.naver.NaverLoginParam;
 import com.pettoyou.server.config.jwt.util.JwtUtil;
+import com.pettoyou.server.config.jwt.util.TokenType;
 import com.pettoyou.server.config.redis.util.RedisUtil;
 import com.pettoyou.server.constant.entity.AuthTokens;
 import com.pettoyou.server.member.entity.Member;
@@ -57,7 +58,7 @@ class AuthServiceTest {
     private AuthServiceImpl authService;
 
     @Test
-    void 기존_회원_정상_카카오_로그인() {
+    void 기존_회원_정상_카카오_로그인_리프레시_토큰이_존재하는_경우() {
         // given
         Member member = createMember();
         KakaoInfoResponse kakaoInfoResponse = createKakaoInfoResponse();
@@ -80,7 +81,34 @@ class AuthServiceTest {
     }
 
     @Test
-    void 기존_회원_정상_네이버_로그인() {
+    void 기존_회원_정상_카카오_로그인_리프레시_토큰이_존재하지_않는_경우() {
+        // given
+        Member member = createMember();
+        KakaoInfoResponse kakaoInfoResponse = createKakaoInfoResponse();
+        AuthTokens authTokens = createAuthTokens();
+        KakaoLoginParam kakaoLoginParam = createKakaoLoginParam();
+
+        when(memberRepository.findByProviderAndProviderId(any(OAuthProvider.class), anyString()))
+                .thenReturn(Optional.ofNullable(member));
+        when(requestOAuthInfoService.request(any(OAuthLoginParams.class))).thenReturn(kakaoInfoResponse);
+        when(redisUtil.getData(anyString())).thenReturn(null);
+        when(jwtUtil.getExpiration(any(TokenType.class))).thenReturn(authTokens.exprTime());
+        when(jwtUtil.createToken(anyString(), any(TokenType.class))).thenReturn(authTokens.refreshToken());
+        when(authTokenGenerator.generate(anyString(), anyString())).thenReturn(authTokens);
+
+        // when
+        AuthTokens resultToken = authService.signIn(kakaoLoginParam);
+
+        // then
+        verify(redisUtil, times(1)).setData(anyString(), anyString(), anyLong());
+
+        assertThat(resultToken.accessToken()).isEqualTo(authTokens.accessToken());
+        assertThat(resultToken.refreshToken()).isEqualTo(authTokens.refreshToken());
+        assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
+    }
+
+    @Test
+    void 기존_회원_정상_네이버_로그인_리프레시_토큰이_존재하는_경우() {
         // given
         Member member = createMember();
         NaverInfoResponse naverInfoResponse = createNaverInfoResponse();
@@ -97,6 +125,34 @@ class AuthServiceTest {
         AuthTokens resultToken = authService.signIn(naverLoginParam);
 
         // then
+        assertThat(resultToken.accessToken()).isEqualTo(authTokens.accessToken());
+        assertThat(resultToken.refreshToken()).isEqualTo(authTokens.refreshToken());
+        assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
+    }
+
+    @Test
+    void 기존_회원_정상_네이버_로그인_리프레시_토큰이_존재하지_않는_경우() {
+        // given
+        Member member = createMember();
+        NaverInfoResponse naverInfoResponse = createNaverInfoResponse();
+        AuthTokens authTokens = createAuthTokens();
+        NaverLoginParam naverLoginParam = createNaverLoginParam();
+
+        when(memberRepository.findByProviderAndProviderId(any(OAuthProvider.class), anyString()))
+                .thenReturn(Optional.ofNullable(member));
+        when(redisUtil.getData(anyString())).thenReturn(null);
+        when(authTokenGenerator.generate(anyString(), anyString())).thenReturn(authTokens);
+        when(requestOAuthInfoService.request(any(OAuthLoginParams.class))).thenReturn(naverInfoResponse);
+        when(jwtUtil.getExpiration(any(TokenType.class))).thenReturn(authTokens.exprTime());
+        when(jwtUtil.createToken(anyString(), any(TokenType.class))).thenReturn(authTokens.refreshToken());
+        when(authTokenGenerator.generate(anyString(), anyString())).thenReturn(authTokens);
+
+        // when
+        AuthTokens resultToken = authService.signIn(naverLoginParam);
+
+        // then
+        verify(redisUtil, times(1)).setData(anyString(), anyString(), anyLong());
+
         assertThat(resultToken.accessToken()).isEqualTo(authTokens.accessToken());
         assertThat(resultToken.refreshToken()).isEqualTo(authTokens.refreshToken());
         assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
