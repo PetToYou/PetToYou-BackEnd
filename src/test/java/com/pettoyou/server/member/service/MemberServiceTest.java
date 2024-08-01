@@ -8,12 +8,10 @@ import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -85,6 +83,21 @@ class MemberServiceTest {
         assertThat(result.nickname()).isEqualTo(member.getNickName());
         assertThat(result.phone()).isEqualTo(member.getPhone());
         assertThat(result.email()).isEqualTo(member.getEmail());
+    }
+
+    @Test
+    void 유저_id가_잘못된_경우_조회요청시_예외발생() {
+        // given
+        Member member = createMember();
+        long wrongMemberId = member.getMemberId() + 1;
+
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> memberService.queryMemberInfo(wrongMemberId))
+                .withMessage(CustomResponseStatus.MEMBER_NOT_FOUND.getMessage());
     }
 
     private MemberInfoModifyReqDto createModifyReqDto() {
