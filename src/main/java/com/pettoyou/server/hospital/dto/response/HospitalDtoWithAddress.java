@@ -24,21 +24,25 @@ public record HospitalDtoWithAddress(
         AddressDto addressDto,
         //response/dto
         Times time,
-        HospitalTagDto tags) {
-    public HospitalDtoWithAddress(
+        HospitalTagDto tags
+) {
+    public static HospitalDtoWithAddress of(
             Long storeId,
             String storeName,
             String thumbnailUrl,
             Address address,
-            BusinessHour businessHour,
-            List<HospitalTag> tags
+            BusinessHour businessHour
+           , List<HospitalTag> tags
     ) {
-        this(storeId,
-                storeName,
-                thumbnailUrl,
-                AddressDto.toDto(address),
-                businessHour != null ? Times.of(businessHour) : null,
-                HospitalTagDto.toDto(tags));
+
+        return HospitalDtoWithAddress.builder()
+                .storeId(storeId)
+                .storeName(storeName)
+                .thumbnailUrl(thumbnailUrl)
+                .addressDto(AddressDto.toDto(address))
+                .time(businessHour != null ? Times.of(businessHour) : null)
+                .tags(HospitalTagDto.toDto(tags))
+                .build();
     }
 
     // *********null 수정 필요 {@link com.pettoyou.server.Times.java} *************//
