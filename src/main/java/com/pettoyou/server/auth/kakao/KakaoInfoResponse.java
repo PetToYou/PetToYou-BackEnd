@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
@@ -20,6 +22,8 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     private KakaoAccount kakaoAccount;
 
     @Builder
+    @NoArgsConstructor // Jackson의 json으로의 deserialize를 위해 추가한 기본생성자
+    @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoAccount {
@@ -30,6 +34,8 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     }
 
     @Builder
+    @NoArgsConstructor // Jackson의 json으로의 deserialize를 위해 추가한 기본생성자
+    @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoProfile {

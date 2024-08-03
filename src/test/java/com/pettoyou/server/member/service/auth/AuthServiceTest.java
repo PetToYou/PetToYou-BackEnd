@@ -12,17 +12,18 @@ import com.pettoyou.server.config.jwt.util.TokenType;
 import com.pettoyou.server.config.redis.util.RedisUtil;
 import com.pettoyou.server.constant.entity.AuthTokens;
 import com.pettoyou.server.member.entity.Member;
+import com.pettoyou.server.member.entity.MemberRole;
+import com.pettoyou.server.member.entity.Role;
 import com.pettoyou.server.member.entity.enums.MemberStatus;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import com.pettoyou.server.member.entity.enums.RoleType;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.member.repository.MemberRoleRepository;
 import com.pettoyou.server.member.repository.RoleRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -56,6 +57,10 @@ class AuthServiceTest {
 
     @InjectMocks
     private AuthServiceImpl authService;
+
+    /***
+     * 소셜 로그인 테스트
+     */
 
     @Test
     void 기존_회원_정상_카카오_로그인_리프레시_토큰이_존재하는_경우() {
@@ -158,6 +163,87 @@ class AuthServiceTest {
         assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
     }
 
+    @Test
+    void 신규_회원_카카오_로그인시_강제_회원가입_진행() {
+        // given
+        KakaoLoginParam kakaoLoginParam = createKakaoLoginParam();
+        Member member = createMember();
+        Role role = createRole();
+        KakaoInfoResponse kakaoInfoResponse = createKakaoInfoResponse();
+        AuthTokens authTokens = createAuthTokens();
+
+        when(memberRepository.findByProviderAndProviderId(any(OAuthProvider.class), anyString())).thenReturn(Optional.empty());
+        when(memberRepository.save(any(Member.class))).thenReturn(member);
+
+        when(roleRepository.findByRoleType(any(RoleType.class))).thenReturn(Optional.of(role));
+        when(memberRoleRepository.save(any(MemberRole.class))).thenReturn(null);
+
+        when(redisUtil.getData(anyString())).thenReturn("baseRt");
+        when(authTokenGenerator.generate(anyString(), anyString())).thenReturn(authTokens);
+        when(requestOAuthInfoService.request(any(OAuthLoginParams.class))).thenReturn(kakaoInfoResponse);
+
+        // when
+        AuthTokens resultToken = authService.signIn(kakaoLoginParam);
+
+        // then
+        assertThat(resultToken.accessToken()).isEqualTo(authTokens.accessToken());
+        assertThat(resultToken.refreshToken()).isEqualTo(authTokens.refreshToken());
+        assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
+    }
+
+    @Test
+    void 신규_회원_네이버_로그인시_강제_회원가입_진행() {
+        // given
+        NaverLoginParam naverLoginParam = createNaverLoginParam();
+        Member member = createMember();
+        Role role = createRole();
+        NaverInfoResponse naverInfoResponse = createNaverInfoResponse();
+        AuthTokens authTokens = createAuthTokens();
+
+        when(memberRepository.findByProviderAndProviderId(any(OAuthProvider.class), anyString())).thenReturn(Optional.empty());
+        when(memberRepository.save(any(Member.class))).thenReturn(member);
+
+        when(roleRepository.findByRoleType(any(RoleType.class))).thenReturn(Optional.of(role));
+        when(memberRoleRepository.save(any(MemberRole.class))).thenReturn(null);
+
+        when(redisUtil.getData(anyString())).thenReturn("baseRt");
+        when(authTokenGenerator.generate(anyString(), anyString())).thenReturn(authTokens);
+        when(requestOAuthInfoService.request(any(OAuthLoginParams.class))).thenReturn(naverInfoResponse);
+
+        // when
+        AuthTokens resultToken = authService.signIn(naverLoginParam);
+
+        // then
+        assertThat(resultToken.accessToken()).isEqualTo(authTokens.accessToken());
+        assertThat(resultToken.refreshToken()).isEqualTo(authTokens.refreshToken());
+        assertThat(resultToken.exprTime()).isEqualTo(authTokens.exprTime());
+    }
+
+    /***
+     * 토큰 재발급
+     */
+
+    @Test
+    void 정상_토큰_재발급() {
+        // given
+        String validRefreshToken = "validRefreshToken";
+        String emailInToken = "test@gmail.com";
+        AuthTokens generateToken = createAuthTokens();
+
+        when(jwtUtil.resolveToken(anyString())).thenReturn(validRefreshToken);
+        when(jwtUtil.getEmailInToken(anyString())).thenReturn(emailInToken);
+        when(redisUtil.getData(anyString())).thenReturn(validRefreshToken);
+        when(authTokenGenerator.generate(anyString())).thenReturn(generateToken);
+
+        // when
+        AuthTokens resultToken = authService.reissue(validRefreshToken);
+
+        // then
+        assertThat(resultToken.accessToken()).isEqualTo(generateToken.accessToken());
+        assertThat(resultToken.refreshToken()).isEqualTo(generateToken.refreshToken());
+        assertThat(resultToken.exprTime()).isEqualTo(generateToken.exprTime());
+    }
+
     private KakaoLoginParam createKakaoLoginParam() {
         return KakaoLoginParam.from("authorizationCode");
     }
@@ -174,6 +260,12 @@ class AuthServiceTest {
                 .build();
     }
 
+    private Role createRole() {
+        return Role.builder()
+                .roleId(1L)
+                .roleType(RoleType.ROLE_MEMBER)
+                .build();
+    }
 
     private Member createMember() {
         return Member.builder()

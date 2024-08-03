@@ -100,14 +100,6 @@ public class AuthServiceImpl implements AuthService {
         return memberRepository.save(joinMember);
     }
 
-    private Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
-    }
-
-    private Optional<Member> findByPhone(String phone) {
-        return memberRepository.findByPhone(phone);
-    }
-
     private Optional<Member> findMemberByOauthProviderAndProviderId(OAuthProvider provider, String providerId) {
         return memberRepository.findByProviderAndProviderId(provider, providerId);
     }
