@@ -11,6 +11,8 @@ import com.pettoyou.server.config.jwt.util.JwtUtil;
 import com.pettoyou.server.config.jwt.util.TokenType;
 import com.pettoyou.server.config.redis.util.RedisUtil;
 import com.pettoyou.server.constant.entity.AuthTokens;
+import com.pettoyou.server.constant.enums.CustomResponseStatus;
+import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.MemberRole;
 import com.pettoyou.server.member.entity.Role;
@@ -242,6 +244,23 @@ class AuthServiceTest {
         assertThat(resultToken.accessToken()).isEqualTo(generateToken.accessToken());
         assertThat(resultToken.refreshToken()).isEqualTo(generateToken.refreshToken());
         assertThat(resultToken.exprTime()).isEqualTo(generateToken.exprTime());
+    }
+
+    @Test
+    void 재발급_요청시_토큰이_매칭되지_않으면_예외발생() {
+        // given
+        String validRefreshToken = "validRefreshToken";
+        String wrongRefreshToken = "wrongRefreshToken";
+        String emailInToken = "test@gmail.com";
+
+        when(jwtUtil.resolveToken(anyString())).thenReturn(validRefreshToken);
+        when(jwtUtil.getEmailInToken(anyString())).thenReturn(emailInToken);
+        when(redisUtil.getData(anyString())).thenReturn(wrongRefreshToken);
+
+        // when
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> authService.reissue(validRefreshToken))
+                .withMessage(CustomResponseStatus.REFRESH_TOKEN_NOT_MATCH.getMessage());
     }
 
     private KakaoLoginParam createKakaoLoginParam() {
