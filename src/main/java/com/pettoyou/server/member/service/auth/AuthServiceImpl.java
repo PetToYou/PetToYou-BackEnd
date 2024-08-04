@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthTokenGenerator authTokenGenerator;
 
     private static final String RT = "RT:";
-    private static final String LOGOUT = "LOGOUT:";
+    private static final String LOGOUT = "LOGOUT";
 
     @Override
     public AuthTokens signIn(OAuthLoginParams param) {
@@ -78,13 +79,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String accessToken) {
-        String resolveToken = jwtUtil.resolveToken(accessToken);
-        String emailInToken = jwtUtil.getEmailInToken(resolveToken);
+        String resolveAccessToken = jwtUtil.resolveToken(accessToken);
+        String emailInToken = jwtUtil.getEmailInToken(resolveAccessToken);
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
         if (refreshTokenInRedis == null) throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_FOUND);
 
         redisUtil.deleteDate(RT + emailInToken);
-        redisUtil.setData(LOGOUT, resolveToken, jwtUtil.getExpiration(resolveToken));
+        redisUtil.setData(resolveAccessToken, LOGOUT, jwtUtil.getExpiration(resolveAccessToken));
     }
 
     private Member forceJoin(OAuthInfoResponse joinParam) {

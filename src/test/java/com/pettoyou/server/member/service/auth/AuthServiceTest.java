@@ -263,6 +263,10 @@ class AuthServiceTest {
                 .withMessage(CustomResponseStatus.REFRESH_TOKEN_NOT_MATCH.getMessage());
     }
 
+    /***
+     * 로그아웃
+     */
+
     private KakaoLoginParam createKakaoLoginParam() {
         return KakaoLoginParam.from("authorizationCode");
     }
