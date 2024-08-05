@@ -286,6 +286,23 @@ class AuthServiceTest {
         verify(redisUtil, times(1)).setData(anyString(), anyString(), anyLong());
     }
 
+    @Test
+    void 레디스에_리프레시_토큰이_없는_경우_예외발생() {
+        // given
+        String validAccessToken = "validAccessToken";
+        String emailInToken = "test@gmail.com";
+
+        when(jwtUtil.resolveToken(anyString())).thenReturn(validAccessToken);
+        when(jwtUtil.getEmailInToken(anyString())).thenReturn(emailInToken);
+        when(redisUtil.getData(anyString())).thenReturn(null);
+
+        // then
+        assertThatExceptionOfType(CustomException.class)
+                // when
+                .isThrownBy(() -> authService.logout(validAccessToken))
+                .withMessage(CustomResponseStatus.REFRESH_TOKEN_NOT_FOUND.getMessage());
+    }
+
     private KakaoLoginParam createKakaoLoginParam() {
         return KakaoLoginParam.from("authorizationCode");
     }
