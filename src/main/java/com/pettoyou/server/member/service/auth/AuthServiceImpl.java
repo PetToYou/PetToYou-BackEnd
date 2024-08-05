@@ -13,6 +13,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.member.entity.Member;
 import com.pettoyou.server.member.entity.MemberRole;
 import com.pettoyou.server.member.entity.Role;
+import com.pettoyou.server.member.entity.enums.OAuthProvider;
 import com.pettoyou.server.member.entity.enums.RoleType;
 import com.pettoyou.server.member.repository.MemberRepository;
 import com.pettoyou.server.member.repository.MemberRoleRepository;
@@ -39,18 +40,23 @@ public class AuthServiceImpl implements AuthService {
     private final AuthTokenGenerator authTokenGenerator;
 
     private static final String RT = "RT:";
-    private static final String LOGOUT = "LOGOUT:";
+    private static final String LOGOUT = "LOGOUT";
 
-    @Transactional
     @Override
     public AuthTokens signIn(OAuthLoginParams param) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(param);
-        Member findMember = findByEmail(oAuthInfoResponse.getEmail()).orElseGet(() -> forceJoin(oAuthInfoResponse));
+
+        Member findMember = findMemberByOauthProviderAndProviderId(
+                oAuthInfoResponse.getOAuthProvider(),
+                oAuthInfoResponse.getId()
+        ).orElseGet(() -> forceJoin(oAuthInfoResponse));
+
         String refreshToken = redisUtil.getData(RT + findMember.getEmail());
         if (refreshToken == null) {
             refreshToken = jwtUtil.createToken(findMember.getEmail(), TokenType.REFRESH_TOKEN);
             redisUtil.setData(RT + findMember.getEmail(), refreshToken, jwtUtil.getExpiration(TokenType.REFRESH_TOKEN));
         }
+
         return authTokenGenerator.generate(findMember.getEmail(), refreshToken);
     }
 
@@ -60,6 +66,9 @@ public class AuthServiceImpl implements AuthService {
         String emailInToken = jwtUtil.getEmailInToken(resolveToken);
 
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
+        if (refreshTokenInRedis == null) {
+            throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_EXPIRED);
+        }
         if (!Objects.equals(resolveToken, refreshTokenInRedis)) {
             throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_MATCH);
         }
@@ -72,13 +81,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String accessToken) {
-        String resolveToken = jwtUtil.resolveToken(accessToken);
-        String emailInToken = jwtUtil.getEmailInToken(resolveToken);
+        String resolveAccessToken = jwtUtil.resolveToken(accessToken);
+        String emailInToken = jwtUtil.getEmailInToken(resolveAccessToken);
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
         if (refreshTokenInRedis == null) throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_FOUND);
 
         redisUtil.deleteDate(RT + emailInToken);
-        redisUtil.setData(LOGOUT, resolveToken, jwtUtil.getExpiration(resolveToken));
+        redisUtil.setData(resolveAccessToken, LOGOUT, jwtUtil.getExpiration(resolveAccessToken));
     }
 
     private Member forceJoin(OAuthInfoResponse joinParam) {
@@ -94,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
         return memberRepository.save(joinMember);
     }
 
-    private Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    private Optional<Member> findMemberByOauthProviderAndProviderId(OAuthProvider provider, String providerId) {
+        return memberRepository.findByProviderAndProviderId(provider, providerId);
     }
 }

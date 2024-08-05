@@ -89,6 +89,10 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+    public void modifyInfo(String newNickname) {
+        this.nickName = newNickname;
+    }
+
     @Builder
     public Member(MemberStatus memberStatus, String providerId, OAuthProvider provider, String email, String phone, String nickName, String name, Long memberId) {
         this.memberStatus = memberStatus;

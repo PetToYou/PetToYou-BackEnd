@@ -21,14 +21,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String EXCEPTION = "exception";
     private static final String AUTHORIZATION = "Authorization";
-    private static final String LOGOUT = "LOGOUT:";
+    private static final String LOGOUT = "LOGOUT";
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
 
@@ -42,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            handleBlacklistedToken(redisUtil.getData(LOGOUT), resolveToken);
+            handleBlacklistedToken(resolveToken);
 
             Authentication authentication = jwtUtil.getAuthentication(resolveToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -59,8 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     // 로그아웃한 사용자가 접근하는지 파악. -> 접근할경우 예외발생
-    private void handleBlacklistedToken(String blackTokenInRedis, String resolveToken) throws CustomException {
-        if (blackTokenInRedis != null && Objects.equals(blackTokenInRedis, resolveToken)) {
+    private void handleBlacklistedToken(String resolveToken) throws CustomException {
+        String redisLogoutValue = redisUtil.getData(resolveToken);
+        if (redisLogoutValue != null && redisLogoutValue.equals(LOGOUT)) {
             throw new CustomException(CustomResponseStatus.LOGOUT_MEMBER);
         }
     }

@@ -4,17 +4,26 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pettoyou.server.auth.OAuthInfoResponse;
 import com.pettoyou.server.member.entity.enums.OAuthProvider;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@NoArgsConstructor // Jackson의 json으로의 deserialize를 위해 추가한 기본생성자
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NaverInfoResponse implements OAuthInfoResponse {
     @JsonProperty("response")
     private Response response;
 
     @Getter
+    @Builder
+    @NoArgsConstructor // Jackson의 json으로의 deserialize를 위해 추가한 기본생성자
+    @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class Response {
+    public static class Response {
         private String id;
         private String email;
         private String nickname;

@@ -16,12 +16,15 @@ public enum CustomResponseStatus {
      */
     EXPIRED_JWT(HttpStatus.UNAUTHORIZED.value(), "2000", "만료된 토큰입니다."),
     BAD_JWT(HttpStatus.UNAUTHORIZED.value(), "2001", "잘못된 토큰입니다."),
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED.value(), "2002", "리프레시 토큰이 만료되었습니다. 재로그인을 진행해주세요."),
+    REFRESH_TOKEN_NOT_MATCH(HttpStatus.CONFLICT.value(), "2003", "잘못된 리프레시 토큰입니다."),
 
     /***
      * 3000: ACCESS DENIED
      */
     ACCESS_DENIED(HttpStatus.FORBIDDEN.value(), "3000", "권한이 없습니다."),
     LOGOUT_MEMBER(HttpStatus.FORBIDDEN.value(), "3001", "로그아웃된 사용자입니다."),
+    ALREADY_REGISTERED_WITH_DIFFERENT_PROVIDER(HttpStatus.CONFLICT.value(), "3002", "다른 소셜 로그인 계정으로 가입한 사용자입니다."),
 
     /***
      * 4000: NOT_FOUND
@@ -43,8 +46,7 @@ public enum CustomResponseStatus {
     /***
      * 5000: NOT_MATCH
      */
-    REFRESH_TOKEN_NOT_MATCH(HttpStatus.CONFLICT.value(), "5000", "잘못된 리프레시 토큰입니다."),
-    MEMBER_NOT_MATCH(HttpStatus.CONFLICT.value(), "5001", "유저가 매칭되지 않습니다."),
+    MEMBER_NOT_MATCH(HttpStatus.CONFLICT.value(), "5000", "유저가 매칭되지 않습니다."),
 
     /***
      * 6000: Internal_Server_Error
