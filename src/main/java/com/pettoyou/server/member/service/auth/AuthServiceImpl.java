@@ -66,6 +66,9 @@ public class AuthServiceImpl implements AuthService {
         String emailInToken = jwtUtil.getEmailInToken(resolveToken);
 
         String refreshTokenInRedis = redisUtil.getData(RT + emailInToken);
+        if (refreshTokenInRedis == null) {
+            throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_EXPIRED);
+        }
         if (!Objects.equals(resolveToken, refreshTokenInRedis)) {
             throw new CustomException(CustomResponseStatus.REFRESH_TOKEN_NOT_MATCH);
         }
