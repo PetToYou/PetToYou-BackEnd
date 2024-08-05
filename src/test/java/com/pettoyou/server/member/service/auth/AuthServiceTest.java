@@ -267,6 +267,25 @@ class AuthServiceTest {
      * 로그아웃
      */
 
+    @Test
+    void 정상_로그아웃() {
+        // given
+        String validAccessToken = "validAccessToken";
+        String emailInToken = "test@gmail.com";
+        String validRefreshTokenInReds = "validRefreshToken";
+
+        when(jwtUtil.resolveToken(anyString())).thenReturn(validAccessToken);
+        when(jwtUtil.getEmailInToken(anyString())).thenReturn(emailInToken);
+        when(redisUtil.getData(anyString())).thenReturn(validRefreshTokenInReds);
+
+        // when
+        authService.logout(validAccessToken);
+
+        // then
+        verify(redisUtil, times(1)).deleteDate(anyString());
+        verify(redisUtil, times(1)).setData(anyString(), anyString(), anyLong());
+    }
+
     private KakaoLoginParam createKakaoLoginParam() {
         return KakaoLoginParam.from("authorizationCode");
     }
