@@ -9,8 +9,10 @@ import com.pettoyou.server.hospital.dto.response.HospitalDtoWithAddress;
 import com.pettoyou.server.hospital.dto.response.HospitalDtoWithDistance;
 import com.pettoyou.server.hospital.dto.response.Times;
 import com.pettoyou.server.hospital.entity.*;
+import com.pettoyou.server.store.entity.Address;
 import com.pettoyou.server.store.entity.BusinessHour;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -113,7 +115,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 );
 
 
-        if (countQuery == null ) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
+        if (countQuery == null) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
 
         List<HospitalDtoWithDistance> result = hospitals.stream()
                 .map(t -> {
@@ -124,7 +126,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                     Double ratingAverage = t.get(ratingAvg);
                     Double distance = Optional.ofNullable(t.get(distanceAlias)).orElse(Double.MAX_VALUE);
                     BusinessHour storeBusinessHour = t.get(businessHour);
-                    Times times = storeBusinessHour!=null ? Times.of(storeBusinessHour) : null;
+                    Times times = storeBusinessHour != null ? Times.of(storeBusinessHour) : null;
 
                     return HospitalDtoWithDistance.of(
                             storeId,
@@ -146,12 +148,11 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
     @Override
     public Page<HospitalDtoWithAddress> findHospitalBySearch(Pageable pageable, HosptialSearchQueryInfo queryInfo, Integer dayOfWeek) {
 
-        List<HospitalDtoWithAddress> content = jpaQueryFactory
-                .select(Projections.constructor(HospitalDtoWithAddress.class,
+        List<Tuple> hospitals = jpaQueryFactory
+                .select(
                         hospital.storeId, hospital.storeName,
                         hospital.thumbnail.photoUrl.as("thumbnailUrl"), hospital.address,
                         businessHour)
-                )
                 .from(hospital)
                 .leftJoin(hospital.businessHours, businessHour)
                 .on(businessHour.dayOfWeek.eq(dayOfWeek))
@@ -166,6 +167,48 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
                 .where(hospital.storeName.contains(queryInfo.storeName()));
 //                .fetchOne();
 
+
+        // 2. 각 병원에서 가지고있는 HospitalTag를 Map에 담기
+        List<Long> hospitalIds = hospitals.stream()
+                .map(t -> t.get(hospital.storeId))
+                .toList();
+
+        Map<Long, List<HospitalTag>> hospitalTagMap = jpaQueryFactory
+                .select(
+                        tagMapper.hospital.storeId,
+                        tagMapper.hospitalTag
+                )
+                .from(tagMapper)
+                .where(tagMapper.hospital.storeId.in(hospitalIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> tuple.get(tagMapper.hospital.storeId),
+                        Collectors.mapping(tuple -> tuple.get(tagMapper.hospitalTag), Collectors.toList())
+                ));
+
+
+        if (countQuery == null) throw new CustomException(CustomResponseStatus.STORE_NOT_FOUND);
+
+        List<HospitalDtoWithAddress> content = hospitals.stream()
+                .map(t -> {
+                    Long storeId = t.get(hospital.storeId);
+                    String storeName = t.get(hospital.storeName);
+                    String thumbnailUrl = t.get(hospital.thumbnail.photoUrl);
+                    Address address = t.get(hospital.address);
+                    BusinessHour storeBusinessHour = t.get(businessHour);
+
+                    return HospitalDtoWithAddress.of(
+                            storeId,
+                            storeName,
+                            thumbnailUrl,
+                            address,
+                            storeBusinessHour,
+                            hospitalTagMap.getOrDefault(storeId, new ArrayList<>())
+                    );
+                })
+                .toList();
+
         if (content == null) {
             throw new CustomException(CustomResponseStatus.HOSPITAL_NOT_FOUND);
         }
@@ -175,7 +218,7 @@ public class HospitalCustomRepositoryImpl implements HospitalCustomRepository {
 
 
     @Override
-    public List<HospitalTag> findTagList(Long hospitalId){
+    public List<HospitalTag> findTagList(Long hospitalId) {
         return jpaQueryFactory
                 .select(hospitalTag)
                 .from(tagMapper)
