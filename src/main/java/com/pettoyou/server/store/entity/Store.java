@@ -36,6 +36,7 @@ public abstract class Store extends BaseEntity {
     @Column(nullable = false)
     private String storeName;
 
+    @NotNull
     private String storePhone;
 
     @Embedded
@@ -56,11 +57,14 @@ public abstract class Store extends BaseEntity {
     @Embedded
     private PhotoData storeInfoPhoto;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private BaseStatus storeStatus;
 
     @Embedded
+    @NotNull
     private Address address;
+
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BusinessHour> businessHours = new ArrayList<>();
