@@ -349,7 +349,6 @@ class HospitalServiceImplTest {
                 .storePhoto(storeInfoPhoto)
                 .storePhotoId(1L)
                 .photoStatus(BaseStatus.ACTIVATE)
-                .storeType(StoreType.HOSPITAL)
                 .store(hospitalSuccess).build();
 
         storePhotoList.add(storePhoto);
@@ -398,7 +397,6 @@ class HospitalServiceImplTest {
                 .storePhoto(storeInfoPhoto)
                 .storePhotoId(1L)
                 .photoStatus(BaseStatus.ACTIVATE)
-                .storeType(StoreType.HOSPITAL)
                 .store(hospitalSuccess).build();
 
         storePhotoList.add(storePhoto);
@@ -448,7 +446,6 @@ class HospitalServiceImplTest {
                 .storePhoto(storeInfoPhoto)
                 .storePhotoId(1L)
                 .photoStatus(BaseStatus.ACTIVATE)
-                .storeType(StoreType.HOSPITAL)
                 .store(hospitalSuccess).build();
 
         storePhotoList.add(storePhoto);
@@ -497,7 +494,6 @@ class HospitalServiceImplTest {
                 .storePhoto(storeInfoPhoto)
                 .storePhotoId(1L)
                 .photoStatus(BaseStatus.ACTIVATE)
-                .storeType(StoreType.HOSPITAL)
                 .store(hospitalSuccess).build();
 
         storePhotoList.add(storePhoto);
