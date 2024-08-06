@@ -6,6 +6,7 @@ import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -28,8 +29,10 @@ public class StorePhoto extends BaseEntity {
     private StoreType storeType;
 
     @Embedded
+    @NotNull
     private PhotoData storePhoto;
 
+    @NotNull
     private Integer photoOrder;
 
     @Builder.Default

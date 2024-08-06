@@ -13,6 +13,7 @@ import com.pettoyou.server.photo.entity.PhotoData;
 import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -35,33 +36,38 @@ public class Pet extends BaseEntity {
     @Column(name = "pet_id")
     private Long petId;
 
+    @NotNull
     @Column(nullable = false)
     private String petName;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Species species;
 
-    @Column(nullable = false)
+
+    @NotNull
     private LocalDate birth;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull
     private PetType petType;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull
     private Gender gender;
 
     private LocalDate adoptionDate;
 
     private String caution;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private BaseStatus petStatus;
 
     @Embedded
     private PhotoData profilePhotoData;
 
+    @NotNull
     @Embedded
     private PetMedicalInfo petMedicalInfo;
 

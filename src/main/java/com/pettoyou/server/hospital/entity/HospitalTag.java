@@ -2,6 +2,7 @@ package com.pettoyou.server.hospital.entity;
 
 import com.pettoyou.server.hospital.entity.enums.HospitalTagType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -16,10 +17,12 @@ public class HospitalTag {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hospitalTagId;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private HospitalTagType tagType;
 
     // Service, BusinessHour, Specialities, Emergency
+    @NotNull
     private String tagContent;
 
     public static List<TagMapper> toEntity(Hospital hospital, List<HospitalTag> tags) {

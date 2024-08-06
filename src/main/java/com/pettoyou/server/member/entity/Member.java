@@ -12,6 +12,7 @@ import com.pettoyou.server.reserve.entity.Reserve;
 import com.pettoyou.server.review.entity.Review;
 import com.pettoyou.server.scrap.entity.Scrap;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -30,30 +31,33 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(nullable = false)
+    @NotNull
     private String name; // 실명이 이어야함. -> 수정 가능하게
 
     @Size(min = 2, message = "최소 2글자 이상이어야 합니다.")
+    @NotNull
     private String nickName; // 따로 받아야됨
 
-    @Column(nullable = false)
+    @NotNull
     private String phone; // 따로 받아야됨, 전화번호를 등록안한 유저의 경우엔 날라오지 않음.
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
+    @NotNull
     private String email; // 따로 받아야됨
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull
     private OAuthProvider provider;
 
-    @Column(nullable = false)
+    @NotNull
     private String providerId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull
     private MemberStatus memberStatus;
 
     @Builder.Default
+    @NotNull
     @OneToMany(mappedBy = "member")
     private List<MemberRole> roles = new ArrayList<>();
 
