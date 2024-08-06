@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import software.amazon.awssdk.annotations.NotNull;
 
 @Getter
 @Entity
@@ -22,13 +23,15 @@ public class Banner extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bannerId;
 
+    @NotNull
     private String bannerName;
 
+    @NotNull
     private PhotoData bannerImg;
 
     private String bannerLink;
 
-    @Enumerated(EnumType.STRING)
+    @NotNull @Enumerated(EnumType.STRING)
     private BaseStatus bannerStatus;
 
     private Banner(String bannerName, PhotoData bannerImg, String bannerLink) {

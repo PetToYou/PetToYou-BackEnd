@@ -1,6 +1,7 @@
 package com.pettoyou.server.member.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -14,10 +15,12 @@ public class MemberRole {
     private Long memberRoleId;
 
     @ManyToOne
+    @NotNull
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
+    @NotNull
     @JoinColumn(name = "role_id")
     private Role role;
 

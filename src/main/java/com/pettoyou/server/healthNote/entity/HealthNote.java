@@ -6,6 +6,7 @@ import com.pettoyou.server.constant.exception.CustomException;
 import com.pettoyou.server.healthNote.dto.request.HealthNoteRegistAndModifyReqDto;
 import jakarta.persistence.*;
 import lombok.*;
+import software.amazon.awssdk.annotations.NotNull;
 
 import java.time.LocalDate;
 
@@ -19,23 +20,29 @@ public class HealthNote extends BaseEntity {
     @Column(name = "health_note_id")
     private Long healthNoteId;
 
+    @NotNull
     @Column(name = "visit_date")
     private LocalDate visitDate;
 
+    @NotNull
     @Column(name = "medical_record")
     private String medicalRecord;
 
+    @Column(name = "caution")
     private String caution;
 
     @Column(name = "vet_name")
     private String vetName;
 
+    @NotNull
     @Column(name = "store_id")
     private Long storeId;
 
+    @NotNull
     @Column(name = "pet_id")
     private Long petId;
 
+    @NotNull
     @Column(name = "member_id")
     private Long memberId;
 

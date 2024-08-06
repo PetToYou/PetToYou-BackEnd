@@ -7,6 +7,7 @@ import com.pettoyou.server.pet.entity.enums.VaccinationStatus;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Embeddable
@@ -22,9 +23,11 @@ public class PetMedicalInfo {
 
     private String registerNumber;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private NeuteringStatus neuteringStatus;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private VaccinationStatus vaccinationStatus;
 

@@ -14,16 +14,18 @@ import org.locationtech.jts.geom.Point;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Address {
+    @NotNull
     private String zipCode;
 
     private String addressDetail;
 
+    @NotNull
     private String sido;
-
+    @NotNull
     private String sigungu;
 
     private String eupmyun;
-
+    @NotNull
     private String doro;
 
     @JsonSerialize(using = PointSerializer.class)

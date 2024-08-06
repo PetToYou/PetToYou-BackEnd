@@ -25,7 +25,6 @@ public record StorePhotoDto(
                 .createdAt(storePhoto.getCreatedAt())
                 .modifiedAt(storePhoto.getModifiedAt())
                 .storePhotoId(storePhoto.getStorePhotoId())
-                .storeType(storePhoto.getStoreType())
                 .storePhotoUrl(storePhoto.getStorePhoto().getPhotoUrl())
                 .photoOrder(storePhoto.getPhotoOrder())
                 .photoStatus(storePhoto.getPhotoStatus())

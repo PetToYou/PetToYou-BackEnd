@@ -7,6 +7,7 @@ import com.pettoyou.server.pet.entity.Pet;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import com.pettoyou.server.store.entity.Store;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -26,11 +27,14 @@ public class Review extends BaseEntity {
     private StoreType storeType;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private BaseStatus reviewStatus;
 
     @Builder.Default
+    @NotNull
     private Double rating = 0.0;
 
+    @NotNull
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

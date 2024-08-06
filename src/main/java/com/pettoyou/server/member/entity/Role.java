@@ -2,6 +2,7 @@ package com.pettoyou.server.member.entity;
 
 import com.pettoyou.server.member.entity.enums.RoleType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class Role {
     @Column(name = "role_id")
     private Long roleId;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 

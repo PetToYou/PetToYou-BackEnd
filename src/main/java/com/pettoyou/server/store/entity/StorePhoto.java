@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.constant.enums.BaseStatus;
 import com.pettoyou.server.photo.entity.PhotoData;
-import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -24,15 +24,15 @@ public class StorePhoto extends BaseEntity {
     @Column(name = "store_photo_id")
     private Long storePhotoId;
 
-    @Enumerated(EnumType.STRING)
-    private StoreType storeType;
-
     @Embedded
+    @NotNull
     private PhotoData storePhoto;
 
+    @NotNull
     private Integer photoOrder;
 
     @Builder.Default
+    @NotNull
     @Enumerated(EnumType.STRING)
     private BaseStatus photoStatus = BaseStatus.ACTIVATE;
 

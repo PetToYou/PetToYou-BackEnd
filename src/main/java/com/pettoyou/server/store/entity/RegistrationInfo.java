@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pettoyou.server.constant.entity.BaseEntity;
 import com.pettoyou.server.store.entity.enums.StoreType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -21,12 +22,11 @@ public class RegistrationInfo extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private StoreType storeType;
-
+    @NotNull
     private String ceoName;
-
     private String ceoPhone;
-
+    @NotNull
     private String ceoEmail;
-
+    @NotNull
     private String businessNumber;
 }
