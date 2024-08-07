@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/member/")
+@RequestMapping("/api/v1/member")
 public class ScrapController {
     private final ScrapService scrapService;
 

@@ -31,7 +31,7 @@ public class MemberAuthController {
         Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
+        refreshTokenCookie.setSecure(true);
         response.addCookie(refreshTokenCookie);
 
         return ApiResponse.createSuccessWithOk(LoginAndReissueRespDto.from(authTokens));
@@ -48,7 +48,7 @@ public class MemberAuthController {
         Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
+        refreshTokenCookie.setSecure(true);
         response.addCookie(refreshTokenCookie);
 
         return ApiResponse.createSuccessWithOk(LoginAndReissueRespDto.from(authTokens));
@@ -66,7 +66,7 @@ public class MemberAuthController {
         Cookie refreshTokenCookie = new Cookie("refreshToken", authTokens.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setSecure(true); Todo : 추후 https 적용후 주석 풀기
+        refreshTokenCookie.setSecure(true);
         response.addCookie(refreshTokenCookie);
 
         return ApiResponse.createSuccessWithOk(LoginAndReissueRespDto.from(authTokens));

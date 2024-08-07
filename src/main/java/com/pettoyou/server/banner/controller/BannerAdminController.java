@@ -16,7 +16,7 @@ public class BannerAdminController {
     private final BannerService bannerService;
 
     // 배너 등록
-    @PostMapping("admin/banner")
+    @PostMapping("/banner")
     public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerRegister(
             @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
             @RequestPart(value = "bannerImg") MultipartFile bannerImg
@@ -27,7 +27,7 @@ public class BannerAdminController {
     }
 
     // 배너 수정
-    @PutMapping("admin/banner/{bannerId}")
+    @PutMapping("/banner/{bannerId}")
     public ResponseEntity<ApiResponse<BannerRegisterResponseDto>> bannerModify(
             @RequestPart(value = "bannerRequestDto") BannerRegisterRequestDto bannerRegisterRequestDto,
             @RequestPart(value = "bannerImg") MultipartFile bannerImg,
@@ -38,7 +38,7 @@ public class BannerAdminController {
     }
 
     // 배너 삭제
-    @DeleteMapping("admin/banner/{bannerId}")
+    @DeleteMapping("/banner/{bannerId}")
     public ResponseEntity<ApiResponse<String>> bannerModify(
             @PathVariable Long bannerId
     ) {
